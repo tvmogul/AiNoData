@@ -1,0 +1,244 @@
+﻿@using AiNoData.Helpers
+
+@{
+    ViewData["Title"] = "LLM Token Governor Demo";
+    var scriptNonce = Html.ScriptNonce();
+}
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_llm.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                LLM Token Governor (Hallucination Eliminator)
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="container mt-4 llm-governor-demo">
+
+    <div class="row">
+
+        <!-- LEFT COLUMN: Description + User Inputs -->
+        <div class="col-md-6">
+
+            <p class="text-muted">
+                This demo shows how a Zero-Training AI™ governor evaluates and selects
+                lower-risk statements from a typical LLM response using a mathematical
+                decision filter.
+            </p>
+
+            <hr />
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Domain Mode</strong></label>
+                <select id="domainMode" class="form-select" onchange="runGovernor()">
+                    <option value="general" selected>General</option>
+                    <option value="finance">Finance</option>
+                    <option value="medical">Medical</option>
+                    <option value="legal">Legal</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label"><strong>Energy Weights</strong></label>
+
+                <div>
+                    α (assertion / absolutism penalty):
+                    <input type="range" id="alpha" min="0" max="10" step="0.5" value="4"
+                           oninput="alphaVal.innerText=this.value; runGovernor()">
+                    <span id="alphaVal">4</span>
+                </div>
+
+                <div>
+                    λ (speculation / uncertainty penalty):
+                    <input type="range" id="lambda" min="0" max="10" step="0.5" value="2"
+                           oninput="lambdaVal.innerText=this.value; runGovernor()">
+                    <span id="lambdaVal">2</span>
+                </div>
+            </div>
+
+            <div class="alert alert-info mb-3">
+                <strong>Demo Overview</strong>
+                <p class="mb-0" style="margin-top:8px;">
+                    Below is an example of a response an LLM <em>might</em> produce.
+                    The text is fixed so you can clearly see how the governor evaluates
+                    the same content under different energy weights and domain settings.
+                </p>
+            </div>
+
+            <div class="alert alert-light mt-4" style="border:1px solid #ddd; background:#ffffff; color:#000000;">
+                <h5>How This Demo Works</h5>
+
+                <p>
+                    The governor does not know the question, the topic, or the meaning of the content.
+                    It evaluates only structural language risk and selects the statement with the
+                    lowest computed energy under the current configuration.
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Example LLM Response (Read-Only)</strong></label>
+                <textarea id="llmResponse" class="form-control" rows="9" readonly>
+Inflation happens when prices rise over time and money buys less than it used to. Inflation is always caused by governments printing too much money. One common cause is when demand for goods and services grows faster than supply. Inflation might occur when businesses face higher costs for labor, energy, or materials and pass those costs on to consumers. Supply disruptions, such as wars or natural disasters, can reduce available goods and push prices higher. In some cases, inflation seems to happen when people expect prices to rise and adjust their behavior accordingly.
+                </textarea>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Output -->
+        <div class="col-md-6">
+
+            <h6>Governor Output</h6>
+
+            <button class="btn btn-primary mb-4" onclick="runGovernor()">
+                Run Zero-Training AI™ Governor
+            </button>
+            <br />
+
+            <div id="results" class="mt-3"></div>
+
+        </div>
+
+    </div>
+
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+
+
+@section Scripts {
+
+    <script>
+        function runGovernor() {
+
+            const rawText = document.getElementById("llmResponse").value.trim();
+            if (!rawText) return;
+
+            // --- Split LLM output into candidate statements ---
+            const candidates = rawText
+                .split(/(?<=[.!?])\s+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 15);
+
+            const alpha = parseFloat(document.getElementById("alpha").value);
+            const lambda = parseFloat(document.getElementById("lambda").value);
+            const domain = document.getElementById("domainMode").value;
+
+            const domainBias = {
+                general: 1.0,
+                finance: 1.6,
+                medical: 2.0,
+                legal: 2.4
+            }[domain];
+
+            function energyScore(text) {
+                let score = 0;
+
+                const speculative = ["maybe", "possibly", "might", "seems", "likely"];
+                const absolute = ["always", "never", "proven", "guaranteed", "permanent"];
+
+                let speculativeHits = 0;
+                let absoluteHits = 0;
+
+                speculative.forEach(w => {
+                    if (text.toLowerCase().includes(w)) speculativeHits++;
+                });
+
+                absolute.forEach(w => {
+                    if (text.toLowerCase().includes(w)) absoluteHits++;
+                });
+
+                score += speculativeHits * lambda;
+                score += absoluteHits * alpha;
+
+                score += (text.length / 120) * (1 + lambda / 10);
+                score += Math.log(text.split(" ").length + 1) * (alpha / 5);
+
+                return score * domainBias;
+            }
+
+            const scored = candidates.map(c => ({
+                text: c,
+                energy: energyScore(c)
+            }));
+
+            scored.sort((a, b) => a.energy - b.energy);
+
+            const container = document.getElementById("results");
+            container.innerHTML = "<h6>Evaluated Statements (Lowest Energy Preferred)</h6>";
+
+            scored.forEach((c, i) => {
+
+                const div = document.createElement("div");
+                div.className = "candidate" + (i === 0 ? " selected" : "");
+
+                const width = Math.min(100, c.energy * 8);
+
+                div.innerHTML = `
+                    ${i === 0 ? "<div class='tag'>Selected (Lowest Energy)</div>" : ""}
+                    <p>${c.text}</p>
+                    <div class="energy-label">Energy: ${c.energy.toFixed(2)}</div>
+                    <div class="energy-bar" style="width:${width}%; transition: width 0.6s ease;"></div>
+                `;
+
+                container.appendChild(div);
+            });
+        }
+    </script>
+
+}
+
+<style>
+    .llm-governor-demo #results {
+        background-color: #ffffff !important;
+        color: #000000;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    .llm-governor-demo .candidate {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 10px;
+        background-color: #ffffff !important;
+        color: #000000;
+    }
+
+        .llm-governor-demo .candidate.selected {
+            border: 2px solid #198754;
+            background-color: #ffffff !important;
+            color: #000000;
+        }
+
+    .energy-bar {
+        height: 10px;
+        border-radius: 4px;
+        margin-top: 6px;
+        background: linear-gradient(to right, #dc3545, #ffc107, #198754);
+    }
+
+    .energy-label {
+        font-size: 0.85rem;
+        color: #000000;
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        margin-right: 4px;
+        background: #eee;
+        color: #000000;
+    }
+</style>

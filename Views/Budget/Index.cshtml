@@ -1,0 +1,402 @@
+﻿@using System.Globalization
+@using System.Linq
+@model AiNoData.Models.Budget.BudgetAllocatorViewModel
+
+@{
+    var scriptNonce = Html.ScriptNonce();
+    //var styleNonce = Html.StyleNonce();
+    ViewData["Title"] = "TV Station Growth Demo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_settings.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Budget Allocation for TV Infomercials
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
+<section class="demo-section">
+
+    <div class="demo-grid" style="display: grid; grid-template-columns: 420px 1fr; gap: 24px;">
+        <div class="demo-panel">
+
+            <h2>Simulation Inputs</h2>
+
+            <form asp-action="Index" asp-controller="Budget" method="post" id="budgetForm">
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Initial cash available to test and then to re-buy TV stations
+                    </div>
+
+                    <div class="input-with-prefix" style="display: flex; align-items: center;">
+                        <span class="prefix" style="margin-right: 6px;">$</span>
+                        <input id="totalBudget"
+                               name="TotalBudget"
+                               type="number"
+                               class="text-input"
+                               step="50"
+                               min="0"
+                               value="@Model.TotalBudget"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Demo is a 12-month run; you can reduce this, but not exceed 12
+                    </div>
+                    <input id="months"
+                           name="MonthsToSimulate"
+                           type="number"
+                           class="text-input"
+                           step="1"
+                           min="1"
+                           max="12"
+                           value="@Model.MonthsToSimulate"
+                           style="text-align: right; width: 140px;" />
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Number of <strong>new</strong> TV stations bought monthly
+                        by auction for between $20 and $200 for a half-hour
+                    </div>
+                    <input id="newStationsPerMonth"
+                           name="NewStationsPerMonth"
+                           type="number"
+                           class="text-input"
+                           step="1"
+                           min="1"
+                           value="@Model.NewStationsPerMonth"
+                           style="text-align: right; width: 140px;" />
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Select performance profile that controls Pull Ratio (PR) range used for each station
+                    </div>
+                    <select id="showType"
+                            name="ShowType"
+                            class="text-input"
+                            style="font-size: 0.80rem;">
+                        <option value="A">Unsuccessful (&lt; 2)</option>
+                        <option value="B">Modest (4–12)</option>
+                        <option value="C" selected>Successful (12–60)</option>
+                        <option value="D">Blockbuster (60–100)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Retail price for a one-month supply of the diet (e.g., 59.95)
+                    </div>
+                    <div class="input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input id="monthlyPrice"
+                               name="MonthlyPrice"
+                               type="number"
+                               class="text-input"
+                               step="0.01"
+                               min="0"
+                               value="@Model.MonthlyPrice"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        One-Year Supply Upsell Price. Upsell price for a full one-year
+                        supply of the diet (e.g., 499.00)
+                    </div>
+                    <div class="input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input id="yearlyPrice"
+                               name="YearlyPrice"
+                               type="number"
+                               class="text-input"
+                               step="0.01"
+                               min="0"
+                               value="@Model.YearlyPrice"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        Percentage of buys that are cancelled before they air (e.g., 6%)
+                    </div>
+                    <div class="input-with-prefix">
+                        <span class="prefix">%</span>
+                        <input id="cancelRate"
+                               name="CancellationRate"
+                               type="number"
+                               class="text-input"
+                               step="1"
+                               min="0"
+                               max="100"
+                               value="@(Model.CancellationRate * 100m)"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+              
+            </form>
+
+        </div>
+
+        <div class="demo-panel">
+            <h2>12-Month TV Income vs Media</h2>
+
+            <div class="form-actions">
+                <button type="button"
+                        class="btn btn-primary btn-lg fw-semibold px-4"
+                        onclick="submitBudgetForm();">
+                    Run 12-Month TV Growth Simulation
+                </button>
+            </div>
+            <br />
+
+            @if (Model.HasMonthlyTimeline)
+            {
+                var totalMediaYear = Model.MonthlyTimeline.Sum(m => m.TotalSpend);
+                var totalGrossYear = Model.MonthlyTimeline.Sum(m => m.TotalSales);
+                var netProfitYear = totalGrossYear - totalMediaYear;
+
+                <div class="z3d-chart-wrap">
+                    <canvas id="budgetGrowthChart" style="width:100%; height:240px;"></canvas>
+                </div>
+                <br />
+
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-label">Starting Budget (Month 1)</div>
+                        <div class="summary-value">
+                            @Model.MonthlyTimeline.First().StartingBudget.ToString("C0")
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Ending Budget (Month @Model.MonthlyTimeline.Last().PeriodIndex)</div>
+                        <div class="summary-value">
+                            @Model.MonthlyTimeline.Last().EndingBudget.ToString("C0")
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Total Media (12 Months)</div>
+                        <div class="summary-value">
+                            @totalMediaYear.ToString("C0")
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Total Gross (12 Months)</div>
+                        <div class="summary-value">
+                            @totalGrossYear.ToString("C0")
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Net Profit (Gross – Media, 12 Months)</div>
+                        <div class="summary-value">
+                            @netProfitYear.ToString("C0")
+                        </div>
+                    </div>
+                </div>
+
+                <script nonce="@scriptNonce">
+                    window.__budgetChartData = {
+                        months: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyTimeline.Select(m => $"M{m.PeriodIndex}"))),
+                        budgets: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyTimeline.Select(m => m.EndingBudget)))
+                    };
+                </script>
+
+                @* <p class="explainer">
+                    Each row represents one month of <strong>TV-station-only</strong> media activity. New stations are tested every
+                    month, each with a constant Pull Ratio for its lifetime window. Buy cancellations are applied globally using
+                    your cancellation rate. Profit is rolled into the next month’s budget, causing the growth you see here.
+                </p> *@
+            }
+            else
+            {
+                @* <p class="placeholder">
+                    Enter a starting budget and parameters on the left, then click
+                    <strong>Run 12-Month TV Growth Simulation</strong> to see month-by-month total media, total gross, and budget
+                    compounding across <strong>only TV stations</strong>.
+                </p> *@
+            }
+        </div>
+    </div>
+</section>
+<br />
+
+<section>
+    <div class="demo-panel" style="margin-bottom: 25px;">
+        <h2>How Zero-Training AI™ Drives Media Buying</h2>
+        <p class="help-text" style="font-size: 1.05rem;">
+            This demo is powered by a proprietary, Patent Pending, math-based decision engine. 
+            It is <strong>NOT an algorithm</strong> and does <strong>NOT</strong> use rules, training data,
+            heuristics, or machine-learning models. Instead, it operates as 
+            a <strong>dynamical optimization system</strong>.
+        </p>
+
+        <div style="background: #f3f3f3; border-radius: 10px; padding: 18px; margin-top: 10px;">
+            <strong style="font-size: 1.1rem;">Zero-Training AI™ defines a global decision potential:</strong>
+            <pre style="white-space: pre-wrap; font-size: 1.05rem; margin-top: 10px;">
+F(q, p) = (1/2) Σ pᵢ²  −  α Σ (ROIᵢ · qᵢ)  +  λ ( Σ qᵢ  −  1 )²
+        </pre>
+
+            <p style="font-size: 1rem;margin-top: -30px !important;">
+                • <strong>qᵢ</strong> = allocation weight for station i<br />
+                • <strong>pᵢ</strong> = momentum of allocation change (decision inertia)<br />
+                • <strong>ROIᵢ</strong> = front-end pull ratio combined with upsell amplification<br />
+                • <strong>α</strong> = reward strength for profitability (<em>user adjustable</em>)<br />
+                • <strong>λ</strong> = constraint strength enforcing total budget conservation<br />
+            </p>
+
+            <p>
+                Each month, <strong>Zero-Training AI™</strong> evolves its internal state <strong>(q, p)</strong> across
+                multiple internal time steps. Media dollars flow naturally toward stations that generate
+                higher total economic value — without rules, presets, or explicit instructions.
+            </p>
+
+            <p>
+                Although <strong>Zero-Training AI™</strong> is built entirely from mathematics rather than data,
+                it qualifies as real artificial intelligence because it performs
+                <strong>autonomous decision-making</strong>. 
+                The system continuously evaluates thousands of possible allocations,
+                responds to changing outcomes, and self-organizes its strategy
+                in real time.
+            </p>
+
+            <p>
+                There is no training phase, no stored examples, and no static model.
+                Intelligence emerges directly from the dynamics of the system itself.
+                In short, <strong>Zero-Training AI™ does not execute decisions — it evolves them.</strong>
+            </p>
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" nonce="@scriptNonce"></script>
+
+    <script nonce="@scriptNonce">
+        function submitBudgetForm() {
+            const cancelInput = document.getElementById('cancelRate');
+            if (cancelInput) {
+                let val = parseFloat(cancelInput.value);
+                if (!isNaN(val)) {
+                    cancelInput.value = (val / 100.0).toString();
+                }
+            }
+            document.getElementById('budgetForm').submit();
+        }
+    </script>
+
+    <script nonce="@scriptNonce">
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!window.__budgetChartData) return;
+
+            const canvas = document.getElementById("budgetGrowthChart");
+            if (!canvas) return;
+
+            const ctx = canvas.getContext("2d");
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: window.__budgetChartData.months,
+                    datasets: [{
+                        data: window.__budgetChartData.budgets,
+                        borderWidth: 3,
+                        tension: 0.35,
+                        pointRadius: 3,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: c => "$" + Number(c.raw).toLocaleString()
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: v => "$" + Number(v).toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+}
+
+<style>
+    .form-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 12px !important;
+    }
+
+    .input-with-prefix {
+        display: flex;
+        align-items: center;
+    }
+
+    .prefix {
+        margin-right: 4px;
+    }
+</style>
+
+<style>
+    .summary-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        min-width: 220px;
+        font-size: 0.95rem;
+    }
+
+    .summary-label {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .summary-value {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .z3d-chart-wrap {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 12px;
+        background: #f8f9fa;
+        height: 260px;
+    }
+</style>

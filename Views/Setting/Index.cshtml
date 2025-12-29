@@ -1,0 +1,94 @@
+﻿@using AiNoData.Helpers
+
+@{
+    ViewData["Title"] = "Settings";
+    var scriptNonce = Html.ScriptNonce();
+    var soundList = ViewBag.Sounds as List<SelectListItem>;
+}
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_settings.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Settings
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="d-flex
+            flex-column
+            align-items-center
+            justify-content-between
+            p-3 border
+            rounded
+            mx-auto"
+    style="width: 80%;">
+
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <h3>Select Either A Light Theme or dark Theme&nbsp;</h3>
+        <button id="themeToggle" class="btn btn-outline-secondary btn-sm">
+            🌙 Dark Mode
+        </button>
+    </div>
+</div>
+<br />
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+@section Scripts {
+
+    <script nonce="@scriptNonce">
+        // ✅ Initialize global theme for the entire app (all views)
+        (function initGlobalTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+                document.documentElement.setAttribute('data-bs-theme', 'dark'); // Bootstrap 5.3.3 global theme
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+                document.documentElement.setAttribute('data-bs-theme', 'light'); // Bootstrap 5.3.3 global theme
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            applyTheme(currentTheme);
+
+            themeToggle.addEventListener('click', function () {
+                const newTheme = (document.body.classList.contains('dark-theme')) ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.remove('light-theme');
+                    document.body.classList.add('dark-theme');
+                    document.documentElement.setAttribute('data-bs-theme', 'dark'); // ✅ apply globally for all views using Bootstrap
+                    themeToggle.textContent = '☀️ Light Mode';
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    document.body.classList.add('light-theme');
+                    document.documentElement.setAttribute('data-bs-theme', 'light'); // ✅ apply globally for all views using Bootstrap
+                    themeToggle.textContent = '🌙 Dark Mode';
+                }
+            }
+        });
+    </script>
+
+}
+
+

@@ -1,0 +1,153 @@
+﻿@using AiNoData.Helpers
+
+@{
+    ViewData["Title"] = "Robot Arm Balancer Demo";
+    var scriptNonce = Html.ScriptNonce();
+}
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_robot.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Robot Arm Balancer
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="container mt-4">
+
+    <p class="text-muted mb-3">
+        A simple animated 2-joint robot arm attempts to hold a target point.
+        When the target moves, the arm smoothly finds a new stable configuration.
+        No machine learning — pure real-time control.
+    </p>
+
+    <canvas id="robotCanvas" width="500" height="400"
+            style="border:1px solid #ccc; background:#ffffff; display:block;">
+    </canvas>
+
+    <p class="mt-2 text-muted" style="font-size:0.9rem;">
+        Drag anywhere inside the canvas to move the target.
+    </p>
+</div>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+@section Scripts {
+
+    <script nonce="@scriptNonce">
+        const canvas = document.getElementById("robotCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const base = { x: 250, y: 300 };
+        const L1 = 120;
+        const L2 = 90;
+
+        let target = { x: 300, y: 150 };
+
+        let theta1 = 0;
+        let theta2 = 0;
+
+        let desiredTheta1 = 0;
+        let desiredTheta2 = 0;
+
+        const damping = 0.12;
+
+        function solveIK(x, y) {
+            const dx = x - base.x;
+            const dy = base.y - y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+
+            const clamped = Math.min(Math.max(d, 10), L1 + L2 - 1);
+
+            const cos2 = (clamped * clamped - L1 * L1 - L2 * L2) / (2 * L1 * L2);
+            desiredTheta2 = Math.acos(Math.min(Math.max(cos2, -1), 1));
+
+            const k1 = L1 + L2 * Math.cos(desiredTheta2);
+            const k2 = L2 * Math.sin(desiredTheta2);
+
+            desiredTheta1 = Math.atan2(dy, dx) - Math.atan2(k2, k1);
+        }
+
+        function update() {
+            theta1 += (desiredTheta1 - theta1) * damping;
+            theta2 += (desiredTheta2 - theta2) * damping;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const x1 = base.x + L1 * Math.cos(theta1);
+            const y1 = base.y - L1 * Math.sin(theta1);
+
+            const x2 = x1 + L2 * Math.cos(theta1 + theta2);
+            const y2 = y1 - L2 * Math.sin(theta1 + theta2);
+
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#333";
+
+            ctx.beginPath();
+            ctx.moveTo(base.x, base.y);
+            ctx.lineTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            ctx.fillStyle = "#0d6efd";
+            ctx.beginPath();
+            ctx.arc(base.x, base.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(x1, y1, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(x2, y2, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#dc3545";
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function loop() {
+            solveIK(target.x, target.y);
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        canvas.addEventListener("mousedown", e => {
+            const rect = canvas.getBoundingClientRect();
+            target.x = e.clientX - rect.left;
+            target.y = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener("mousemove", e => {
+            if (e.buttons !== 1) return;
+            const rect = canvas.getBoundingClientRect();
+            target.x = e.clientX - rect.left;
+            target.y = e.clientY - rect.top;
+        });
+
+        loop();
+    </script>
+
+}
+
+
+
+
+
+
+

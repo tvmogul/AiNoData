@@ -1,0 +1,725 @@
+﻿@using AiNoData.Helpers
+@VersionHelper.GetAssemblyVersion()
+@VersionHelper.GetInformationalVersion()
+@VersionHelper.GetFormattedAppTitle()
+
+@{
+    var scriptNonce = Html.ScriptNonce();
+    //var styleNonce = Html.StyleNonce();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="env" content="Production" />
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="env" content="Production" />
+
+    <title>Ai No Data – Zero-Training AI™ Interactive Demos</title>
+
+    <!-- ===================== SEO DESCRIPTION ===================== -->
+    <meta name="description"
+          content="Zero-Training AI™ interactive demos showing deterministic, real-time decision systems that operate without training data or machine learning. Includes budget allocation, control stabilization, robotic balancing, and LLM output governance." />
+
+    <!-- ===================== CODEPROJECT / TECHNICAL KEYWORDS ===================== -->
+    <meta name="keywords"
+          content="
+      Zero-Training AI,
+      AI without training data,
+      deterministic decision systems,
+      decision space,
+      explainable AI,
+      control systems,
+      real-time optimization,
+      AI architecture,
+      non-machine learning AI,
+      runtime decision making,
+      ASP.NET Core MVC,
+      Razor Views,
+      JavaScript Canvas,
+      robotics control,
+      budget optimization,
+      LLM governance
+      " />
+
+    <!-- ===================== SOCIAL PREVIEW (SHORT) ===================== -->
+    <meta name="social-description"
+          content="Four interactive demos showing how AI decision systems can work without training data, models, or machine learning." />
+
+    <!-- ===================== OPEN GRAPH (GitHub / LinkedIn / Facebook) ===================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ai No Data – Zero-Training AI™ Demos" />
+    <meta property="og:description"
+          content="Interactive demonstrations of deterministic AI systems that operate without training data or machine learning." />
+    <meta property="og:image" content="https://github.com/tvmogul/AiNoData/og-image.png" />
+    <meta property="og:url" content="https://github.com/tvmogul/AiNoData/" />
+    <meta property="og:site_name" content="Ai No Data" />
+
+    <!-- ===================== TWITTER CARD ===================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ai No Data – Zero-Training AI™ Demos" />
+    <meta name="twitter:description"
+          content="Deterministic AI demos showing real-time decision systems without training data or machine learning." />
+    <meta name="twitter:image" content="https://github.com/tvmogul/AiNoData/og-image.png" />
+
+    <script type="importmap"></script>
+
+    <!-- Favicons -->
+    <link href="~/img/favicon.ico" rel="icon">
+    <link href="~/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/hover.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="~/lib/datatables/dataTables.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/autoFill.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/buttons.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/colReorder.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/dataTables.dateTime.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/fixedHeader.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/keyTable.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/responsive.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/rowGroup.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/rowReorder.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/scroller.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/searchBuilder.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/searchPanes.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/select.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/datatables/stateRestore.bootstrap5.min.css" asp-append-version="true" />
+
+    <style>
+        .external-link {
+            pointer-events: auto !important;
+        }
+    </style>
+
+</head>
+<body class="flexcroll-white flex flex-col h-screen">
+    <header style="z-index: 9999999999999999999999999999999;">
+        <nav class="navbar fixed-top navbar-expand-sm bg-white border-bottom mb-3 shadow">
+            <div class="container-fluid">
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand" style="margin-top: 0px !important;">
+                    <h3 class="fw-bold" style="margin: 0; font-weight: bold;padding-top: 0px !important;">
+                        AiNoData<span style="font-size: 0.7em;">™</span>
+                    </h3>
+                </a>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav" style="margin-top: -8px !important;">
+                    <ul class="navbar-nav
+                        flex-grow-1 align-items-center"
+                        style="font-weight: bold !important;
+                                line-height: .9em !important;">
+                        <li class="nav-item" style="text-align: center !important; padding-top: 12px !important;">
+                            <a class="nav-link text-dark hvr-grow" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item dropdown position-relative" style="text-align: center !important; padding-top: 12px !important;">
+                            <a style="background-color: transparent !important;"
+                               class="nav-link dropdown-toggle text-dark hvr-grow" href="#" role="button"
+                               data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Demos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow" asp-area="" asp-controller="Budget" asp-action="Index">Budget Allocator</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow" asp-area="" asp-controller="Robot" asp-action="Index">Robot Arm Balancer</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow" asp-area="" asp-controller="Drone" asp-action="Index">Drone Hover</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow" asp-area="" asp-controller="LlmGovernor" asp-action="Index">LLM Token Goveror</a>
+                                </li>
+                            </ul>
+                        </li>
+                    @* <li class="nav-item" style="text-align: center !important; padding-top: 12px !important;">
+                        <a class="nav-link text-dark hvr-grow external-link"
+                            href="https://ainetprofit.com/manual"
+                            onclick="sessionStorage.setItem('userInteracted', 'true'); return false;">
+                            Manual
+                        </a>
+                    </li> *@
+                    </ul>
+                    <!-- Right-aligned Ad item -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item" style="text-align: right !important; padding: 12px 12px 0px 0px !important;">
+                            <a class="nav-link" href="https://www.youtube.com/watch?v=5CYS0Ti9YC0" target="_blank">
+                                <img src="/img/youtube.png" style="width: 100px;height: auto;" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+            @await Html.PartialAsync("_Disclaimer")
+            @await Html.PartialAsync("_advice")
+            @await Html.PartialAsync("_Intellectual")
+            @await Html.PartialAsync("_Liability")
+            @await Html.PartialAsync("_Regulator")
+            @await Html.PartialAsync("_Warranties")
+            <br /><br /><br />
+        </main>
+    </div>
+
+    <footer class="border-top footer fixed-bottom text-muted" style="background-color: white; z-index: 1020;">
+        <div style="font-size: .9em !important;padding: 5px 22px !important; display: flex; align-items: center; gap: 15px;">
+            <p class="not-printable footer_div_p mb-0">&copy; 1991 - @DateTime.Now.Year, Ouslan, Inc. All Rights Reserved Worlwide.</p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* DO NOT INCLUDE THESE BECAUSE THEY CAUSE MANY ISSUES!!! *@
+    @* <link rel="stylesheet" href="/lib/datatables/fixedColumns.bootstrap5.min.css" nonce="@scriptNonce" asp-append-version="true" /> *@
+    @* <script src="/lib/datatables/fixedColumns.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script> *@
+
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" nonce="@scriptNonce"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" nonce="@scriptNonce"></script>
+
+    <!-- Required for Excel and PDF export -->
+    <script src="/lib/datatables/jszip.min.js" nonce="@scriptNonce"></script>
+    <script src="/lib/datatables/pdfmake.min.js" nonce="@scriptNonce"></script>
+    <script src="/lib/datatables/vfs_fonts.js" nonce="@scriptNonce"></script>
+    <script src="/lib/datatables/dataTables.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.buttons.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/buttons.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/buttons.colVis.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/buttons.html5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/buttons.print.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.autoFill.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/autoFill.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.colReorder.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/colReorder.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.fixedColumns.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.dateTime.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    @* <script src="/lib/datatables/fixedColumns.bootstrap5.min.js"nonce="@scriptNonce" asp-append-version="true"></script> *@
+    <script src="/lib/datatables/dataTables.fixedHeader.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/fixedHeader.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.keyTable.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/keyTable.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.responsive.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/responsive.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.rowGroup.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/rowGroup.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.rowReorder.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/rowReorder.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.scroller.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/scroller.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.searchBuilder.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/searchBuilder.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.searchPanes.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/searchPanes.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.select.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/select.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/dataTables.stateRestore.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/datatables/stateRestore.bootstrap5.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+
+    <script src="/lib/fabric.js/fabric.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/lib/tagcanvas/tagcanvas.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/js/xlsx.full.min.js" nonce="@scriptNonce" asp-append-version="true"></script>
+    <script src="/js/chart.umd.min.js" nonce="@scriptNonce"></script>
+
+    <script nonce="@scriptNonce">
+
+        let currentAuthorizeModal = null;
+        let currentCompanyAccountModal = null;
+        let currentSplashModal = null;
+
+        function runApp() {
+            // Find the closest modal ancestor of the button that called this function
+            // const modalEl = document.querySelector('.modal.show');
+            // if (modalEl) {
+            //     const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            //     modalInstance.hide();
+            // }
+        }
+
+        function applyThemeToDropdowns(buttonIds, menuIds) {
+            const appTheme = "dark"; // or "dark"
+            //const lightBtnClass = "btn btn-sm btn-outline-success dropdown-toggle fw-bold";
+            const lightBtnClass = "btn btn-sm btn-outline-secondary dropdown-toggle fw-bold";
+            const darkBtnClass = "btn btn-sm btn-outline-dark dropdown-toggle fw-bold";
+
+            const lightMenuClass = "forestgreen-scrollbar";
+            const darkMenuClass = "gray-scrollbar";
+
+            buttonIds.forEach(id => {
+                const className = appTheme === "light" ? lightBtnClass : darkBtnClass;
+                $("#" + id).attr("class", className);
+            });
+
+            menuIds.forEach(id => {
+                const menu = $("#" + id);
+                menu.removeClass(lightMenuClass + " " + darkMenuClass);
+                menu.addClass(appTheme === "light" ? lightMenuClass : darkMenuClass);
+            });
+        }
+
+        // Helper function
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("a.external-link").forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const url = link.getAttribute("href");
+                    if (!url) return;
+
+                    // ✅ MUST happen immediately inside click
+                    const win = window.open(url, "_blank", "noopener");
+
+                    // Optional safety: if popup blocked, fall back
+                    if (!win) {
+                        location.href = url;
+                    }
+
+                    // 🔹 Logging can happen AFTER
+                    fetch("/External/Open", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ url })
+                    }).catch(() => { });
+                });
+            });
+        });
+
+        function uuidToBytes(uuid) {
+            const hex = uuid.replace(/-/g, '');
+            const bytes = new Uint8Array(16);
+            for (let i = 0; i < 16; i++) {
+                bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+            }
+            return bytes;
+        }
+
+        function uuidToDotNetBytes(uuid) {
+            const hex = uuid.replace(/-/g, '').toLowerCase();
+            const bytes = new Uint8Array(16);
+
+            bytes[0] = parseInt(hex.substr(6, 2), 16);
+            bytes[1] = parseInt(hex.substr(4, 2), 16);
+            bytes[2] = parseInt(hex.substr(2, 2), 16);
+            bytes[3] = parseInt(hex.substr(0, 2), 16);
+
+            bytes[4] = parseInt(hex.substr(10, 2), 16);
+            bytes[5] = parseInt(hex.substr(8, 2), 16);
+
+            bytes[6] = parseInt(hex.substr(14, 2), 16);
+            bytes[7] = parseInt(hex.substr(12, 2), 16);
+
+            for (let i = 8; i < 16; i++) {
+                bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+            }
+
+            return bytes;
+        }
+
+        function byteArrayToGuid(byteArray) {
+            if (!Array.isArray(byteArray) || byteArray.length !== 16) return '';
+            const hex = Array.from(byteArray, b => ('0' + b.toString(16)).slice(-2));
+            return (
+                hex[3] + hex[2] + hex[1] + hex[0] + '-' +
+                hex[5] + hex[4] + '-' +
+                hex[7] + hex[6] + '-' +
+                hex[8] + hex[9] + '-' +
+                hex.slice(10).join('')
+            ).toUpperCase();
+        }
+
+        // Correct usage
+        // const accountID = "A3F8518A-7EBD-44D7-94B9-0E327C9CFC5C";
+        // const idBytes = uuidToBytes(accountID);
+
+        window.updateFooterText = function (dbName) {
+            const displayText = dbName || '(none)';
+            const element = document.getElementById('selectedDB');
+            if (element) {
+                element.textContent = 'Current DB: ' + displayText;
+                element.setAttribute('title', 'Current Database: ' + displayText);
+            }
+        };
+
+    </script>
+
+    <script nonce="@scriptNonce">
+        (function () {
+          function start() {
+            const canvasBody = document.getElementById('netcanvas');
+            if (!canvasBody) return; // no canvas on this page — just exit quietly
+
+            const drawArea = canvasBody.getContext('2d');
+
+            // ===== DIMENSIONS =====
+            let w = 0, h = 0;
+            const resizeReset = () => {
+              // prefer the rendered width so it matches your layout
+              const cssWidth = Math.max(canvasBody.clientWidth || 0, 1);
+              const maxWidth = 800; // your previous cap
+              w = canvasBody.width  = Math.min(cssWidth, maxWidth);
+              h = canvasBody.height = 70; // fixed rail height
+            };
+
+            // ===== OPTIONS (adjust to your existing values) =====
+            const opts = {
+              particleColor: "rgb(200,200,200)",
+              lineColor:     "rgb(200,200,200)",
+              particleAmount: 30,
+              defaultSpeed:   1,
+              variantSpeed:   1,
+              defaultRadius:  2,
+              variantRadius:  2,
+              linkRadius:     200
+            };
+            const rgb = opts.lineColor.match(/\d+/g);
+
+            // ===== PARTICLES =====
+            let particles = [];
+            function Particle() {
+              this.x = Math.random() * w;
+              this.y = Math.random() * h;
+              this.speed = opts.defaultSpeed + Math.random() * opts.variantSpeed;
+              this.directionAngle = Math.random() * 2 * Math.PI;
+              this.color = opts.particleColor;
+              this.radius = opts.defaultRadius + Math.random() * opts.variantRadius;
+              this.vector = { x: Math.cos(this.directionAngle) * this.speed,
+                              y: Math.sin(this.directionAngle) * this.speed };
+              this.update = function () {
+                // bounce
+                if (this.x >= w || this.x <= 0) this.vector.x *= -1;
+                if (this.y >= h || this.y <= 0) this.vector.y *= -1;
+                this.x += this.vector.x;
+                this.y += this.vector.y;
+              };
+              this.draw = function () {
+                drawArea.beginPath();
+                drawArea.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                drawArea.closePath();
+                drawArea.fillStyle = this.color;
+                drawArea.fill();
+              };
+            }
+
+            function checkDistance(x1, y1, x2, y2) {
+              const dx = x2 - x1, dy = y2 - y1;
+              return Math.sqrt(dx*dx + dy*dy);
+            }
+            function linkPoints(p1, hubs) {
+              for (let i = 0; i < hubs.length; i++) {
+                const dist = checkDistance(p1.x, p1.y, hubs[i].x, hubs[i].y);
+                const opacity = 1 - dist / opts.linkRadius;
+                if (opacity > 0) {
+                  drawArea.lineWidth = 0.5;
+                  drawArea.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity})`;
+                  drawArea.beginPath();
+                  drawArea.moveTo(p1.x, p1.y);
+                  drawArea.lineTo(hubs[i].x, hubs[i].y);
+                  drawArea.stroke();
+                }
+              }
+            }
+
+            function setup() {
+              particles = [];
+              for (let i = 0; i < opts.particleAmount; i++) particles.push(new Particle());
+            }
+
+            function loop() {
+              requestAnimationFrame(loop);
+              drawArea.clearRect(0, 0, w, h);
+              for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+              }
+              for (let i = 0; i < particles.length; i++) linkPoints(particles[i], particles);
+            }
+
+            // init + safe resize
+            resizeReset();
+            setup();
+            loop();
+
+            let t;
+            window.addEventListener('resize', () => {
+              clearTimeout(t);
+              t = setTimeout(() => {
+                resizeReset();
+                setup(); // regenerate within new bounds so it never “disappears”
+              }, 100);
+            });
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', start);
+          } else {
+            start();
+          }
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <style>
+        /* Light theme navbar */
+        body.light-theme header .navbar {
+            background-color: #ffffff !important;
+            color: #212529;
+        }
+
+            body.light-theme header .navbar .nav-link,
+            body.light-theme header .navbar .navbar-brand {
+                color: #212529 !important;
+            }
+
+            body.light-theme header .navbar .dropdown-menu {
+                background-color: #ffffff;
+                color: #212529;
+            }
+
+            body.light-theme header .navbar .dropdown-item {
+                color: #212529;
+            }
+
+                body.light-theme header .navbar .dropdown-item:hover {
+                    background-color: #f1f1f1;
+                }
+
+        /* Dark theme navbar */
+        body.dark-theme header .navbar,
+        body.dark-theme header .navbar.bg-white {
+            background-color: #121212 !important;
+            color: #f8f9fa;
+            border-bottom-color: #333 !important;
+        }
+
+            body.dark-theme header .navbar .nav-link,
+            body.dark-theme header .navbar .navbar-brand {
+                color: #f8f9fa !important;
+            }
+
+                /* Override Bootstrap text-dark when in dark theme */
+                body.dark-theme header .navbar .nav-link.text-dark {
+                    color: #f8f9fa !important;
+                }
+
+            /* Special case for inline darkred link in dark mode */
+            body.dark-theme header .navbar a[style*="color: darkred"] {
+                color: #ff6b6b !important;
+            }
+
+            body.dark-theme header .navbar .dropdown-menu {
+                background-color: #1e1e1e;
+                color: #f8f9fa;
+                border-color: #333;
+            }
+
+            body.dark-theme header .navbar .dropdown-item {
+                color: #f8f9fa;
+            }
+
+                body.dark-theme header .navbar .dropdown-item:hover {
+                    background-color: #333333;
+                }
+
+            /* Toggler visibility in dark mode */
+            body.dark-theme header .navbar .navbar-toggler {
+                border-color: #f8f9fa;
+            }
+
+            body.dark-theme header .navbar .navbar-toggler-icon {
+                filter: invert(1);
+            }
+
+        /* Smooth transition */
+        header .navbar {
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+            header .navbar .nav-link,
+            header .navbar .navbar-brand {
+                transition: color 0.25s ease;
+            }
+
+        /* ✅ Global theme styles */
+
+        /* Default light theme */
+        body.light-theme {
+            background-color: #ffffff;
+            color: #212529;
+        }
+
+        /* Dark theme */
+        body.dark-theme {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* Bootstrap elements adapt */
+        .dark-theme .card,
+        .dark-theme .modal-content {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border-color: #333;
+        }
+
+        .light-theme .card,
+        .light-theme .modal-content {
+            background-color: #ffffff;
+            color: #212529;
+        }
+
+        .dark-theme .btn {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .btn-outline-secondary {
+            border-color: #aaa;
+        }
+
+        .light-theme .btn-outline-secondary {
+            border-color: #444;
+        }
+
+        /* ✅ Navbar adapts to theme with stronger gradients and drop shadow */
+        body.dark-theme .navbar {
+            background: linear-gradient(to bottom, #3a3a3a 0%, #000000 100%) !important;
+            color: #f8f9fa !important;
+            border-bottom: 1px solid #222 !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35); /* toned-down shadow for dark mode */
+        }
+
+        body.light-theme .navbar {
+            background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%) !important;
+            color: #212529 !important;
+            border-bottom: 1px solid #ccc !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* softer shadow for light mode */
+        }
+
+        /* ✅ Nav link colors */
+        body.dark-theme .navbar .nav-link {
+            color: #f8f9fa !important;
+        }
+
+        body.light-theme .navbar .nav-link {
+            color: #212529 !important;
+        }
+
+        /* ✅ Hover effects for contrast */
+        body.dark-theme .navbar .nav-link:hover {
+            color: #ffffff !important;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+        }
+
+        body.light-theme .navbar .nav-link:hover {
+            color: #000000 !important;
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ✅ Footer adapts to theme with matching gradients and shadow */
+
+        /* Dark mode footer: stronger gradient + top shadow */
+        body.dark-theme footer,
+        body.dark-theme .footer {
+            background: linear-gradient(to bottom, #3a3a3a 0%, #000000 100%) !important;
+            color: #f8f9fa !important;
+            border-top: 1px solid #222 !important;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6); /* shadow upward from footer */
+        }
+
+        /* Light mode footer: soft gradient + top shadow */
+        body.light-theme footer,
+        body.light-theme .footer {
+            background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%) !important;
+            color: #212529 !important;
+            border-top: 1px solid #ccc !important;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.25); /* softer shadow */
+        }
+
+        /* Optional: footer links */
+        body.dark-theme footer a,
+        body.dark-theme .footer a {
+            color: #f8f9fa !important;
+        }
+
+        body.light-theme footer a,
+        body.light-theme .footer a {
+            color: #212529 !important;
+        }
+
+        body.dark-theme footer a:hover,
+        body.dark-theme .footer a:hover {
+            color: #ffffff !important;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
+        }
+
+        body.light-theme footer a:hover,
+        body.light-theme .footer a:hover {
+            color: #000000 !important;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Light theme: keep dark shadow for normal look */
+        .light-theme .shadow {
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* Dark theme: switch Bootstrap .shadow to white glow */
+        .dark-theme .shadow {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.25), 0 6px 16px rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .shadow .bottom_shadow_full {
+            float: left;
+            position: relative;
+            height: 64px !important;
+            bottom: 0;
+            margin-bottom: 0px;
+            top: 4px !important;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* default fallback */
+        }
+
+        /* Light theme: darker gray shadow for depth */
+        .light-theme .shadow .bottom_shadow_full {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dark theme: softer outer white glow for contrast */
+        .dark-theme .shadow .bottom_shadow_full {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.18), /* soft inner glow */
+            0 6px 14px rgba(255, 255, 255, 0.22); /* visible outer glow */
+        }
+
+    </style>
+
+</body>
+</html>

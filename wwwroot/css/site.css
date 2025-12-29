@@ -1,0 +1,736 @@
+﻿html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version for modern browsers */
+}
+
+footer {
+    color: black !important;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+    position: fixed !important;
+    height: 40px !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    padding: 4px 20px 4px 30px !important;
+    z-index: 999999999 !important;
+}
+
+/* ====================================================
+Scrollbar White class="flexcroll-white flex flex-col h-screen"
+======================================================*/
+.flexcroll-white {
+    scrollbar-face-color: #FFFFFF;
+    scrollbar-shadow-color: #FFFFFF;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-darkshadow-color: #FFFFFF;
+    scrollbar-track-color: #FFFFFF;
+    scrollbar-arrow-color: #FFFFFF;
+}
+
+.flexcroll-white::-webkit-scrollbar {
+    width: 12px;
+}
+
+.flexcroll-white::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.flexcroll-white::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(220,220,220,1) 65%);
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(220,220,220,1) 65%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(220,220,220,1) 65%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dcdcdc',GradientType=0 );
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* ====================================================
+Scrollbar Gray class="flexcroll-gray flex flex-col h-screen"
+======================================================*/
+.flexcroll-gray {
+    scrollbar-face-color: #367CD2;
+    scrollbar-shadow-color: #FFFFFF;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-darkshadow-color: #FFFFFF;
+    scrollbar-track-color: #FFFFFF;
+    scrollbar-arrow-color: #FFFFFF;
+}
+
+.flexcroll-gray::-webkit-scrollbar {
+    width: 12px;
+}
+
+.flexcroll-gray::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.flexcroll-gray::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgb(206,220,231);
+    background: -moz-linear-gradient(top, rgba(206,220,231,1) 0%, rgba(89,106,114,1) 65%);
+    background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 65%);
+    background: linear-gradient(to bottom, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 65%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 );
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+/* ====================================================
+Scrollbar White class="flexcroll-white flex flex-col h-screen"
+======================================================*/
+.flexcroll-white {
+    scrollbar-face-color: #FFFFFF;
+    scrollbar-shadow-color: #FFFFFF;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-darkshadow-color: #FFFFFF;
+    scrollbar-track-color: #FFFFFF;
+    scrollbar-arrow-color: #FFFFFF;
+}
+
+.flexcroll-white::-webkit-scrollbar {
+    width: 12px;
+}
+
+.flexcroll-white::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.flexcroll-white::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(220,220,220,1) 65%);
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(220,220,220,1) 65%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(220,220,220,1) 65%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dcdcdc',GradientType=0 );
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* ====================================================
+Scrollbar Red class="flexcroll flex flex-col h-screen"
+======================================================*/
+.flexcroll-red {
+    scrollbar-face-color: #367CD2;
+    scrollbar-shadow-color: #FFFFFF;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-darkshadow-color: #FFFFFF;
+    scrollbar-track-color: #FFFFFF;
+    scrollbar-arrow-color: #FFFFFF;
+}
+
+.flexcroll-red::-webkit-scrollbar {
+    width: 12px;
+}
+
+.flexcroll-red::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.flexcroll-red::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(255,0,0,0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+/* ====================================================
+BootStrap 5.3.3 Nav Bar Menu
+======================================================*/
+.navbar, .container-fluid {
+    color: black !important;
+    height: 50px !important;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: red !important;
+    font-weight: bold !important;
+}
+
+.nav-link {
+    color: black !important;
+    font-weight: bold !important;
+}
+
+.logo-name {
+    font-family: Arial, Helvetica, sans-serif;
+    /*    font-size: 2.4em !important;*/
+    color: black !important;
+}
+
+.logo-sos {
+    font-family: 'Franklin Gothic', 'Arial Black', sans-serif, Helvetica, sans-serif;
+    font-weight: bold !important;
+    /* font-size: 2.4em !important;*/
+    color: red !important;
+}
+
+.logo-tm {
+    font-family: Arial, Helvetica, sans-serif;
+    /*   font-size: 1.8em !important;*/
+    color: black !important;
+}
+
+.back-to-top {
+    position: fixed;
+    display: none;
+    right: 45px;
+    bottom: 45px;
+    z-index: 999999999 !important;
+}
+
+/* Increase vertical spacing between dropdown items */
+.dropdown-item {
+    padding-top: 8px !important; /* increase to taste */
+    padding-bottom: 8px !important;
+}
+
+/* Add a light-blue hover effect */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #e6f2ff !important; /* very light blue */
+    color: #000 !important; /* keep text readable */
+}
+
+/* from GeeksforGeeks example :contentReference[oaicite:1]{index=1} */
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    display: none;
+}
+
+.dropdown-submenu:hover > .dropdown-menu,
+.dropdown-submenu:focus-within > .dropdown-menu {
+    display: block;
+}
+
+/* Apply to only nested submenus */
+.dropdown-menu .dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nav-item, .nav-link, .navbar {
+    font-size: 1em !important;
+}
+
+/* Default: transparent for desktop */
+.navbar-collapse {
+    background-color: transparent;
+}
+
+/* Mobile: white background for dropdown menu */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-nav .nav-link {
+        color: #000 !important;
+        font-weight: 500;
+    }
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 999999999999999999999999999999999999999999 !important; /* higher than any image */
+}
+
+.grad_white {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,f6f6f6+47,ededed+100;White+3D+%231 */
+    background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    padding: 0px 0px 2px 0px !important;
+}
+
+.grad_blue {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f2f5f6+0,e3eaed+37,c8d7dc+100;Grey+3D+%234 */
+    background: linear-gradient(to bottom, #f2f5f6 0%,#e3eaed 37%,#c8d7dc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    padding: 0px 0px 2px 0px !important;
+}
+
+.grad_buttons {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,e5e5e5+100;White+3D */
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.mygrad {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,e5e5e5+100;White+3D */
+    color: black !important;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.grad_gray {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,e5e5e5+100;White+3D */
+    color: black !important;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+
+
+
+
+
+
+.carousel, #template-mo-zay-hero-carousel {
+    background-color: white !important;
+}
+
+.fa-color {
+    color: blue !important;
+}
+
+
+.contact-info {
+    text-align: center !important;
+    font-weight: bold !important;
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif !important;
+}
+
+/* Adjusted to apply 100% width for disclaimer-container on smaller screens */
+@media (max-width: 768px) {
+    .disclaimer-container {
+        width: 100%;
+    }
+
+    .disclaimer-text {
+        width: 100%; /* Updated to 100% to match the container's width on mobile */
+    }
+}
+
+#subscribe .input-group {
+    display: flex; /* Enables flexbox layout */
+    align-items: center; /* Aligns items vertically in the center */
+}
+
+#subscribe .input-group input[type="email"] {
+    flex-grow: 1; /* Allows the input field to grow and fill available space */
+    margin-right: 8px; /* Adds some space between the input field and the button */
+}
+
+#subscribe .input-group button {
+    white-space: nowrap; /* Prevents the button text from wrapping */
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+
+.no-padding {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.submit-btn {
+    /* font-size: 10px;*/
+    padding: 2px 4px;
+}
+
+input, textarea, select {
+    /* font-size: 9pt;*/
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+    input[type="number"], input[type="date"], input[type="url"] {
+        font-size: 9pt;
+    }
+
+/* Company-specific styles */
+#company {
+    border: transparent !important;
+    border-image-width: 0px !important;
+}
+
+    #company tr > td {
+        padding-right: 6px !important;
+    }
+
+/* Responsive table for small screens */
+@media screen and (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    table, tr, td {
+        width: 100%;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 50%;
+        position: relative;
+        margin-bottom: 1px;
+    }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 45%;
+            padding-left: 10px;
+            font-weight: bold;
+        }
+
+    tr {
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 100%;
+    }
+}
+
+#companies tbody tr {
+    cursor: pointer;
+}
+
+.companies_wrapper {
+    text-align: left !important;
+}
+
+
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+
+
+/* Ensure the cursor is a hand (pointer) when hovering over these clickable areas */
+.clickable-area {
+    display: block; /* This makes the anchor behave like a block, filling the td */
+    width: 100%;
+    height: 100%;
+    text-decoration: none; /* Remove underline */
+}
+
+    .clickable-area:hover {
+        cursor: pointer;
+    }
+
+.show {
+    display: block !important;
+}
+
+.hide {
+    display: none !important;
+}
+
+.selected {
+    background-color: #0d6bfd !important;
+    color: white;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+
+
+
+/* ====================================================
+Table styling
+======================================================*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    text-align: left;
+    padding: 2px;
+    border: 0px none !important;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    width: 50% !important;
+    padding-right: 6px !important;
+}
+
+/* Optional: Add padding for better spacing */
+table.dataTable thead th {
+    padding: 10px;
+}
+
+/* BEGIN FIXED HEADER GRID SETTINGS */
+.dt-scroll-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.dt-scroll-body::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.dt-scroll-body::-webkit-scrollbar-thumb {
+    background-color: #777;
+    border-radius: 10px;
+}
+/* END FIXED HEADER GRID SETTINGS */
+
+table.dataTable thead th {
+    padding: 10px;
+}
+
+table.dataTable thead tr {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border: none;
+}
+
+/* Optional: Add padding for better spacing */
+table.dataTable thead th {
+    padding: 10px;
+}
+
+/* BEGIN FIXED HEADER GRID SETTINGS */
+.dt-scroll-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.dt-scroll-body::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.dt-scroll-body::-webkit-scrollbar-thumb {
+    background-color: #777;
+    border-radius: 10px;
+}
+/* END FIXED HEADER GRID SETTINGS */
+
+table.dataTable thead th {
+    padding: 10px;
+}
+
+/* Responsive table for small screens */
+@@media screen and (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    table, tr, td {
+        width: 100%;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 50%;
+        position: relative;
+        margin-bottom: 1px;
+    }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 45%;
+            padding-left: 10px;
+            font-weight: bold;
+        }
+
+    tr {
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 100%;
+    }
+}
+
+
+
+/* ====================================================
+Form-related styles
+======================================================*/
+.form-container {
+    font-size: 9pt;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.form-row {
+    margin-bottom: 0 !important;
+}
+
+.form-label {
+    font-size: 9pt;
+    margin-bottom: 0 !important;
+}
+
+.form-input {
+    padding: 1px;
+    font-size: 10px;
+    box-sizing: border-box;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+.zpad {
+    padding-top: 0px !important;
+}
+
+.error {
+    color: red !important;
+    /* font-size: 0.9em;
+        display: block;
+        margin-top: 4px; */
+}
+
+
+
+.btn.white {
+    background: linear-gradient(to bottom, #ffffff 0%, #adadad 100%);
+    color: #000 !important;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 160px; /* equal width */
+    margin: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn.white:hover {
+    background: linear-gradient(to bottom, #f8f8f8, #e6e6e6);
+    border-color: #bbb;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    color: #000;
+}
+
+.btn.white:active {
+    background: linear-gradient(to bottom, #e6e6e6, #dcdcdc);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+.popup-header, .modal-header {
+    border: none !important;
+    box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    background: rgb(206,220,231);
+    background: -moz-linear-gradient(top, rgba(206,220,231,1) 0%, rgba(89,106,114,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    background: linear-gradient(to bottom, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 );
+    color: white !important;
+}
+
+.popup-button {
+    border: none !important;
+    box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    background: rgb(206,220,231);
+    background: -moz-linear-gradient(top, rgba(206,220,231,1) 0%, rgba(89,106,114,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    background: linear-gradient(to bottom, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 );
+    color: white !important;
+    width: 6em !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

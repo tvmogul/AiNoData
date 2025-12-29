@@ -1,0 +1,469 @@
+﻿.table-block {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: transparent;
+    color: black;
+    z-index: 999;
+    margin: 0, auto !important;
+}
+
+/* BEGIN FIXED HEADER GRID SETTINGS */
+.dt-scroll-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.dt-scroll-body::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.dt-scroll-body::-webkit-scrollbar-thumb {
+    background-color: #777;
+    border-radius: 10px;
+}
+/* END FIXED HEADER GRID SETTINGS */
+
+.btn-sm-menu {
+    padding: 5px 5px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid #474747;
+}
+
+table.dataTable th {
+    font-size: .8em !important;
+    font-family: Arial, sans-serif;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+table.dataTable td {
+    font-size: .6em !important;
+}
+
+table.dataTable tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+table.dataTable tr:nth-child(odd) {
+    background-color: #EFF1F1;
+}
+
+/* Change color of paging button text */
+.dataTables_wrapper .dataTables_paginate .page-link {
+    color: black !important;
+}
+
+/* Change the active button text and background color */
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    color: white !important;
+    background-color: black !important;
+}
+
+/* aligns buttons on same line as search */
+div.dt-buttons {
+    float: left !important;
+}
+
+.popup-header, .modal-header {
+    border: none !important;
+    box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    background: rgb(206,220,231);
+    background: -moz-linear-gradient(top, rgba(206,220,231,1) 0%, rgba(89,106,114,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    background: linear-gradient(to bottom, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 );
+    color: white !important;
+}
+
+.popup-button {
+    border: none !important;
+    box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 10px 26px -14px rgba(0, 0, 0, 1);
+    background: rgb(206,220,231);
+    background: -moz-linear-gradient(top, rgba(206,220,231,1) 0%, rgba(89,106,114,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    background: linear-gradient(to bottom, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 );
+    color: white !important;
+    width: 6em !important;
+}
+
+.modal-backdrop {
+    background-color: darkgray;
+}
+
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#fileList, #pdfList {
+    list-style-type: none; /* Optional: Removes default list bullets */
+    margin: 0;
+    padding: 0;
+    max-height: calc(4 * 1.5em); /* Adjust based on row height (e.g., 1.5em per row) */
+    overflow-y: scroll;
+    border: 1px solid #ccc; /* Optional: Adds a border to define the scrollable area */
+}
+
+/* Center alignment for the entire #trans_table div */
+#trans_table {
+    text-align: center !important;
+}
+
+/* Ensure proper table alignment and width */
+#transTable {
+    width: 100% !important;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures alignment between headers and columns */
+    margin: 0 auto; /* Centers the table within its container */
+}
+
+/* Style for table headers */
+#transTable thead th {
+    text-align: center; /* Center header text */
+    padding: 8px; /* Consistent padding */
+    border-bottom: 2px solid #ddd; /* Bottom border for headers */
+    background-color: #f4f4f4; /* Light gray background */
+}
+
+/* Style for table body cells */
+#transTable tbody td {
+    text-align: center; /* Center text in all cells */
+    padding: 8px; /* Consistent padding */
+    border-bottom: 1px solid #ddd; /* Bottom border for data rows */
+}
+
+/* Optional: Highlight rows on hover */
+#transTable tbody tr:hover {
+    background-color: #f9f9f9; /* Light background on hover */
+}
+
+/* Fixed header styling */
+.th-fixed {
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+/* Ensure correct column alignment for dynamically generated rows */
+#transTable tbody tr {
+    vertical-align: middle; /* Ensure content is vertically aligned */
+}
+
+#transTable {
+    width: 100%;
+    table-layout: fixed;
+}
+
+#transTable thead th,
+#transTable tbody td {
+    width: 12.5%; /* Each column takes 12.5% of the table width */
+    text-align: center; /* Center-align text */
+    padding: 8px;
+}
+
+.btn-md-menu {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.show {
+    display: block !important;
+}
+
+.hide {
+    display: none !important;
+}
+
+/* Style the selected row */
+.selected {
+    background-color: #0d6bfd !important;
+    color: white;
+}
+
+#transTable tbody tr {
+    font-size: 1.2em !important;
+}
+
+table.dataTable tbody tr {
+    font-size: 1.2em !important;
+}
+
+.card {
+    width: 600px !important;
+}
+
+#rankOrders, #rankBuys, #rankSales {
+    width: 50px !important;
+}
+
+.row {
+    display: flex;
+    align-items: center; /* ✅ Align everything vertically */
+    justify-content: flex-start; /* ✅ Left alignment */
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.station-box {
+    display: flex;
+    align-items: left;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+}
+
+.station-box .rank-section .demographics-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    height: 36px;
+    padding: 0 4px;
+}
+
+.station-box .rank-section .demographics-section label {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+.station-box img {
+    height: 32px;
+    width: auto;
+}
+
+.rank-box,
+.demographics-box {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to bottom, #0070c0, #003f88);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    width: 240px; /* ✅ Fixed width */
+    box-sizing: border-box;
+    height: 50px; /* Ensure consistent height */
+}
+
+.rank-title,
+.demographics-title {
+    font-weight: bold;
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.rank-box .rank-section,
+.demographics-box .demographics-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-right: 6px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    padding: 2px 4px;
+    min-width: 50px;
+    height: 36px;
+}
+
+.rank-label,
+.demographics-label {
+    font-size: 10px;
+    color: #003f88;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+}
+
+.rank-value,
+.demographics-value {
+    font-size: 14px;
+    color: #cc5500;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+}
+
+.row {
+    display: flex;
+    align-items: center; /* ✅ Align everything vertically */
+    justify-content: flex-start; /* ✅ Left alignment */
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.station-box {
+    display: flex;
+    align-items: flex-start; /* ✅ corrected from 'left' */
+    flex-direction: row; /* ✅ ensure horizontal alignment */
+    gap: 8px; /* ✅ increased gap for spacing */
+    margin: 0;
+    padding: 0;
+}
+
+.station-box, .rank-section, .demographics-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    height: 36px;
+    padding: 0 4px;
+}
+
+.station-box, .rank-section, .demographics-section label {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+.station-box img {
+    height: 32px;
+    width: auto;
+}
+
+.rank-box {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to bottom, #0070c0, #003f88);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    width: 200px; /* ✅ Fixed width */
+    box-sizing: border-box;
+    height: 50px; /* Ensure consistent height */
+}
+
+.demographics-box {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to bottom, #0070c0, #003f88);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    width: 430px; /* ✅ Fixed width */
+    box-sizing: border-box;
+    height: 50px; /* Ensure consistent height */
+}
+
+.rank-title,
+.demographics-title {
+    font-weight: bold;
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.rank-box .rank-section,
+.demographics-box .demographics-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-right: 6px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    padding: 2px 4px;
+    min-width: 50px;
+    height: 36px;
+}
+
+.rank-label,
+.demographics-label {
+    font-size: 10px;
+    /* color: #003f88; */
+    color: red;
+    background-color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+}
+
+.rank-value,
+.demographics-value {
+    font-size: 14px;
+    color: #cc5500;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+}
+
+.demographics-value2 {
+    width: 222px !important;
+    font-size: 14px;
+    color: #cc5500;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Scale up checkbox size */
+.form-check-input {
+    transform: scale(1.4);
+    margin-right: 18px;
+}
+
+.LegendLightGreen {
+    background-color: LightGreen;
+}
+
+.LegendLightSalmon {
+    background-color: LightSalmon;
+}
+
+#stationsTable thead select.LegendLightGreen {
+    background-color: LightGreen !important;
+}
+
+#stationsTable thead select.LegendLightSalmon {
+    background-color: LightSalmon !important;
+}
+
+.LegendRed {
+    background-color: red !important;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+
+.text-end {
+    padding-right: 10px !important;
+}

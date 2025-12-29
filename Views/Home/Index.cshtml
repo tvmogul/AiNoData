@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Free Zero-Training AI™ Demos";
+    var scriptNonce = Html.ScriptNonce();
+}
+
+<style nonce="@scriptNonce">
+    .hero-section {
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+    .demo-card {
+        border-radius: 1rem;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .demo-card h5 {
+            font-weight: 600;
+        }
+
+    .btn-demo {
+        margin-top: 0.25rem; /* FIX: consistent button spacing */
+    }
+</style>
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_llm.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Zero-Training AI™ Demos
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div style="width: 52% !important; margin: 0 auto; text-align: left;padding-bottom: 12px !important;">
+    All examples are original and engineered to showcase real-world 
+    applications of <strong>Zero-Training AI™</strong> that requires 
+    <strong><u>NO</u> data</strong> and <strong><u>NO</u> training</strong>
+    to deliver real-time judgment, compounding decisions,
+    and mathematically stable outputs.
+</div>
+
+<div class="container mt-2">
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="demo-card h-100">
+                <h5 style="white-space: nowrap;">
+                    <img src="/img/title_budget7.gif" alt="Settings" style="height: 40px; vertical-align: top; margin-top: -8px;margin-right: 4px;">
+                    Budget Allocator
+                </h5>
+                <p class="mb-1">
+                    Automatically allocate a starting budget across hundreds of meda buys for Half Hours of
+                    television time for infomerrcials to maximize overall NET PROFIT.
+                </p>
+                <a href="/Budget" class="btn btn-primary btn-sm btn-demo">Try Budget Allocator</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="demo-card h-100">
+                <h5 style="white-space: nowrap;">
+                    <img src="/img/title_drone.gif" alt="Settings" style="height: 40px; vertical-align: top; margin-top: -8px;margin-right: 4px;">
+                    Drone Hover Stabilizer Simulation
+                </h5>
+                <p class="mb-1">
+                    A small quad-drone icon tries to remain level. You press buttons like
+                    Wind Gust, Tilt, and Disturbance, and the drone re-stabilizes instantly.
+                    Visual scaling represents relative control energy, not physical motion.
+                </p>
+                <a href="/Drone" class="btn btn-primary btn-sm btn-demo">Try Drone Hover</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-4 mt-4">
+
+        <div class="col-md-6">
+            <div class="demo-card h-100">
+                <h5 style="white-space: nowrap;">
+                    <img src="/img/title_robot.gif" alt="Settings" style="height: 40px; vertical-align: top; margin-top: -8px;margin-right: 4px;">
+                    Robot Arm Balancer
+                </h5>
+                <p class="mb-1">
+                    A simple animated 2-joint “robot arm” tries to hold a target point.
+                    When user moves the target, the arm smoothly finds a stable configuration.
+                    No “machine learning”—just pure real-time control.
+                </p>
+                <a href="/Robot" class="btn btn-primary btn-sm btn-demo">Try Robot Arm Balancer</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="demo-card h-100">
+                <h5 style="white-space: nowrap;">
+                    <img src="/img/title_llm.gif" alt="Settings" style="height: 40px; vertical-align: top; margin-top: -8px;margin-right: 4px;">
+                    LLM Token Governor (Hallucination Eliminator)
+                </h5>
+                <p class="mb-1">
+                    User types a prompt.
+                    Model outputs 5 candidate sentences. Zero-Training AI™ filters them and
+                    highlights the “safe, consistent, non-hallucinated” one.
+                </p>
+                <a href="/LlmGovernor" class="btn btn-primary btn-sm btn-demo">Try LLM Token Governor</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<br />
+<br />
+
+<div style="text-align: center; margin-top: 24px;">
+    <img src="/img/og-image.png"
+         alt="Zero-Training AI™ Logo"
+         style="width: 600px; height: 315px; display: inline-block;" />
+</div>
+
+<div style="width: 60%; margin: 24px auto 0 auto; text-align: left;">
+    <p>
+        Zero-Training AI™ demonstrates how deterministic decision systems can operate
+        without training data, datasets, or machine learning models. The systems shown
+        here evaluate candidate actions in real time within a defined Decision Space,
+        producing stable and explainable outcomes across multiple domains.
+    </p>
+</div>
+
+
+
+
+<style>
+    .demo-card {
+        background-color: #eef1f4 !important;
+        border-radius: 8px;
+        padding: 6px 8px; /* minimal inside spacing */
+    }
+</style>
