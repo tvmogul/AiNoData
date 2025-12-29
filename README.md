@@ -7,8 +7,8 @@ I am the inventor of Decision Space™, a new mathematical construct for decisio
 
 This repository contains a set of interactive web-based demonstrations showcasing **Zero-Training AI™** — a class of decision and optimization systems that operate through **mathematical evaluation at runtime**, rather than statistical learning from data.
 
-At the core of this work is my creation of a **new mathematical framework for decision-making**, including the formalization of a **Decision Space**: a structured space in which candidate actions or states are evaluated, scored, and selected based on deterministic cost, energy, and risk functions.  
-Decisions emerge from direct evaluation within this Decision Space, not from learned weights, probabilities, or historical examples.
+At the core of this work is my creation of a **new mathematical framework for decision-making**, including the formalization of a **Decision Space™**: a structured space in which candidate actions or states are evaluated, scored, and selected based on deterministic cost, energy, and risk functions.  
+Decisions emerge from direct evaluation within this Decision Space™, not from learned weights, probabilities, or historical examples.
 
 These demos are intentionally simple, visual, and self-contained, designed to show how certain classes of problems can be solved without training, models, or inference pipelines.
 
