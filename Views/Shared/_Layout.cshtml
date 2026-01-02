@@ -21,6 +21,16 @@
 
     <title>Ai No Data – Zero-Training AI™ Interactive Demos</title>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NJWKFDDZ0" nonce="@scriptNonce"></script>
+    <script nonce="@scriptNonce">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-3NJWKFDDZ0');
+    </script>
+
     <!-- ===================== SEO DESCRIPTION ===================== -->
     <meta name="description"
           content="Zero-Training AI™ interactive demos showing deterministic, real-time decision systems that operate without training data or machine learning. Includes budget allocation, control stabilization, robotic balancing, and LLM output governance." />
@@ -148,18 +158,42 @@
                                 </li>
                             </ul>
                         </li>
-                    @* <li class="nav-item" style="text-align: center !important; padding-top: 12px !important;">
-                        <a class="nav-link text-dark hvr-grow external-link"
-                            href="https://ainetprofit.com/manual"
-                            onclick="sessionStorage.setItem('userInteracted', 'true'); return false;">
-                            Manual
-                        </a>
-                    </li> *@
+                        <!-- Press -->
+                        <li class="nav-item dropdown position-relative" style="text-align: center !important; padding-top: 12px !important;">
+                            <a style="background-color: transparent !important;"
+                               class="nav-link dropdown-toggle text-dark hvr-grow" href="#" role="button"
+                               data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                About
+                            </a>
+                            <ul class="dropdown-menu">
+                                @* <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow external-link" href="https://www.youtube.com/watch?v=1Tv6XjeeVqM">People Are Talking</a>
+                                </li> *@
+                                @* <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow external-link" href="https://ainetprofit.com/">AI Accounting with AiNetProfit®</a>
+                                </li> *@
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow external-link" href="https://www.youtube.com/watch?v=92eR46ZbMAg">Clive James with Bill SerGio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow external-link" href="https://www.youtube.com/watch?v=QrfOoDxoZDM">Bill SerGio on Kelly & Company</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item hvr-grow external-link" href="https://www.youtube.com/watch?v=5CYS0Ti9YC0&t=156s">Bill SerGio, The Infomercial King™</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" style="text-align: center !important; padding-top: 12px !important;">
+                            <a class="nav-link text-dark hvr-grow external-link"
+                               href="https://ainetprofit.com/Patent">
+                                Zero-Training AI™
+                            </a>
+                        </li>
                     </ul>
                     <!-- Right-aligned Ad item -->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item" style="text-align: right !important; padding: 12px 12px 0px 0px !important;">
-                            <a class="nav-link" href="https://www.youtube.com/watch?v=5CYS0Ti9YC0" target="_blank">
+                            <a class="nav-link" href="https://www.youtube.com/watch?v=5CYS0Ti9YC0">
                                 <img src="/img/youtube.png" style="width: 100px;height: auto;" />
                             </a>
                         </li>
@@ -292,19 +326,13 @@
             document.querySelectorAll("a.external-link").forEach(link => {
                 link.addEventListener("click", function (e) {
                     e.preventDefault();
+                    e.stopPropagation();
 
                     const url = link.getAttribute("href");
                     if (!url) return;
 
-                    // ✅ MUST happen immediately inside click
-                    const win = window.open(url, "_blank", "noopener");
+                    window.open(url, "_blank", "noopener,noreferrer");
 
-                    // Optional safety: if popup blocked, fall back
-                    if (!win) {
-                        location.href = url;
-                    }
-
-                    // 🔹 Logging can happen AFTER
                     fetch("/External/Open", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
