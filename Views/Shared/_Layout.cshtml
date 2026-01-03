@@ -204,7 +204,7 @@
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 zpad">
             @RenderBody()
             @await Html.PartialAsync("_Disclaimer")
             @await Html.PartialAsync("_advice")
@@ -213,6 +213,12 @@
             @await Html.PartialAsync("_Regulator")
             @await Html.PartialAsync("_Warranties")
             <br /><br /><br />
+        </main>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3" zpad>
+            @RenderBody()
         </main>
     </div>
 
