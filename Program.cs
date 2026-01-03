@@ -50,6 +50,7 @@ namespace AiNoData
                     {
                         options.AddPolicy("AllowCorsPolicy", builder =>
                         {
+                            // !! For testing only: allow all origins
                             builder.SetIsOriginAllowed(_ => true)
                                    .AllowAnyHeader()
                                    .AllowAnyMethod()
@@ -134,21 +135,6 @@ namespace AiNoData
                         ContentTypeProvider = defaultFileProvider
                     });
 
-                    // Raw JSON logger middleware
-                    app.Use(async (context, next) =>
-                    {
-                        if (context.Request.Path == "/Transactions/Import")
-                        {
-                            context.Request.EnableBuffering();
-                            using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
-                            var body = await reader.ReadToEndAsync();
-                            Console.WriteLine("RAW JSON: " + body);
-                            context.Request.Body.Position = 0;
-                        }
-
-                        await next();
-                    });
-
                     app.UseRouting();
 
                     app.Use(async (context, next) =>
@@ -194,6 +180,7 @@ namespace AiNoData
                                      $"frame-ancestors 'self'; " +
                                      $"form-action 'self' {scriptSrcDomains} https://localhost:5001;";
 
+                        // Disable CSP for now to avoid issues with various resources
                         context.Response.Headers["Content-Security-Policy"] = "";
 
                         await next();
