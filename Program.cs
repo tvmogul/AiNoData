@@ -127,6 +127,8 @@ namespace AiNoData
                         app.UseDeveloperExceptionPage();
                     }
 
+                    app.UseDefaultFiles();
+
                     app.UseStaticFiles(new StaticFileOptions
                     {
                         ContentTypeProvider = defaultFileProvider
@@ -182,7 +184,7 @@ namespace AiNoData
                         string scriptSrcDomains = string.Join(" ", domains);
 
                         string csp = $"default-src 'self'; " +
-                                     $"script-src 'self' 'nonce-{scriptSrcDomains}' 'strict-dynamic' {scriptSrcDomains}; " +
+                                     $"script-src 'self' 'nonce-{scriptNonce}' 'strict-dynamic' {scriptSrcDomains}; " +
                                      $"font-src 'self' https://fonts.gstatic.com {scriptSrcDomains}; " +
                                      $"img-src 'self' data: blob: {scriptSrcDomains}; " +
                                      $"object-src 'none'; " +
