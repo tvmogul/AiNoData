@@ -68,6 +68,9 @@
     <Content Update="wwwroot\img\budget-allocation-1.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\img\budget.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\img\buncheck.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
