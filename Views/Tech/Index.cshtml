@@ -1,0 +1,524 @@
+﻿@{
+    ViewData["Title"] = "Zero-Training AI™ Coding";
+    var scriptNonce = Html.ScriptNonce();
+}
+
+<link type="text/css" rel="stylesheet" href="https://codeproject.global.ssl.fastly.net/App_Themes/CodeProject/Css/Main.min.css">
+<style>
+    body, p, td {
+        font-family: Verdana, Arial, Helvetica, sans-serif !important;
+        font-size: 10pt !important;
+    }
+
+    h1, h2, h3, h4, h5 {
+        color: #ff9900 !important;
+        font-weight: bold !important;
+    }
+
+    h2 {
+        font-size: 13pt !important;
+    }
+
+    h3 {
+        font-size: 12pt !important;
+    }
+
+    h4 {
+        font-size: 10pt !important;
+        color: black !important;
+    }
+
+    pre {
+        background-color: #FBEDBB !important;
+        font-family: "Courier New", Courier, mono !important;
+        white-space: pre !important;
+    }
+
+    code {
+        color: #990000 !important;
+        font-family: "Courier New", Courier, mono !important;
+    }
+</style>
+
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/title_llm.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Zero-Training AI™ in C#: Intelligence Without Data, Training, or Models
+            </h2>
+        </div>
+    </div>
+</div>
+
+<section bgcolor="#FFFFFF" color="#000000" style="margin: 0px 260px 0 260px !important;">
+
+
+    <p>
+        Additional information, live demos, and source code are available here:
+    </p>
+
+    <ul>
+        <li><strong>GitHub Project:</strong> <a href="https://github.com/tvmogul/AiNoData" target="_blank">https://github.com/tvmogul/AiNoData</a></li>
+        <li><strong>Demo Website:</strong> <a href="https://ainodata.com" target="_blank">https://ainodata.com</a></li>
+        <li><strong>Main Website:</strong> <a href="https://ainetprofit.com/Patent" target="_blank">https://ainetprofit.com/Patent</a></li>
+    </ul>
+
+    <img src="/img/budget.png" alt="" style="width:600px !important; height:auto !important">
+
+    <h2>Introduction</h2>
+
+    <p>
+        The image above is intentionally provocative. It shows a budget simulation that begins with
+        $1,000 and, over the course of a simulated year, grows to a very large number.
+        This article is <strong>NOT</strong> about getting rich, media buying tactics, or financial advice.
+        It is about a different way of building intelligent decision-making systems.
+    </p>
+
+    <p>
+        Check out the <strong>source code</strong> in the GitHub project linked above to see how the code works.
+    </p>
+
+    <p>
+        The image comes from one of four demos with source code in the GitHub project above built on an
+        AI framework I created called <strong>Zero-Training AI™</strong>. The purpose of the demo is not
+        to suggest that such outcomes are typical or realistic in practice, but to make a point very clearly:
+        <strong>the system is making the best decisions without being trained on historical data</strong>.
+    </p>
+
+    <p>
+        Most modern AI systems rely on training — collecting data, fitting parameters,
+        and retraining as conditions change. <strong>Zero-Training AI™</strong> takes a fundamentally different approach.
+        Instead of learning from past examples, it computes decisions directly from structure,
+        constraints, and objectives defined by the problem itself.
+    </p>
+
+    <p>
+        This article introduces that framework, explains how one of the demos works,
+        and shows how the same approach applies far beyond media buying.
+    </p>
+
+
+    <h2>Background</h2>
+
+    <p>
+        My academic background is in advanced mathematics and theoretical physics, followed by medical school.
+        After medical school and clinical training, I founded and operated a company that sold medical supplements
+        via national television advertising.
+    </p>
+
+    <p>
+        In that business, media buying decisions had to be made continuously under uncertainty:
+        budgets were limited, outcomes varied by station, and conditions changed week to week.
+        I experimented with neural networks I wrote and trained models to optimize decisions.
+        They worked — but they were slow to adapt, expensive to maintain, and opaque.
+    </p>
+
+    <p>
+        That experience raised a simple question: <em>why does decision-making require training at all?</em>
+        In many real-world systems, the governing constraints and objectives are already known.
+        Physics does <strong>NOT</strong> train on past trajectories to decide how a system should evolve;
+        it follows equations derived from structure.
+    </p>
+
+    <p>
+        <strong>Zero-Training AI™</strong> grew out of that observation.
+        Instead of fitting a model to historical data, the framework defines a structured
+        <strong>Decision Space™</strong> governed by explicit mathematical relationships.
+        Decisions emerge by resolving tradeoffs and constraints directly, rather than by inference.
+    </p>
+
+    <p>
+        In this framework, intelligence is not learned from examples.
+        It is produced through deterministic computation.
+        Once the structure of the problem is defined, outcomes follow from mathematics itself,
+        without retraining, recalibration, or statistical approximation.
+    </p>
+
+    <p>
+        I call this mathematical domain I invented <strong>Decision Space™</strong> but is not
+        a dataset, model, or parameter set.
+        It is an abstract, structured space in which every point represents a valid candidate decision
+        subject to known constraints, limits, and priorities.
+    </p>
+
+    <p>
+        Rather than learning how to act from historical examples,
+        <strong>Zero-Training AI™</strong> operates by evolving a decision state directly within <strong>Decision Space™</strong>.
+        Movement through this space is governed entirely by explicit mathematical structure —
+        objectives to optimize, constraints to satisfy, and penalties to avoid —
+        all defined up front by the problem itself.
+    </p>
+
+    <p>
+        Because <strong>Decision Space™</strong> is constructed from known rules instead of learned correlations,
+        the system does not require training, retraining, or probabilistic inference.
+        When conditions change, the governing equations change, and the resolved decision state
+        changes immediately as a consequence of the mathematics.
+    </p>
+
+
+    <h2>Why This Is Artificial Intelligence</h2>
+
+    <p>
+        This system <strong>is</strong> artificial intelligence by any rigorous definition.
+        It autonomously evaluates alternatives, resolves competing objectives, enforces constraints,
+        and adapts its decisions in real time as conditions change.
+        It does so without human intervention, fixed rules, or pre-scripted outcomes.
+    </p>
+
+    <p>
+        Artificial intelligence is not defined by training data, neural networks, or statistics.
+        It is defined by <strong>autonomous decision-making</strong>.
+        <strong>Zero-Training AI™</strong> continuously analyzes a high-dimensional <strong>Decision Space™</strong>,
+        selects actions that optimize objectives, and responds intelligently to new inputs.
+        The absence of training data does <strong><u>not</u></strong> disqualify it from being AI;
+        it removes an unnecessary dependency.
+    </p>
+
+    <p>
+        In fact, many classical AI systems predate modern machine learning and operate
+        entirely through reasoning, optimization, and constraint satisfaction.
+        <strong>Zero-Training AI™</strong> belongs to this lineage — an intelligence that emerges from structure,
+        not from accumulated examples.
+    </p>
+
+
+    <h2>This Is <strong><u>NOT</u></strong> an Algorithm</h2>
+
+    <p>
+        <strong>Zero-Training AI™</strong> is <strong>not</strong> an algorithm.
+        It is not a sequence of procedural steps that transform inputs into outputs.
+        There is no fixed recipe, rule chain, decision tree, or flowchart that determines behavior.
+    </p>
+
+    <p>
+        Instead, the system defines a mathematical decision landscape.
+        Within that landscape, outcomes are resolved by minimizing constraint violations
+        and optimizing objectives.
+        The computation does not “execute instructions” in the traditional sense;
+        it <strong>settles</strong> into a decision state dictated by the governing structure of the problem.
+    </p>
+
+    <p>
+        This distinction matters.
+        Algorithms prescribe <em>how</em> to reach an answer.
+        <strong>Zero-Training AI™</strong> defines <em>what must be true</em>, and lets mathematics determine the result.
+        The intelligence is not in the steps — it is in the structure.
+    </p>
+
+
+    <h2>Using the Code</h2>
+
+    <p>
+        The demo code accompanying this article is implemented as a standard .NET web application.
+        It is intentionally compact and readable, not because the underlying ideas are simple,
+        but because the framework expresses decision-making through structure rather than procedures.
+    </p>
+
+    <p>
+        At a high level, the system defines:
+    </p>
+
+    <ul>
+        <li>A set of decision variables (<em>allocation weights</em>)</li>
+        <li>Explicit constraints (budget conservation, limits, feasibility)</li>
+        <li>An objective structure (profitability, stability, persistence)</li>
+        <li>A deterministic evolution rule that resolves decisions in real time</li>
+    </ul>
+
+    <p>
+        There is no training phase, no historical data, no model fitting, and no learned parameters.
+        Each simulation step recomputes the decision state directly from the current conditions.
+    </p>
+
+    <p>
+        Conceptually, the engine operates by constructing a mathematical decision landscape
+        and resolving a state within that landscape.
+        In simplified form, the system evaluates a function of the form:
+    </p>
+
+<pre>
+&nbsp;
+&nbsp; F(q, p) = (1/2) Σ pᵢ²  −  α Σ (Vᵢ · qᵢ)  +  λ ( Σ qᵢ − 1 )²
+&nbsp;
+</pre>
+
+    <p>
+        Where <code>q</code> represents decision weights, <code>p</code> represents internal momentum,
+        <code>V</code> encodes value signals derived from the environment,
+        and <code>α</code> and <code>λ</code> control reward strength and constraint enforcement.
+    </p>
+
+    <ul>
+        <li>
+            <strong><code>V<sub>i</sub></code></strong> represents the realized pull ratio of channel <em>i</em> —
+            a measured return per dollar that remains approximately stable over a finite time window
+        </li>
+        <li>
+            <strong><code>q<sub>i</sub></code></strong> represents the fraction of capital allocated to that channel
+        </li>
+        <li>
+            The optimization does <strong>not</strong> predict <code>V<sub>i</sub></code>;
+            it assumes short-term repeatability based on observed outcomes
+        </li>
+        <li>
+            Minimizing <strong><code>F(q, p)</code></strong> reallocates capital toward higher-return channels
+            while enforcing budget conservation
+        </li>
+        <li>
+            No probability distributions, training data, or learned parameters are required —
+            only realized returns and explicit constraints
+        </li>
+    </ul>
+
+
+    <p>
+        <strong>This expression is intentionally incomplete.</strong> The novelty of <strong>Zero-Training AI™</strong> is
+        not the existence of an objective function,
+        but how such functions are constructed, coupled, and resolved dynamically
+        within what I call <strong>Decision Space™</strong>.
+        Those details are part of a <strong>Patent Pending</strong> framework
+        and are demonstrated behaviorally rather than disclosed procedurally.
+    </p>
+
+    <p>
+        In practice, the system evolves its internal state to reduce constraint violations
+        and favor higher-value outcomes simultaneously.
+        The result is a smooth, stable reallocation of resources that adapts immediately
+        when inputs change — without retraining, recalibration, or statistical inference.
+    </p>
+
+<pre>
+var result = allocator.RunSimulation(
+    initialBudget,
+    months,
+    newStationsPerMonth,
+    cancellationRate,
+    showType,
+    monthlyPrice,
+    yearlyPrice,
+    timeSteps
+);
+</pre>
+
+    <p>
+        Advertising decisions are often treated as inherently unpredictable.
+        In practice, response behavior is locally stable.
+        When the same creative is purchased on the same outlet, the realized pull ratio
+        (return per dollar of media) is approximately repeatable over a finite time window.
+        This repeatability is sufficient to support deterministic optimization.
+    </p>
+
+    <p>
+        Rather than predicting outcomes, the system reallocates capital based on realized returns.
+        Given stable response ratios and known constraints, optimal allocation becomes a
+        deterministic decision problem rather than a probabilistic inference problem.
+    </p>
+
+    <p>
+        The media-buying example exists to make the behavior visible and intuitive.
+        The same engine can be applied to control systems, resource allocation,
+        decision governance, robotics, or any domain where constraints and objectives
+        are known and deterministic behavior is required.
+    </p>
+
+    <p>
+        The purpose of the demo is not to reveal the full mathematical machinery,
+        but to show that intelligent decision-making can emerge directly from structure —
+        without training data, learned models, or opaque inference layers.
+    </p>
+
+
+
+    <h2>Additional Demonstration Applications Included</h2>
+
+    <p>
+        The demo project accompanying this article contains several additional, self-contained
+        demonstrations that apply the same <strong>Zero-Training AI™</strong> decision framework
+        to very different problem domains. Each demo is intentionally simple in presentation
+        while illustrating a core property of the framework:
+        <strong>deterministic, real-time decision resolution without training data or learned models</strong>.
+    </p>
+
+    <p>
+        Together, these demos show that the same mathematical decision framework can be applied
+        across <strong>allocation, control, governance, and stabilization problems</strong>, all without
+        training data, probabilistic inference, or learned representations.
+    </p>
+
+    <h3>LLM Token Governor (Hallucination Control Demo)</h3>
+
+    <p>
+        In this demo, the user enters a natural-language prompt.
+        A language model produces multiple candidate sentence continuations for the same prompt.
+        These candidates are <strong>not</strong> generated or modified by Zero-Training AI™.
+    </p>
+
+    <p>
+        Instead, <strong>Zero-Training AI™</strong> operates as a deterministic <em>governance layer</em> on top of the
+        model output. Each candidate is evaluated within a structured <strong>Decision Space™</strong> that encodes
+        consistency, constraint compliance, and safety criteria. The system then selects and highlights
+        the candidate that best satisfies those constraints.
+    </p>
+
+    <p>
+        This demonstrates how <strong>Zero-Training AI™</strong> can be used to <strong>govern generative models</strong>—
+        reducing hallucination risk and enforcing consistency—without retraining, fine-tuning,
+        or altering the underlying model.
+    </p>
+
+    <h3>Drone Hover Stabilizer Simulation</h3>
+
+    <p>
+        This demo presents a simplified visual model of a quad-drone attempting to maintain a stable
+        hover orientation. The user can introduce disturbances such as simulated wind gusts or
+        external torque.
+    </p>
+
+    <p>
+        <img src="/img/zerotrainingai.png" alt="" style="width: 560px !important;height: auto !important;" />
+    </p>
+    <br />
+
+    <p>
+        The system responds by deterministically resolving a new stable control state in real time.
+        The visual representation shows orientation changes and relative control energy, not a
+        physical flight simulation.
+    </p>
+
+    <p>
+        This example illustrates how <strong>Zero-Training AI™</strong> can function as a
+        <strong>real-time control and stabilization system</strong>, computing corrective actions directly
+        from structure and constraints rather than from learned dynamics or historical flight data.
+    </p>
+
+    <h3>Robot Arm Balancer</h3>
+
+    <p>
+        This demo features a simple two-joint robotic arm tasked with maintaining or reaching a
+        target position. When the user moves the target, the arm smoothly transitions to a new
+        stable configuration.
+    </p>
+
+    <p>
+        No inverse-kinematics solver is trained, and no machine-learning model is involved.
+        The arm’s configuration is resolved deterministically by minimizing constraint violations
+        within a structured <strong>Decision Space™</strong>.
+    </p>
+
+    <p>
+        This demonstrates how <strong>Zero-Training AI™</strong> can be applied to
+        <strong>mechanical control and coordination problems</strong>, where stability, smooth motion,
+        and explainability are more important than pattern recognition.
+    </p>
+
+
+    <p>
+        Beyond mechanical control, the same decision framework applies to
+        <strong>robot companions and human–robot interaction</strong>.
+        In this context, <strong>Zero-Training AI™</strong> does not generate language or emotions;
+        instead, it operates as a real-time <em>decision governor</em> that selects
+        responses based on conversational constraints, consistency, intent, and social context.
+    </p>
+
+    <p>
+        Rather than predicting dialogue from training data, the system resolves
+        each conversational turn as a stable decision state within a structured
+        decision space. This allows a robot companion to respond to a human
+        in a manner that is coherent, context-aware, and responsive to the full
+        range of human social cues and situational interpersonal context — much
+        like another human — without requiring conversational training, large
+        language models, or probabilistic inference.
+    </p>
+
+
+
+
+    <h2>Points of Interest</h2>
+
+    <p>
+        Several things may stand out to experienced developers:
+    </p>
+
+    <ul>
+        <li>No datasets are loaded or trained against</li>
+        <li>No probabilistic inference is used</li>
+        <li>Behavior changes immediately when inputs change</li>
+        <li>The system remains explainable at every step</li>
+    </ul>
+
+    <p>
+        One interesting discovery during development was that many problems commonly handed
+        to machine-learning models behave more predictably — and more robustly —
+        when expressed as constrained mathematical systems instead.
+    </p>
+
+    <p>
+        The dramatic numbers in the budget demo are not the point.
+        They exist solely to make the system’s behavior visible and intuitive.
+        In real-world deployments, successful half-hour infomercial campaigns can operate at
+        <strong>much higher revenue levels</strong> than those shown in the budget demo.
+        The absolute magnitude is intentionally constrained in this demo so that the dynamics of the
+        decision process can be inspected clearly.
+        The underlying mathematics behaves identically at larger scales — only the numerical
+        magnitude changes, not the structure or behavior of the system.
+        The real takeaway is that decision-making does not have to be statistical, and intelligence
+        does not have to be trained.
+    </p>
+
+
+    <h2>Future Direction</h2>
+
+    <p>
+        <strong>Zero-Training AI™</strong> is not a finished product or a single-purpose solution.
+        It represents a foundational decision-making framework that can be applied
+        across many domains where constraints, objectives, and real-time responsiveness matter.
+    </p>
+
+    <p>
+        While this article demonstrates the framework using a media allocation scenario,
+        the same mathematical structure applies to:
+    </p>
+
+    <ul>
+        <li>Real-time control systems (motors, robotics, stabilization)</li>
+        <li>Resource allocation and scheduling problems</li>
+        <li>Decision-governance layers for AI systems</li>
+        <li>Financial, operational, and logistical optimization</li>
+        <li>Medical, pharmaceutical, and regulatory decision environments</li>
+    </ul>
+
+    <p>
+        Because <strong>Zero-Training AI™</strong> operates directly on structure rather than data,
+        it is particularly well suited for environments where deterministic behavior,
+        auditability, and immediate response are required — and where training-based
+        approaches introduce cost, delay, or unacceptable risk.
+    </p>
+
+    <h2>Conclusion</h2>
+
+    <p>
+        Ongoing work focuses on expanding the framework to additional domains,
+        refining the mathematical formulation, and demonstrating how
+        deterministic decision systems can replace training-centric AI
+        to achieve superior performance in a wide range of real-world applications.
+    </p>
+
+    <p>
+        This work is intended to encourage exploration of deterministic, structure-driven intelligence
+        and how such approaches can be applied to a wide range of technical decision
+        and control problems where predictability, explainability, and real-time response matter.
+    </p>
+
+</section>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
