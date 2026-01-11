@@ -7,6 +7,8 @@ My name is **Bill SerGio** and I am the inventor of **Decision Space™**, a new
 
 **Four deterministic, real-time decision systems that do not use training data, datasets, or machine learning.**
 
+![AiNoData](https://www.youtube.com/watch?v=7_3RRghur1k)
+
 This repository contains a set of interactive web-based demonstrations showcasing **Zero-Training AI™** — a class of decision and optimization systems that operate through **mathematical evaluation at runtime**, rather than statistical learning from data.
 
 At the core of this work is my creation of a **new mathematical framework for decision-making**, including the formalization of a **Decision Space™**: a structured space in which candidate actions or states are evaluated, scored, and selected based on deterministic cost, energy, and risk functions.  
