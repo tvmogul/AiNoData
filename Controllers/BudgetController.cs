@@ -23,6 +23,7 @@ namespace AiNoData.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Index(BudgetAllocatorViewModel model)
         {
             if (model.TotalBudget <= 0)

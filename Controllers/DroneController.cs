@@ -30,6 +30,7 @@ namespace AiNoData.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Index(DroneHoverViewModel model)
         {
             if (model.TimeSteps <= 0)
