@@ -121,6 +121,14 @@ namespace AiNoData
                     defaultFileProvider.Mappings[".xml"] = "application/xml";
                     defaultFileProvider.Mappings[".csv"] = "text/csv";
                     defaultFileProvider.Mappings[".txt"] = "text/plain";
+                    defaultFileProvider.Mappings[".woff"] = "font/woff";
+                    defaultFileProvider.Mappings[".woff2"] = "font/woff2";
+                    defaultFileProvider.Mappings[".ttf"] = "font/ttf";
+                    defaultFileProvider.Mappings[".otf"] = "font/otf";
+                    defaultFileProvider.Mappings[".eot"] = "application/vnd.ms-fontobject";
+                    defaultFileProvider.Mappings[".wasm"] = "application/wasm";
+                    defaultFileProvider.Mappings[".webmanifest"] = "application/manifest+json";
+                    defaultFileProvider.Mappings[".map"] = "application/json";
 
                     // ?? For testing in Development: show detailed exception pages (helps surface inner exceptions in Electron.NET)
                     if (env.IsDevelopment())
@@ -132,7 +140,9 @@ namespace AiNoData
 
                     app.UseStaticFiles(new StaticFileOptions
                     {
-                        ContentTypeProvider = defaultFileProvider
+                        ContentTypeProvider = defaultFileProvider,
+                        ServeUnknownFileTypes = true,
+                        DefaultContentType = "application/octet-stream"
                     });
 
                     app.UseRouting();
@@ -181,7 +191,9 @@ namespace AiNoData
                                      $"form-action 'self' {scriptSrcDomains} https://localhost:5001;";
 
                         // Disable CSP for now to avoid issues with various resources
-                        context.Response.Headers["Content-Security-Policy"] = "";
+                        context.Response.Headers.Remove("Content-Security-Policy");
+                        context.Response.Headers.Remove("X-Content-Security-Policy");
+                        context.Response.Headers.Remove("X-WebKit-CSP");
 
                         await next();
                     });
@@ -191,6 +203,7 @@ namespace AiNoData
                     app.UseEndpoints(endpoints =>
                     {
                         endpoints.MapControllerRoute("default", "{controller=Tech}/{action=Index}/{id?}");
+                        endpoints.MapFallbackToController("Index", "Tech");
                     });
 
                 });
