@@ -20,19 +20,70 @@
 
 <div class="container mt-4">
 
-    <p class="text-muted mb-3">
-        A simple animated 2-joint robot arm attempts to hold a target point.
-        When the target moves, the arm smoothly finds a new stable configuration.
-        No machine learning — pure real-time control.
-    </p>
+    <div class="row g-3 align-items-start">
 
-    <canvas id="robotCanvas" width="500" height="400"
-            style="border:1px solid #ccc; background:#ffffff; display:block;">
-    </canvas>
+        <div class="col-12 col-lg-6">
+            <p class="text-muted mb-3">
+                A simple animated 2-joint robot arm attempts to hold a target point.
+                When the target moves, the arm smoothly finds a new stable configuration.
+                No machine learning — pure real-time control.
+            </p>
+            <canvas id="robotCanvas" width="500" height="400"
+                    style="border:1px solid #ccc; background:#ffffff; display:block; max-width:100%; height:auto;">
+            </canvas>
 
-    <p class="mt-2 text-muted" style="font-size:0.9rem;">
-        Drag anywhere inside the canvas to move the target.
-    </p>
+            <p class="mt-2 text-muted" style="font-size:0.9rem;">
+                Drag anywhere inside the canvas to move the target.
+            </p>
+        </div>
+
+        <div class="col-12 col-lg-6">
+
+            <section>
+                <div class="demo-panel" style="margin-bottom: 25px;">
+                    <h2>Make Robot Companions Human</h2>
+                    <div style="background: #f3f3f3; border-radius: 10px; padding: 18px; margin-top: 10px;">
+                        <div style="font-size: .7em !important;">
+                            Zero-Training AI™ can make a robot companion act more human by choosing
+                            actions from structure and constraints instead of memorizing patterns
+                            from past data. In this setup, the robot treats every moment as a real-time
+                            decision: “What should I do next?” It computes the best move by balancing
+                            competing forces—comforting the user vs. giving space, being helpful vs.
+                            not interrupting, showing emotion vs. staying calm—while obeying hard rules
+                            like safety, privacy, and physical limits. That produces behavior that feels
+                            human because it’s context-sensitive and self-consistent: the robot continuously
+                            resolves tradeoffs (tone, timing, distance, gaze, gestures, word choice) to
+                            minimize “awkwardness” and constraint violations, so it responds naturally even
+                            in situations it’s never “seen” before.
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <div style="border:1px solid #ccc; background:#000; border-radius: 6px; overflow:hidden;">
+                <div style="position: relative; width: 100%; padding-top: 56.25%;">
+                    <iframe src="https://www.youtube.com/embed/7_3RRghur1k"
+                            title="YouTube video player"
+                            style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <p class="mt-2 text-muted" style="font-size:0.9rem;">
+                I already applied Zero-Training AI™ to a robot companion prototype, 
+                and it made a huge difference in how natural and engaging the interactions felt. 
+                The robot could adapt its behavior in real-time to the user’s mood and context, 
+                without needing any pre-programmed scripts or training data. It was like the robot 
+                had a built-in sense of social intuition, allowing it to comfort, entertain, and 
+                assist the user in a way that felt genuinely human.
+            </p>
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -144,10 +195,3 @@
     </script>
 
 }
-
-
-
-
-
-
-
