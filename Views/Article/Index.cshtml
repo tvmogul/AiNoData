@@ -1,0 +1,99 @@
+﻿@using AiNoData
+@using AiNoData.Models
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using System.Text.Json
+@using Microsoft.JSInterop
+@using Newtonsoft.Json
+@*@inject IJSRuntime JSRuntime*@
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Collections.Generic
+
+@{
+    ViewData["Title"] = "Articles";
+    var scriptNonce = Html.ScriptNonce();
+    //var styleNonce = Html.StyleNonce();
+}
+
+<div style="padding-top: 40px !important;">
+    &nbsp;
+</div>
+<div style="text-align: center; margin: 0 auto; max-width: 100%;">
+    <header style="text-align: center; margin: 0 auto;">
+        <h1 style="font-size: 2em; word-wrap: break-word;">Celebrity Spotlights</h1>
+        <div class="name" style="font-weight: bold; font-size: 1.5em;">
+            Bill SerGio, <i>The Infomercial King</i>™
+        </div>
+        <div style="white-space: nowrap;">
+            Weekly Digest - <span id="currentDate"></span>
+        </div>
+    </header>
+    <div style="margin-bottom: 20px; text-align: center; margin: 0 auto;">
+        <img src="~/img/article_01.jpg" alt="Article Image 1" usemap="#Map" style="max-width: 100%; height: auto;">
+    </div>
+    <div style="margin-bottom: 20px; text-align: center; margin: 0 auto;">
+        <img src="~/img/article_02.jpg" alt="Article Image 2" usemap="#Map" style="max-width: 100%; height: auto;">
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div style="color: white !important;">
+    Bill SerGio, William SerGio, William (Bill) SerGio.
+    Hawking makeup, memory tapes and a host of other products, brand-name stars are cashing in with show-length commercials disguised as entertainment
+    ON FIRST VIEWING, AN INFOMERCIAL may seem as strange a beast as, say, a game-show miniseries.
+    But these half hour-long hybrids of advertising and programming, already familiar to late-night insomniacs, are popping up more frequently in daytime hours on cable and broadcast channels, usually as ersatz talk shows or newsmagazines.
+    Stars are singing hosannas to finance plans, car wax, crazy kitchen gadgets, and weight-loss systems.  Why?  Mostly, it's not to bolster sagging careers but, as an infomercial might put it, "to maximize hidden earning potential."
+    Infomercials were born in 1984, when the government ended its 12-minute-per-hour limit on TV ads.  Six years later,
+    the "shows"(for which the infomercialist buys  the  airtime)  were raking in over
+    $500 million  a year  in  sales  for  one infomercialist, William Sergio, a major producer of celebrity infomercials.
+    William Sergio is the multi-millionaire marketing genius who is the leading writer, producer and director of celebrity infomercials airing on national television that are raking in the big bucks.
+    Sergio's super successful celebrity infomercials have been featured everywhere from PrimeTime with Diane Sawyer to the Johnny Carson Show.<br /><br />
+
+    Very Big Business By Harvey S. Gold
+    Bill SerGio gets celebrities to sell an amazing variety of products on TV
+    Infomercials are now a part of main-
+    stream television. And Bill SerGio
+    is the Infomercial King, a handsome, multi-millionaire, marketing wizard who made a large fortune in television mail order.  Instead of practicing medicine after finishing medical school, SerGio
+    began selling products that he invented
+    on television.  In the last few years his shows grossed over $1 billion in sales. (That’s billion with a letter “B”).
+    SerGio Leads Industry
+    On any day you can see SerGio’s work on TV from infomercials to big sports specials. SerGio is the leading writer, producer and director of successful celebrity infomercials.
+    SerGio put Bill Bixby on TV selling computers and that turned out to be the most successful infomercial ever produced.
+    SerGio has produced many extremely successful infomercials with celebrities including Linda Gray, Mickey Rooney, James Brolin, Margaux Hemingway et al.
+    SerGio put Chad Everett as host of his super successful impotency infomercial selling a sexual stimulant called Oncor. 	    SerGio created the very successful show selling a tooth whitener called OxyWhite that SerGio invented. SerGio was the actual inventor who created the tooth whitener craze in America.
+    SerGio put game show host, Pat Finn, on TV selling SerGio’s Memory course, and another super successful infomercial for Speed Math that SerGio invented that taught kids to do math faster in their heads than using a calculator.
+    SerGio created an infomercial called I Can't Believe It's Not Hair selling a hair spray SerGio formulated for covering bald spots. SerGio put the Founder and CEO of Quicken, Scott Cook, on an infomercial to promote Quicken Software.
+    SerGio did a sports show with actor Gary Busey for speed boat racing. SerGio has invented and marketed hundreds of products such as Grapefruit Diet, Mood Ring, Weed Whacker (spinning wire that cuts grass), Starch Blockers, Fat Blocker, Shrink Away (rubber waist band to sweat away fat), Sleep Away (pill to lose weight while you sleep), The Kitty Toilet Trainer (it teaches your cat to use the toilet), The Cellulite Eliminator, Belly Buster, Ulu Knife, Pheromone Perfumes, Tan-Thru Bathing Suits, Tan In A Tablet, Dick Gregory’s Bahamian Diet, OxyWhite Tooth Whitener, I Can't Believe It's Not Hair and hundreds of other products.
+    SerGio has put over 100 Famous celebrities in over 100 well-known infomercials to sell billions of dollars worth of dazzling variety of household products on national television.
+</div>
+
+@section Scripts {
+
+    <script src="~/js/neural_noise.js" nonce="@scriptNonce"></script>
+
+    <script nonce="@scriptNonce">
+
+        document.addEventListener("DOMContentLoaded", function () {
+            //alert("$(document).ready Loads First!");
+        });
+
+        $(document).ready(function () {
+            //alert("$(document).ready Loads Last!");
+        });
+
+    </script>
+}

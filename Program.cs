@@ -202,8 +202,8 @@ namespace AiNoData
 
                     app.UseEndpoints(endpoints =>
                     {
-                        endpoints.MapControllerRoute("default", "{controller=Tech}/{action=Index}/{id?}");
-                        endpoints.MapFallbackToController("Index", "Tech");
+                        endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                        endpoints.MapFallbackToController("Index", "Home");
                     });
 
                 });
