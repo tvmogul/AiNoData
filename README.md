@@ -78,9 +78,9 @@ Use of the name does not imply transfer of ownership or rights.
 
 ## 📘 Related Article
 
-This repository accompanies a CodeProject article discussing the concepts and tradeoffs behind **Zero-Training AI™**, including when machine learning is *not* the right tool.
+This repository accompanies an article discussing the concepts and tradeoffs behind **Zero-Training AI™**, including when machine learning is *not* the right tool.
 
-*(Link to be added)*
+https://ainodata.com/
 
 ---
 
