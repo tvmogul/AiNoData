@@ -132,6 +132,9 @@
     <Content Update="wwwroot\img\evtol_garage_01.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\img\evtol_sergio_aviation_01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\img\exosleton.avif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
