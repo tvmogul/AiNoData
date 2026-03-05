@@ -1,0 +1,288 @@
+﻿@{
+    ViewData["Title"] = "CS2 Market Allocator (Demo)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="demo-card">
+        <h2 style="margin-bottom: 10px;">CS2 Market Allocator</h2>
+
+        <p class="mb-2" style="max-width: 900px;">
+            Paste a list of CS2 items + prices + fees. This demo shows how <b>Zero-Training AI™</b> can produce
+            buy/hold/sell allocations by solving a constrained decision problem in real time — no model training required.
+        </p>
+
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <label class="form-label"><b>Paste Items</b> (CSV lines: Item,BuyPrice,SellPrice(optional),Liquidity(optional))</label>
+                <textarea id="cs2Input" class="form-control" rows="10" placeholder="AK-47 | Redline, 12.50, 14.90, 0.80
+                AWP | Asiimov, 88.00, 94.00, 0.55"></textarea>
+                <div class="mt-2" style="font-size: .9em; opacity: .85;">
+                    Tip: You can paste from Excel. Commas or tabs both work.
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label">Budget ($)</label>
+                        <input id="Budget" type="number" step="0.01" class="form-control" value="250.00">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Total Fees (%)</label>
+                        <input id="FeePct" type="number" step="0.01" class="form-control" value="15.00">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Max % per Item</label>
+                        <input id="MaxPctPerItem" type="number" step="0.01" class="form-control" value="20.00">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Min Liquidity</label>
+                        <input id="MinLiquidity" type="number" step="0.01" class="form-control" value="0.00">
+                    </div>
+                </div>
+
+                <button id="btnRun" class="btn btn-primary btn-demo mt-3" style="width:100%;">
+                    Run Zero-Training AI™
+                </button>
+
+                <button id="btnAddDemoData" class="btn btn-secondary btn-demo mt-2" style="width:100%;">
+                    Add Demo Data
+                </button>
+
+                <div id="runMsg" class="mt-2" style="font-size:.95em;"></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h5>Results</h5>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th style="min-width: 280px;">Item</th>
+                        <th>Action</th>
+                        <th>Allocation %</th>
+                        <th>Net After Fees</th>
+                        <th style="min-width: 260px;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="5" style="opacity:.75;">Run Zero-Training AI™ to generate results.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+
+        function parseLines(text) {
+            const lines = (text || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+            const items = [];
+
+            for (const line of lines) {
+                // Accept CSV or tab-delimited; also accept pipes in item names.
+                const parts = line.includes("\t") ? line.split("\t") : line.split(",");
+                const p = parts.map(x => (x || "").trim());
+
+                const item = p[0] || "";
+                const buy = parseFloat(p[1] || "0") || 0;
+                const sell = parseFloat(p[2] || "0") || 0;
+                const liq = parseFloat(p[3] || "0") || 0;
+
+                if (!item) continue;
+
+                items.push({
+                    item: item,
+                    buyPrice: buy,
+                    sellPrice: sell,
+                    liquidity: liq
+                });
+            }
+            return items;
+        }
+
+        function setMsg(html, isOk) {
+            const el = document.getElementById("runMsg");
+            el.innerHTML = html;
+            el.style.color = isOk ? "" : "crimson";
+        }
+
+        function renderResults(rows) {
+            const tbody = document.querySelector("#resultsTable tbody");
+            tbody.innerHTML = "";
+
+            if (!rows || !rows.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="opacity:.75;">No results.</td></tr>';
+                return;
+            }
+
+            for (const r of rows) {
+                const itemVal = (r.item ?? r.Item ?? "");
+                const actionVal = (r.action ?? r.Action ?? "");
+                const allocationVal = (r.allocationPct ?? r.AllocationPct ?? 0);
+                const netVal = (r.netAfterFees ?? r.NetAfterFees ?? 0);
+                const notesVal = (r.notes ?? r.Notes ?? "");
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                            <td>${escapeHtml(itemVal || "")}</td>
+                            <td><b>${escapeHtml(actionVal || "")}</b></td>
+                            <td>${(allocationVal ?? 0)}</td>
+                            <td>${(netVal ?? 0)}</td>
+                            <td>${escapeHtml(notesVal || "")}</td>
+                        `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        function escapeHtml(s) {
+            return (s || "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function randBetween(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function formatMoney(x) {
+            return (Math.round(x * 100) / 100).toFixed(2);
+        }
+
+        function clamp(x, min, max) {
+            return Math.max(min, Math.min(max, x));
+        }
+
+        function buildRandomDemoLines() {
+            const bases = [
+                "AK-47", "M4A1-S", "M4A4", "AWP", "Desert Eagle", "Glock-18", "USP-S", "P250", "Five-SeveN",
+                "MP9", "MAC-10", "UMP-45", "P90", "FAMAS", "Galil AR", "SSG 08", "Nova", "XM1014", "SCAR-20",
+                "Knife", "Gloves", "Sticker", "Case", "Patch", "Charm"
+            ];
+
+            const skins = [
+                "Redline", "Asiimov", "Vulcan", "Hyper Beast", "Blue Laminate", "Fade", "Slaughter", "Case Hardened",
+                "Printstream", "Neo-Noir", "The Empress", "Aquamarine Revenge", "Frontside Misty", "Bloodsport",
+                "Phantom Disruptor", "Lightning Strike", "Dragon Lore", "Fire Serpent", "Asiimov (Field-Tested)",
+                "Night", "Safari Mesh", "Urban DDPAT", "Sand Dune"
+            ];
+
+            const wears = [
+                "Factory New", "Minimal Wear", "Field-Tested", "Well-Worn", "Battle-Scarred"
+            ];
+
+            const n = Math.floor(randBetween(9, 15));
+            const used = new Set();
+            const lines = [];
+
+            for (let i = 0; i < n; i++) {
+                let itemName = "";
+                let tries = 0;
+
+                while (tries < 50) {
+                    const base = pickOne(bases);
+                    const skin = pickOne(skins);
+                    const wear = pickOne(wears);
+
+                    if (base === "Knife") itemName = `${pickOne(["★ Karambit", "★ M9 Bayonet", "★ Butterfly Knife", "★ Flip Knife"])} | ${skin} (${wear})`;
+                    else if (base === "Gloves") itemName = `${pickOne(["★ Sport Gloves", "★ Driver Gloves", "★ Hand Wraps", "★ Moto Gloves"])} | ${skin} (${wear})`;
+                    else if (base === "Sticker") itemName = `Sticker | ${pickOne(["Crown (Foil)", "Howl", "Katowice 2014", "Gold Arabesque", "Holo", "Glitter"])} (${pickOne(["Holo", "Foil", "Gold", "Paper"])})`;
+                    else if (base === "Case") itemName = `${pickOne(["Operation", "Prisma", "Danger Zone", "Recoil", "Clutch", "Gamma"])} Case`;
+                    else if (base === "Patch") itemName = `Patch | ${pickOne(["Phoenix", "Hydra", "Broken Fang", "Shattered Web", "Riptide", "Bravo"])} (${pickOne(["Normal", "Gold", "Holo"])})`;
+                    else if (base === "Charm") itemName = `Charm | ${pickOne(["Lucky Cat", "Bomb", "Skull", "Star", "Dragon", "Rocket"])} (${pickOne(["Common", "Rare", "Epic"])})`;
+                    else itemName = `${base} | ${skin} (${wear})`;
+
+                    if (!used.has(itemName)) {
+                        used.add(itemName);
+                        break;
+                    }
+                    tries++;
+                }
+
+                // Price bands: most items low-mid; occasional expensive hit
+                const expensive = Math.random() < 0.12;
+                const buy = expensive ? randBetween(120, 650) : randBetween(1.25, 115);
+
+                // Liquidity 0.10 - 1.00
+                const liq = clamp(randBetween(0.10, 1.00), 0.10, 1.00);
+
+                // Randomly omit SellPrice sometimes so the user sees estimation behavior
+                const omitSell = Math.random() < 0.40;
+
+                let sell = 0;
+                if (!omitSell) {
+                    // Market movement: -6% to +12% gross
+                    const grossMove = randBetween(-0.06, 0.12);
+                    sell = buy * (1 + grossMove);
+                    sell = Math.max(0.01, sell);
+                }
+
+                if (!omitSell) {
+                    lines.push(`${itemName}, ${formatMoney(buy)}, ${formatMoney(sell)}, ${liq.toFixed(2)}`);
+                } else {
+                    lines.push(`${itemName}, ${formatMoney(buy)}, 0, ${liq.toFixed(2)}`);
+                }
+            }
+
+            return lines.join("\n");
+        }
+
+        async function postJson(url, data) {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            return await res.json();
+        }
+
+        document.getElementById("btnRun").addEventListener("click", async function() {
+            const items = parseLines(document.getElementById("cs2Input").value);
+
+            const payload = {
+                budget: parseFloat(document.getElementById("Budget").value || "0") || 0,
+                feePct: parseFloat(document.getElementById("FeePct").value || "0") || 0,
+                maxPctPerItem: parseFloat(document.getElementById("MaxPctPerItem").value || "0") || 0,
+                minLiquidity: parseFloat(document.getElementById("MinLiquidity").value || "0") || 0,
+                items: items
+            };
+
+            if (!payload.items.length) {
+                setMsg("Paste at least 1 item line first.", false);
+                return;
+            }
+
+            setMsg("Running Zero-Training AI™ ...", true);
+
+            try {
+                const json = await postJson("/Cs2Market/Run", payload);
+                if (json && json.ok) {
+                    setMsg(json.message || "Zero-Training AI™ complete.", true);
+                    renderResults(json.results || []);
+                } else {
+                    setMsg("Run failed.", false);
+                }
+            } catch (e) {
+                setMsg("Run failed: " + (e.message || e), false);
+            }
+        });
+
+        document.getElementById("btnAddDemoData").addEventListener("click", function() {
+            const demoText = buildRandomDemoLines();
+            document.getElementById("cs2Input").value = demoText;
+            setMsg("Demo data added. Now click: Run Zero-Training AI™", true);
+        });
+
+    })();
+</script>
