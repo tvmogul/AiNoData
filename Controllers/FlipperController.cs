@@ -2,7 +2,7 @@
 
 namespace AiNoData.Controllers
 {
-    public class Cs2MarketController : Controller
+    public class FlipperController : Controller
     {
         [HttpGet]
         public IActionResult Index()
@@ -12,10 +12,10 @@ namespace AiNoData.Controllers
 
         // Stub endpoint (returns placeholder results so the UI loop works)
         [HttpPost]
-        public IActionResult Run([FromBody] Cs2MarketRunRequest req)
+        public IActionResult Run([FromBody] FlipperRunRequest req)
         {
-            req ??= new Cs2MarketRunRequest();
-            req.Items ??= new List<Cs2MarketItem>();
+            req ??= new FlipperRunRequest();
+            req.Items ??= new List<FlipperItem>();
 
             // Guard rails
             var budget = req.Budget < 0 ? 0 : req.Budget;
@@ -32,7 +32,7 @@ namespace AiNoData.Controllers
             if (maxDollarsPerItem < 0) maxDollarsPerItem = 0;
 
             // Build scored list
-            var scored = new List<(Cs2MarketItem item, decimal buy, decimal sell, decimal liq, decimal net, decimal profitPct, decimal score, bool sellEstimated)>();
+            var scored = new List<(FlipperItem item, decimal buy, decimal sell, decimal liq, decimal net, decimal profitPct, decimal score, bool sellEstimated)>();
 
             foreach (var it in req.Items)
             {
@@ -120,7 +120,7 @@ namespace AiNoData.Controllers
             }
 
             // Build results table
-            var results = new List<Cs2MarketResultRow>();
+            var results = new List<FlipperResultRow>();
 
             // Include all scored items (even those not allocated) so the user sees ranking
             foreach (var s in scored)
@@ -151,7 +151,7 @@ namespace AiNoData.Controllers
                         ? $"Profit(after fees): {s.profitPct:F2}% | Liquidity: {s.liq:F2} | Score: {s.score:F2}"
                         : $"SellPrice estimated (+{expectedUpsidePct:F2}% gross) | Profit(after fees): {s.profitPct:F2}% | Liquidity: {s.liq:F2} | Score: {s.score:F2}";
 
-                results.Add(new Cs2MarketResultRow
+                results.Add(new FlipperResultRow
                 {
                     Item = name,
                     Action = action,
@@ -186,7 +186,7 @@ namespace AiNoData.Controllers
         }
     }
 
-    public class Cs2MarketRunRequest
+    public class FlipperRunRequest
     {
         public decimal Budget { get; set; }
         public decimal FeePct { get; set; } = 15;
@@ -194,10 +194,10 @@ namespace AiNoData.Controllers
         public decimal MinLiquidity { get; set; } = 0;
         public decimal ExpectedUpsidePct { get; set; } = 5;
 
-        public List<Cs2MarketItem> Items { get; set; } = new();
+        public List<FlipperItem> Items { get; set; } = new();
     }
 
-    public class Cs2MarketItem
+    public class FlipperItem
     {
         public string? Item { get; set; }
         public decimal BuyPrice { get; set; }
@@ -205,7 +205,7 @@ namespace AiNoData.Controllers
         public decimal Liquidity { get; set; } // optional, can be 0
     }
 
-    public class Cs2MarketResultRow
+    public class FlipperResultRow
     {
         public string? Item { get; set; }
         public string? Action { get; set; }       // BUY / HOLD / SELL

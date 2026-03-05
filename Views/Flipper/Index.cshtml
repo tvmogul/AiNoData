@@ -1,22 +1,35 @@
 ﻿@{
-    ViewData["Title"] = "CS2 Market Allocator (Demo)";
+    ViewData["Title"] = "Flipper Allocator";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div style="margin-top: 30px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/zstocks.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Flipper Allocator
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
 <div class="container mt-4">
     <div class="demo-card">
-        <h2 style="margin-bottom: 10px;">CS2 Market Allocator</h2>
+        <h2 style="margin-bottom: 10px;">Flipper Allocator</h2>
 
         <p class="mb-2" style="max-width: 900px;">
-            Paste a list of CS2 items + prices + fees. This demo shows how <b>Zero-Training AI™</b> can produce
+            Paste a list of items + prices + fees. This demo shows how <b>Zero-Training AI™</b> can produce
             buy/hold/sell allocations by solving a constrained decision problem in real time — no model training required.
         </p>
 
         <div class="row g-3">
             <div class="col-lg-7">
                 <label class="form-label"><b>Paste Items</b> (CSV lines: Item,BuyPrice,SellPrice(optional),Liquidity(optional))</label>
-                <textarea id="cs2Input" class="form-control" rows="10" placeholder="AK-47 | Redline, 12.50, 14.90, 0.80
-                AWP | Asiimov, 88.00, 94.00, 0.55"></textarea>
+                <textarea id="zebraInput" class="form-control" rows="10" placeholder="Solar Lantern Kit, 12.50, 14.90, 0.80
+                Water Filter Pack, 88.00, 94.00, 0.55"></textarea>
                 <div class="mt-2" style="font-size: .9em; opacity: .85;">
                     Tip: You can paste from Excel. Commas or tabs both work.
                 </div>
@@ -74,6 +87,15 @@
             </table>
         </div>
     </div>
+
+    <br />
+    <p style="font-size: .9em; opacity: .85; max-width: 980px;">
+        <strong>Entertainment / Educational Use Only:</strong> This is a simulated demonstration and provided for entertainment
+        and informational purposes only. Outputs are illustrative only and are NOT intended for real-world use or decision-making
+        of any kind. You must NOT rely on these results to intentionally attempt to profit, gain value, or obtain in-game earnings
+        in any game, marketplace, or platform. No guarantees are made or implied, and results will vary.
+    </p>
+
 </div>
 
 <script>
@@ -129,12 +151,12 @@
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                            <td>${escapeHtml(itemVal || "")}</td>
-                            <td><b>${escapeHtml(actionVal || "")}</b></td>
-                            <td>${(allocationVal ?? 0)}</td>
-                            <td>${(netVal ?? 0)}</td>
-                            <td>${escapeHtml(notesVal || "")}</td>
-                        `;
+                                    <td>${escapeHtml(itemVal || "")}</td>
+                                    <td><b>${escapeHtml(actionVal || "")}</b></td>
+                                    <td>${(allocationVal ?? 0)}</td>
+                                    <td>${(netVal ?? 0)}</td>
+                                    <td>${escapeHtml(notesVal || "")}</td>
+                                `;
                 tbody.appendChild(tr);
             }
         }
@@ -166,20 +188,22 @@
 
         function buildRandomDemoLines() {
             const bases = [
-                "AK-47", "M4A1-S", "M4A4", "AWP", "Desert Eagle", "Glock-18", "USP-S", "P250", "Five-SeveN",
-                "MP9", "MAC-10", "UMP-45", "P90", "FAMAS", "Galil AR", "SSG 08", "Nova", "XM1014", "SCAR-20",
-                "Knife", "Gloves", "Sticker", "Case", "Patch", "Charm"
+                "Solar Lantern", "Water Filter", "First Aid Kit", "Thermal Blanket", "Portable Charger", "Emergency Radio", "LED Headlamp", "Hygiene Kit", "Baby Formula",
+                "Canned Meals", "Protein Bars", "Water Bottles", "Tarp Shelter", "Rope Bundle", "Duct Tape Pack", "Tool Set", "Batteries", "Fuel Canister", "Cooking Stove",
+                "Backpack", "Insulated Bottle", "Rain Poncho", "Work Gloves", "Mask Pack", "Hand Sanitizer", "Flashlight"
             ];
 
-            const skins = [
-                "Redline", "Asiimov", "Vulcan", "Hyper Beast", "Blue Laminate", "Fade", "Slaughter", "Case Hardened",
-                "Printstream", "Neo-Noir", "The Empress", "Aquamarine Revenge", "Frontside Misty", "Bloodsport",
-                "Phantom Disruptor", "Lightning Strike", "Dragon Lore", "Fire Serpent", "Asiimov (Field-Tested)",
-                "Night", "Safari Mesh", "Urban DDPAT", "Sand Dune"
+            const variants = [
+                "Compact", "Ultra", "Pro", "Plus", "Max", "Standard", "Mini", "Heavy-Duty", "Lite", "Premium",
+                "Field", "Rapid", "Rescue", "Expedition", "All-Weather", "Refill", "Bulk", "Family", "Travel"
+            ];
+
+            const descriptors = [
+                "Kit", "Pack", "Bundle", "Set", "Case", "Box", "Supply", "Reserve", "Module", "Loadout", "Crate", "Refill"
             ];
 
             const wears = [
-                "Factory New", "Minimal Wear", "Field-Tested", "Well-Worn", "Battle-Scarred"
+                "New", "Like-New", "Open-Box", "Refurbished", "Used"
             ];
 
             const n = Math.floor(randBetween(9, 15));
@@ -192,16 +216,11 @@
 
                 while (tries < 50) {
                     const base = pickOne(bases);
-                    const skin = pickOne(skins);
-                    const wear = pickOne(wears);
+                    const v = pickOne(variants);
+                    const d = pickOne(descriptors);
+                    const w = pickOne(wears);
 
-                    if (base === "Knife") itemName = `${pickOne(["★ Karambit", "★ M9 Bayonet", "★ Butterfly Knife", "★ Flip Knife"])} | ${skin} (${wear})`;
-                    else if (base === "Gloves") itemName = `${pickOne(["★ Sport Gloves", "★ Driver Gloves", "★ Hand Wraps", "★ Moto Gloves"])} | ${skin} (${wear})`;
-                    else if (base === "Sticker") itemName = `Sticker | ${pickOne(["Crown (Foil)", "Howl", "Katowice 2014", "Gold Arabesque", "Holo", "Glitter"])} (${pickOne(["Holo", "Foil", "Gold", "Paper"])})`;
-                    else if (base === "Case") itemName = `${pickOne(["Operation", "Prisma", "Danger Zone", "Recoil", "Clutch", "Gamma"])} Case`;
-                    else if (base === "Patch") itemName = `Patch | ${pickOne(["Phoenix", "Hydra", "Broken Fang", "Shattered Web", "Riptide", "Bravo"])} (${pickOne(["Normal", "Gold", "Holo"])})`;
-                    else if (base === "Charm") itemName = `Charm | ${pickOne(["Lucky Cat", "Bomb", "Skull", "Star", "Dragon", "Rocket"])} (${pickOne(["Common", "Rare", "Epic"])})`;
-                    else itemName = `${base} | ${skin} (${wear})`;
+                    itemName = `${base} ${v} ${d} (${w})`;
 
                     if (!used.has(itemName)) {
                         used.add(itemName);
@@ -248,7 +267,7 @@
         }
 
         document.getElementById("btnRun").addEventListener("click", async function() {
-            const items = parseLines(document.getElementById("cs2Input").value);
+            const items = parseLines(document.getElementById("zebraInput").value);
 
             const payload = {
                 budget: parseFloat(document.getElementById("Budget").value || "0") || 0,
@@ -266,7 +285,7 @@
             setMsg("Running Zero-Training AI™ ...", true);
 
             try {
-                const json = await postJson("/Cs2Market/Run", payload);
+                const json = await postJson("/Flipper/Run", payload);
                 if (json && json.ok) {
                     setMsg(json.message || "Zero-Training AI™ complete.", true);
                     renderResults(json.results || []);
@@ -280,7 +299,7 @@
 
         document.getElementById("btnAddDemoData").addEventListener("click", function() {
             const demoText = buildRandomDemoLines();
-            document.getElementById("cs2Input").value = demoText;
+            document.getElementById("zebraInput").value = demoText;
             setMsg("Demo data added. Now click: Run Zero-Training AI™", true);
         });
 
