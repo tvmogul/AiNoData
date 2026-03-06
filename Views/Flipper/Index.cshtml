@@ -1,4 +1,5 @@
 ﻿@{
+    var scriptNonce = Html.ScriptNonce();
     ViewData["Title"] = "Flipper Allocator";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -98,210 +99,212 @@
 
 </div>
 
-<script>
-    (function() {
+@section Scripts {
+    <script nonce="@scriptNonce">
+        (function() {
 
-        function parseLines(text) {
-            const lines = (text || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-            const items = [];
+            function parseLines(text) {
+                const lines = (text || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+                const items = [];
 
-            for (const line of lines) {
-                // Accept CSV or tab-delimited; also accept pipes in item names.
-                const parts = line.includes("\t") ? line.split("\t") : line.split(",");
-                const p = parts.map(x => (x || "").trim());
+                for (const line of lines) {
+                    // Accept CSV or tab-delimited; also accept pipes in item names.
+                    const parts = line.includes("\t") ? line.split("\t") : line.split(",");
+                    const p = parts.map(x => (x || "").trim());
 
-                const item = p[0] || "";
-                const buy = parseFloat(p[1] || "0") || 0;
-                const sell = parseFloat(p[2] || "0") || 0;
-                const liq = parseFloat(p[3] || "0") || 0;
+                    const item = p[0] || "";
+                    const buy = parseFloat(p[1] || "0") || 0;
+                    const sell = parseFloat(p[2] || "0") || 0;
+                    const liq = parseFloat(p[3] || "0") || 0;
 
-                if (!item) continue;
+                    if (!item) continue;
 
-                items.push({
-                    item: item,
-                    buyPrice: buy,
-                    sellPrice: sell,
-                    liquidity: liq
-                });
-            }
-            return items;
-        }
-
-        function setMsg(html, isOk) {
-            const el = document.getElementById("runMsg");
-            el.innerHTML = html;
-            el.style.color = isOk ? "" : "crimson";
-        }
-
-        function renderResults(rows) {
-            const tbody = document.querySelector("#resultsTable tbody");
-            tbody.innerHTML = "";
-
-            if (!rows || !rows.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="opacity:.75;">No results.</td></tr>';
-                return;
+                    items.push({
+                        item: item,
+                        buyPrice: buy,
+                        sellPrice: sell,
+                        liquidity: liq
+                    });
+                }
+                return items;
             }
 
-            for (const r of rows) {
-                const itemVal = (r.item ?? r.Item ?? "");
-                const actionVal = (r.action ?? r.Action ?? "");
-                const allocationVal = (r.allocationPct ?? r.AllocationPct ?? 0);
-                const netVal = (r.netAfterFees ?? r.NetAfterFees ?? 0);
-                const notesVal = (r.notes ?? r.Notes ?? "");
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                                    <td>${escapeHtml(itemVal || "")}</td>
-                                    <td><b>${escapeHtml(actionVal || "")}</b></td>
-                                    <td>${(allocationVal ?? 0)}</td>
-                                    <td>${(netVal ?? 0)}</td>
-                                    <td>${escapeHtml(notesVal || "")}</td>
-                                `;
-                tbody.appendChild(tr);
+            function setMsg(html, isOk) {
+                const el = document.getElementById("runMsg");
+                el.innerHTML = html;
+                el.style.color = isOk ? "" : "crimson";
             }
-        }
 
-        function escapeHtml(s) {
-            return (s || "")
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;")
-                .replaceAll("'", "&#039;");
-        }
+            function renderResults(rows) {
+                const tbody = document.querySelector("#resultsTable tbody");
+                tbody.innerHTML = "";
 
-        function randBetween(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+                if (!rows || !rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="opacity:.75;">No results.</td></tr>';
+                    return;
+                }
 
-        function pickOne(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
+                for (const r of rows) {
+                    const itemVal = (r.item ?? r.Item ?? "");
+                    const actionVal = (r.action ?? r.Action ?? "");
+                    const allocationVal = (r.allocationPct ?? r.AllocationPct ?? 0);
+                    const netVal = (r.netAfterFees ?? r.NetAfterFees ?? 0);
+                    const notesVal = (r.notes ?? r.Notes ?? "");
 
-        function formatMoney(x) {
-            return (Math.round(x * 100) / 100).toFixed(2);
-        }
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                                        <td>${escapeHtml(itemVal || "")}</td>
+                                        <td><b>${escapeHtml(actionVal || "")}</b></td>
+                                        <td>${(allocationVal ?? 0)}</td>
+                                        <td>${(netVal ?? 0)}</td>
+                                        <td>${escapeHtml(notesVal || "")}</td>
+                                    `;
+                    tbody.appendChild(tr);
+                }
+            }
 
-        function clamp(x, min, max) {
-            return Math.max(min, Math.min(max, x));
-        }
+            function escapeHtml(s) {
+                return (s || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#039;");
+            }
 
-        function buildRandomDemoLines() {
-            const bases = [
-                "Solar Lantern", "Water Filter", "First Aid Kit", "Thermal Blanket", "Portable Charger", "Emergency Radio", "LED Headlamp", "Hygiene Kit", "Baby Formula",
-                "Canned Meals", "Protein Bars", "Water Bottles", "Tarp Shelter", "Rope Bundle", "Duct Tape Pack", "Tool Set", "Batteries", "Fuel Canister", "Cooking Stove",
-                "Backpack", "Insulated Bottle", "Rain Poncho", "Work Gloves", "Mask Pack", "Hand Sanitizer", "Flashlight"
-            ];
+            function randBetween(min, max) {
+                return Math.random() * (max - min) + min;
+            }
 
-            const variants = [
-                "Compact", "Ultra", "Pro", "Plus", "Max", "Standard", "Mini", "Heavy-Duty", "Lite", "Premium",
-                "Field", "Rapid", "Rescue", "Expedition", "All-Weather", "Refill", "Bulk", "Family", "Travel"
-            ];
+            function pickOne(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
 
-            const descriptors = [
-                "Kit", "Pack", "Bundle", "Set", "Case", "Box", "Supply", "Reserve", "Module", "Loadout", "Crate", "Refill"
-            ];
+            function formatMoney(x) {
+                return (Math.round(x * 100) / 100).toFixed(2);
+            }
 
-            const wears = [
-                "New", "Like-New", "Open-Box", "Refurbished", "Used"
-            ];
+            function clamp(x, min, max) {
+                return Math.max(min, Math.min(max, x));
+            }
 
-            const n = Math.floor(randBetween(9, 15));
-            const used = new Set();
-            const lines = [];
+            function buildRandomDemoLines() {
+                const bases = [
+                    "Solar Lantern", "Water Filter", "First Aid Kit", "Thermal Blanket", "Portable Charger", "Emergency Radio", "LED Headlamp", "Hygiene Kit", "Baby Formula",
+                    "Canned Meals", "Protein Bars", "Water Bottles", "Tarp Shelter", "Rope Bundle", "Duct Tape Pack", "Tool Set", "Batteries", "Fuel Canister", "Cooking Stove",
+                    "Backpack", "Insulated Bottle", "Rain Poncho", "Work Gloves", "Mask Pack", "Hand Sanitizer", "Flashlight"
+                ];
 
-            for (let i = 0; i < n; i++) {
-                let itemName = "";
-                let tries = 0;
+                const variants = [
+                    "Compact", "Ultra", "Pro", "Plus", "Max", "Standard", "Mini", "Heavy-Duty", "Lite", "Premium",
+                    "Field", "Rapid", "Rescue", "Expedition", "All-Weather", "Refill", "Bulk", "Family", "Travel"
+                ];
 
-                while (tries < 50) {
-                    const base = pickOne(bases);
-                    const v = pickOne(variants);
-                    const d = pickOne(descriptors);
-                    const w = pickOne(wears);
+                const descriptors = [
+                    "Kit", "Pack", "Bundle", "Set", "Case", "Box", "Supply", "Reserve", "Module", "Loadout", "Crate", "Refill"
+                ];
 
-                    itemName = `${base} ${v} ${d} (${w})`;
+                const wears = [
+                    "New", "Like-New", "Open-Box", "Refurbished", "Used"
+                ];
 
-                    if (!used.has(itemName)) {
-                        used.add(itemName);
-                        break;
+                const n = Math.floor(randBetween(9, 15));
+                const used = new Set();
+                const lines = [];
+
+                for (let i = 0; i < n; i++) {
+                    let itemName = "";
+                    let tries = 0;
+
+                    while (tries < 50) {
+                        const base = pickOne(bases);
+                        const v = pickOne(variants);
+                        const d = pickOne(descriptors);
+                        const w = pickOne(wears);
+
+                        itemName = `${base} ${v} ${d} (${w})`;
+
+                        if (!used.has(itemName)) {
+                            used.add(itemName);
+                            break;
+                        }
+                        tries++;
                     }
-                    tries++;
+
+                    // Price bands: most items low-mid; occasional expensive hit
+                    const expensive = Math.random() < 0.12;
+                    const buy = expensive ? randBetween(120, 650) : randBetween(1.25, 115);
+
+                    // Liquidity 0.10 - 1.00
+                    const liq = clamp(randBetween(0.10, 1.00), 0.10, 1.00);
+
+                    // Randomly omit SellPrice sometimes so the user sees estimation behavior
+                    const omitSell = Math.random() < 0.40;
+
+                    let sell = 0;
+                    if (!omitSell) {
+                        // Market movement: -6% to +12% gross
+                        const grossMove = randBetween(-0.06, 0.12);
+                        sell = buy * (1 + grossMove);
+                        sell = Math.max(0.01, sell);
+                    }
+
+                    if (!omitSell) {
+                        lines.push(`${itemName}, ${formatMoney(buy)}, ${formatMoney(sell)}, ${liq.toFixed(2)}`);
+                    } else {
+                        lines.push(`${itemName}, ${formatMoney(buy)}, 0, ${liq.toFixed(2)}`);
+                    }
                 }
 
-                // Price bands: most items low-mid; occasional expensive hit
-                const expensive = Math.random() < 0.12;
-                const buy = expensive ? randBetween(120, 650) : randBetween(1.25, 115);
-
-                // Liquidity 0.10 - 1.00
-                const liq = clamp(randBetween(0.10, 1.00), 0.10, 1.00);
-
-                // Randomly omit SellPrice sometimes so the user sees estimation behavior
-                const omitSell = Math.random() < 0.40;
-
-                let sell = 0;
-                if (!omitSell) {
-                    // Market movement: -6% to +12% gross
-                    const grossMove = randBetween(-0.06, 0.12);
-                    sell = buy * (1 + grossMove);
-                    sell = Math.max(0.01, sell);
-                }
-
-                if (!omitSell) {
-                    lines.push(`${itemName}, ${formatMoney(buy)}, ${formatMoney(sell)}, ${liq.toFixed(2)}`);
-                } else {
-                    lines.push(`${itemName}, ${formatMoney(buy)}, 0, ${liq.toFixed(2)}`);
-                }
+                return lines.join("\n");
             }
 
-            return lines.join("\n");
-        }
+            async function postJson(url, data) {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+                return await res.json();
+            }
 
-        async function postJson(url, data) {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+            document.getElementById("btnRun").addEventListener("click", async function() {
+                const items = parseLines(document.getElementById("zebraInput").value);
+
+                const payload = {
+                    budget: parseFloat(document.getElementById("Budget").value || "0") || 0,
+                    feePct: parseFloat(document.getElementById("FeePct").value || "0") || 0,
+                    maxPctPerItem: parseFloat(document.getElementById("MaxPctPerItem").value || "0") || 0,
+                    minLiquidity: parseFloat(document.getElementById("MinLiquidity").value || "0") || 0,
+                    items: items
+                };
+
+                if (!payload.items.length) {
+                    setMsg("Paste at least 1 item line first.", false);
+                    return;
+                }
+
+                setMsg("Running Zero-Training AI™ ...", true);
+
+                try {
+                    const json = await postJson("/Flipper/Run", payload);
+                    if (json && json.ok) {
+                        setMsg(json.message || "Zero-Training AI™ complete.", true);
+                        renderResults(json.results || []);
+                    } else {
+                        setMsg("Run failed.", false);
+                    }
+                } catch (e) {
+                    setMsg("Run failed: " + (e.message || e), false);
+                }
             });
-            return await res.json();
-        }
 
-        document.getElementById("btnRun").addEventListener("click", async function() {
-            const items = parseLines(document.getElementById("zebraInput").value);
+            document.getElementById("btnAddDemoData").addEventListener("click", function() {
+                const demoText = buildRandomDemoLines();
+                document.getElementById("zebraInput").value = demoText;
+                setMsg("Demo data added. Now click: Run Zero-Training AI™", true);
+            });
 
-            const payload = {
-                budget: parseFloat(document.getElementById("Budget").value || "0") || 0,
-                feePct: parseFloat(document.getElementById("FeePct").value || "0") || 0,
-                maxPctPerItem: parseFloat(document.getElementById("MaxPctPerItem").value || "0") || 0,
-                minLiquidity: parseFloat(document.getElementById("MinLiquidity").value || "0") || 0,
-                items: items
-            };
-
-            if (!payload.items.length) {
-                setMsg("Paste at least 1 item line first.", false);
-                return;
-            }
-
-            setMsg("Running Zero-Training AI™ ...", true);
-
-            try {
-                const json = await postJson("/Flipper/Run", payload);
-                if (json && json.ok) {
-                    setMsg(json.message || "Zero-Training AI™ complete.", true);
-                    renderResults(json.results || []);
-                } else {
-                    setMsg("Run failed.", false);
-                }
-            } catch (e) {
-                setMsg("Run failed: " + (e.message || e), false);
-            }
-        });
-
-        document.getElementById("btnAddDemoData").addEventListener("click", function() {
-            const demoText = buildRandomDemoLines();
-            document.getElementById("zebraInput").value = demoText;
-            setMsg("Demo data added. Now click: Run Zero-Training AI™", true);
-        });
-
-    })();
-</script>
+        })();
+    </script>
+}

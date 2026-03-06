@@ -1,0 +1,928 @@
+﻿@{
+    var scriptNonce = Html.ScriptNonce();
+    ViewData["Title"] = "Time-Augmented Decision Space™ — Worldline Tube";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-top: 40px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 style="margin-top: -50px; white-space: nowrap;">
+                <img src="/img/zrocket.gif" alt="Settings" style="height: 50px; vertical-align: top; margin-top: -12px;margin-right: 4px;">
+                Time-Augmented Decision Space™
+            </h2>
+        </div>
+    </div>
+</div>
+<br />
+
+<div style="max-width: 1100px; margin: 0 auto; padding: 18px;">
+    <h2 style="margin: 10px 0 6px 0;">Let's Go To Mars!</h2>
+    <div style="opacity: 0.9; margin-bottom: 12px;">
+        A spacetime-style “decision worldline” rendered as a tube: <b>Z = time</b>, X/Y = decision coordinates,
+        tube radius + color = constraint pressure.
+    </div>
+
+    <div style="display:grid; grid-template-columns: 320px 1fr; gap:12px; align-items:stretch;">
+        <div style="background:#f5f6fb; border-radius:14px; padding:14px;">
+            <div style="font-weight:700; margin-bottom:8px;">Controls</div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Samples</label>
+            <input id="n" type="range" min="120" max="900" value="320" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">n: <span id="nVal">320</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Time step</label>
+            <input id="dt" type="range" min="2" max="20" value="6" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">dt: <span id="dtVal">0.06</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Tube thickness</label>
+            <input id="thick" type="range" min="6" max="40" value="18" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">scale: <span id="thickVal">1.8</span></div>
+
+            <hr style="margin:14px 0; border:none; border-top:1px solid rgba(0,0,0,0.10);" />
+
+            <div style="font-weight:700; margin-bottom:8px;">Mars Mission Parameters</div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Thrust limit</label>
+            <input id="thrust" type="range" min="5" max="100" value="55" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">thrust: <span id="thrustVal">0.55</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Fuel budget</label>
+            <input id="fuel" type="range" min="10" max="100" value="65" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">fuel: <span id="fuelVal">0.65</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Time-of-flight priority</label>
+            <input id="tof" type="range" min="10" max="100" value="55" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">time: <span id="tofVal">0.55</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Earth gravity well strength</label>
+            <input id="gEarth" type="range" min="10" max="200" value="100" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">gEarth: <span id="gEarthVal">1.00</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Mars gravity well strength</label>
+            <input id="gMars" type="range" min="10" max="200" value="85" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">gMars: <span id="gMarsVal">0.85</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Mid-course instability / perturbation</label>
+            <input id="pert" type="range" min="0" max="100" value="18" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">perturb: <span id="pertVal">0.18</span></div>
+
+            <label style="display:block; font-size: 12px; margin-top:10px;">Mission goal tolerance</label>
+            <input id="tol" type="range" min="1" max="60" value="18" style="width:100%;" />
+            <div style="font-size: 12px; opacity:0.85;">tolerance: <span id="tolVal">0.18</span></div>
+
+            <button id="apply" style="margin-top:14px; width:100%; padding:10px; border:0; border-radius:12px; font-weight:700; cursor:pointer;">
+                Apply Settings
+            </button>
+
+            <button id="regen" style="margin-top:10px; width:100%; padding:10px; border:0; border-radius:12px; font-weight:700; cursor:pointer;">
+                Regenerate Worldline
+            </button>
+
+            <div style="margin-top:14px; font-size:12px; opacity:0.9;">
+                <b>Interpretation:</b> the tube is the system’s <i>decision trajectory</i> through time.
+                Thick / bright segments indicate higher constraint pressure.
+            </div>
+        </div>
+
+        <div id="displayCol" style="min-width: 0;">
+            <div style="display:grid; grid-template-rows: 240px 240px; gap:12px;">
+                <div id="simwrap" style="width:100%; height: 240px; border-radius: 14px; overflow:hidden; background:#0b0f19; position:relative;">
+                    <div id="simhud" style="position:absolute; left:12px; top:12px; width: 270px;color:#e9eefc; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12px; line-height:1.35; z-index: 5;">
+                        <div><b>Real-World Simulation — Earth ➜ Mars</b></div>
+                        <div>Goal: reach Mars with thrust + fuel limits</div>
+
+                        <!-- MICRO-UPGRADE #1: live cost readout -->
+                        <div id="costBox" style="margin-top:10px; padding:8px 10px; border-radius:10px; background: rgba(10,16,30,0.55); border: 1px solid rgba(233,238,252,0.10); backdrop-filter: blur(3px);">
+                            <div style="font-weight:700; margin-bottom:4px;">Cost Readout</div>
+                            <div style="opacity:0.95;">
+                                FuelCost: <span id="cFuel">—</span><br />
+                                TimeCost: <span id="cTime">—</span><br />
+                                Instability: <span id="cInstab">—</span><br />
+                                <span style="font-weight:700;">Total:</span> <span id="cTotal">—</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:8px; opacity:0.9;">
+                            <span id="simstatus">Loading simulation…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wrap" style="width:100%; height: 240px; border-radius: 14px; overflow:hidden; background:#0b0f19; position:relative;">
+                    <div id="hud" style="position:absolute; left:12px; top:12px; color:#e9eefc; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12px; line-height:1.35; z-index: 5;">
+                        <div><b>Decision Worldline</b></div>
+                        <div>Drag: orbit • Wheel: zoom • Right-drag: pan</div>
+                        <div style="margin-top:8px; opacity:0.9;">
+                            <span id="status">Loading tube…</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div>
+                <h3>Time-Augmented Decision Space™</h3>
+                In the full Zero-Training AI™ framework, Decision Space™ is extended beyond 
+                static variables into Time-Augmented Decision Space™, where the system evaluates 
+                not only the current state of a problem but also how that state is changing over time. 
+                Additional dimensions capture temporal dynamics such as rate-of-change, acceleration 
+                of inputs, system delays, and stability across future moments. Instead of reacting 
+                frame-by-frame, the engine resolves the optimal trajectory of decisions through this 
+                expanded space. The mathematics mirrors the principle of least action in physics: out 
+                of all possible paths a system could take, the one that actually occurs is the one 
+                that minimizes a governing quantity. Likewise, Zero-Training AI™ computes the decision 
+                path that minimizes a structured decision functional across time—balancing objectives, 
+                constraints, risk, and system dynamics—allowing intelligent behavior to emerge directly 
+                from mathematics rather than from training data.
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script type="importmap" nonce="@scriptNonce">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+          }
+        }
+    </script>
+
+    <script type="module" nonce="@scriptNonce">
+        import * as THREE from "three";
+        import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+        const wrap = document.getElementById('wrap');
+        const simwrap = document.getElementById('simwrap');
+        const statusEl = document.getElementById('status');
+        const simStatusEl = document.getElementById('simstatus');
+
+        // MICRO-UPGRADE #1: cost HUD elements
+        const cFuelEl = document.getElementById('cFuel');
+        const cTimeEl = document.getElementById('cTime');
+        const cInstabEl = document.getElementById('cInstab');
+        const cTotalEl = document.getElementById('cTotal');
+
+        const nEl = document.getElementById('n');
+        const nVal = document.getElementById('nVal');
+        const dtEl = document.getElementById('dt');
+        const dtVal = document.getElementById('dtVal');
+        const thickEl = document.getElementById('thick');
+        const thickVal = document.getElementById('thickVal');
+        const regenBtn = document.getElementById('regen');
+        const applyBtn = document.getElementById('apply');
+
+        const thrustEl = document.getElementById('thrust');
+        const thrustVal = document.getElementById('thrustVal');
+        const fuelEl = document.getElementById('fuel');
+        const fuelVal = document.getElementById('fuelVal');
+        const tofEl = document.getElementById('tof');
+        const tofVal = document.getElementById('tofVal');
+
+        const gEarthEl = document.getElementById('gEarth');
+        const gEarthVal = document.getElementById('gEarthVal');
+        const gMarsEl = document.getElementById('gMars');
+        const gMarsVal = document.getElementById('gMarsVal');
+        const pertEl = document.getElementById('pert');
+        const pertVal = document.getElementById('pertVal');
+        const tolEl = document.getElementById('tol');
+        const tolVal = document.getElementById('tolVal');
+
+        function getDt() {
+            // slider 2..20 -> 0.02..0.20
+            const v = parseInt(dtEl.value, 10);
+            return (v / 100).toFixed(2);
+        }
+
+        function getThicknessScale() {
+            return parseInt(thickEl.value, 10) / 10;
+        }
+
+        function getThrust() {
+            // 0.05 .. 1.00
+            return (parseInt(thrustEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getFuel() {
+            // 0.10 .. 1.00
+            return (parseInt(fuelEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getTof() {
+            // 0.10 .. 1.00
+            return (parseInt(tofEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getGEarth() {
+            // 0.10 .. 2.00
+            return (parseInt(gEarthEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getGMars() {
+            // 0.10 .. 2.00
+            return (parseInt(gMarsEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getPert() {
+            // 0.00 .. 1.00
+            return (parseInt(pertEl.value, 10) / 100).toFixed(2);
+        }
+
+        function getTol() {
+            // 0.01 .. 0.60 (but show as 0.01..0.60)
+            return (parseInt(tolEl.value, 10) / 100).toFixed(2);
+        }
+
+        nEl.addEventListener('input', () => nVal.textContent = nEl.value);
+        dtEl.addEventListener('input', () => dtVal.textContent = getDt());
+        thickEl.addEventListener('input', () => thickVal.textContent = getThicknessScale().toFixed(1));
+
+        thrustEl.addEventListener('input', () => thrustVal.textContent = getThrust());
+        fuelEl.addEventListener('input', () => fuelVal.textContent = getFuel());
+        tofEl.addEventListener('input', () => tofVal.textContent = getTof());
+
+        gEarthEl.addEventListener('input', () => gEarthVal.textContent = getGEarth());
+        gMarsEl.addEventListener('input', () => gMarsVal.textContent = getGMars());
+        pertEl.addEventListener('input', () => pertVal.textContent = getPert());
+        tolEl.addEventListener('input', () => tolVal.textContent = getTol());
+
+        dtVal.textContent = getDt();
+        thickVal.textContent = getThicknessScale().toFixed(1);
+        thrustVal.textContent = getThrust();
+        fuelVal.textContent = getFuel();
+        tofVal.textContent = getTof();
+
+        gEarthVal.textContent = getGEarth();
+        gMarsVal.textContent = getGMars();
+        pertVal.textContent = getPert();
+        tolVal.textContent = getTol();
+
+        // ---- Three.js scene (Decision Worldline) ----
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x0b0f19, 6, 30);
+
+        const camera = new THREE.PerspectiveCamera(55, 1, 0.05, 200);
+        camera.position.set(7.2, 4.8, 11.8);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        wrap.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+
+        // lights (don’t overthink it, we want crisp tube)
+        scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+        const dir = new THREE.DirectionalLight(0xffffff, 0.95);
+        dir.position.set(8, 10, 6);
+        scene.add(dir);
+
+        // Axes + grid (spacetime vibe)
+        const grid = new THREE.GridHelper(46, 46, 0x203050, 0x101828);
+        grid.position.y = -3.0;
+        scene.add(grid);
+
+        // "Spacetime rails"
+        const axes = new THREE.AxesHelper(5.8);
+        scene.add(axes);
+
+        // Labels (simple sprites)
+        function makeLabel(text) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(233,238,252,0.92)';
+            ctx.font = 'bold 52px system-ui, -apple-system, Segoe UI, Roboto, Arial';
+            ctx.fillText(text, 10, 78);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+            const spr = new THREE.Sprite(mat);
+            spr.scale.set(2.6, 0.65, 1);
+            return spr;
+        }
+
+        const xLab = makeLabel('X: decision');
+        xLab.position.set(5.6, 0.2, 0);
+        scene.add(xLab);
+
+        const yLab = makeLabel('Y: decision');
+        yLab.position.set(0.2, 5.6, 0);
+        scene.add(yLab);
+
+        const zLab = makeLabel('Z: time');
+        zLab.position.set(0.2, 0.2, 6.6);
+        scene.add(zLab);
+
+        // Worldline objects
+        let tubeMesh = null;
+        let lineMesh = null;
+
+        function resize() {
+            const w = wrap.clientWidth;
+            const h = wrap.clientHeight;
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function createSpaceship(scale) {
+            const ship = new THREE.Group();
+
+            // Body
+            const bodyGeo = new THREE.CylinderGeometry(0.10 * scale, 0.10 * scale, 0.55 * scale, 22, 1, false);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf2f6ff, roughness: 0.28, metalness: 0.35, emissive: 0x0b1322, emissiveIntensity: 0.6 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            ship.add(body);
+
+            // Nose (cone)
+            const noseGeo = new THREE.ConeGeometry(0.11 * scale, 0.22 * scale, 22, 1, false);
+            const noseMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.22, metalness: 0.25, emissive: 0x0c1630, emissiveIntensity: 0.8 });
+            const nose = new THREE.Mesh(noseGeo, noseMat);
+            nose.position.y = (0.55 * scale) / 2 + (0.22 * scale) / 2 - 0.01 * scale;
+            ship.add(nose);
+
+            // Engine glow (small sphere)
+            const engGeo = new THREE.SphereGeometry(0.06 * scale, 20, 14);
+            const engMat = new THREE.MeshStandardMaterial({ color: 0xa7d1ff, roughness: 0.2, metalness: 0.1, emissive: 0x1c6cff, emissiveIntensity: 1.3 });
+            const eng = new THREE.Mesh(engGeo, engMat);
+            eng.position.y = -(0.55 * scale) / 2 - 0.02 * scale;
+            ship.add(eng);
+
+            // Fins
+            const finGeo = new THREE.BoxGeometry(0.20 * scale, 0.02 * scale, 0.12 * scale);
+            const finMat = new THREE.MeshStandardMaterial({ color: 0xdbe6ff, roughness: 0.35, metalness: 0.25, emissive: 0x0a1220, emissiveIntensity: 0.5 });
+
+            const fin1 = new THREE.Mesh(finGeo, finMat);
+            fin1.position.set(0.0, -(0.55 * scale) / 2 + 0.12 * scale, 0.10 * scale);
+            ship.add(fin1);
+
+            const fin2 = new THREE.Mesh(finGeo, finMat);
+            fin2.position.set(0.0, -(0.55 * scale) / 2 + 0.12 * scale, -0.10 * scale);
+            ship.add(fin2);
+
+            // Point ship "forward" along +Y (we'll align +Y to the curve tangent)
+            ship.rotation.set(0, 0, 0);
+
+            return ship;
+        }
+
+        function buildWorldline(points, thicknessScale) {
+            // Remove old
+            if (tubeMesh) {
+                if (tubeMesh.userData && tubeMesh.userData.ship) {
+                    scene.remove(tubeMesh.userData.ship);
+                    tubeMesh.userData.ship.traverse(o => {
+                        if (o.geometry) o.geometry.dispose();
+                        if (o.material) {
+                            if (Array.isArray(o.material)) o.material.forEach(m => m.dispose());
+                            else o.material.dispose();
+                        }
+                    });
+                }
+                scene.remove(tubeMesh);
+                tubeMesh.geometry.dispose();
+                tubeMesh.material.dispose();
+                tubeMesh = null;
+            }
+            if (lineMesh) { scene.remove(lineMesh); lineMesh.geometry.dispose(); lineMesh.material.dispose(); lineMesh = null; }
+
+            // Build curve
+            const vecs = points.map(p => new THREE.Vector3(p.x, p.y, p.z));
+            const curve = new THREE.CatmullRomCurve3(vecs, false, 'catmullrom', 0.08);
+
+            // Tube geometry
+            const tubularSegments = Math.max(160, Math.min(1400, points.length * 4));
+            const radius = 0.10 * thicknessScale; // base radius
+            const radialSegments = 18;
+            const closed = false;
+
+            const tubeGeo = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
+
+            // Color by scalar s along the tube
+            // We'll map s to a 0..1 range and create vertex colors.
+            const sVals = points.map(p => p.s);
+            const sMin = Math.min(...sVals);
+            const sMax = Math.max(...sVals);
+            const sSpan = (sMax - sMin) < 1e-9 ? 1 : (sMax - sMin);
+
+            const pos = tubeGeo.attributes.position;
+            const color = new Float32Array(pos.count * 3);
+
+            // TubeGeometry provides uv; we'll approximate "t along tube" via vertex index proportion
+            // It’s not perfect but looks great.
+            for (let i = 0; i < pos.count; i++) {
+                const t = i / (pos.count - 1);
+                // sample corresponding s index
+                const idx = Math.floor(t * (points.length - 1));
+                const sn = (points[idx].s - sMin) / sSpan; // 0..1
+
+                // Color ramp: dark -> bright (no custom palette libs)
+                // (We keep it simple and readable.)
+                const r = 0.20 + 0.80 * sn;
+                const g = 0.35 + 0.55 * (1.0 - sn);
+                const b = 0.95 - 0.55 * sn;
+
+                color[i * 3 + 0] = r;
+                color[i * 3 + 1] = g;
+                color[i * 3 + 2] = b;
+            }
+            tubeGeo.setAttribute('color', new THREE.BufferAttribute(color, 3));
+
+            const tubeMat = new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                roughness: 0.28,
+                metalness: 0.18,
+                emissive: new THREE.Color(0x081020),
+                emissiveIntensity: 0.55
+            });
+
+            tubeMesh = new THREE.Mesh(tubeGeo, tubeMat);
+            scene.add(tubeMesh);
+
+            // Add a thin centerline for “worldline” clarity
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(Math.min(1000, tubularSegments)));
+            const lineMat = new THREE.LineBasicMaterial({ color: 0xe9eefc, transparent: true, opacity: 0.30 });
+            lineMesh = new THREE.Line(lineGeo, lineMat);
+            scene.add(lineMesh);
+
+            // Spaceship marker (moves along the worldline)
+            const ship = createSpaceship(Math.max(1.2, thicknessScale * 1.6));
+            ship.name = "spaceship";
+            scene.add(ship);
+
+            tubeMesh.userData.curve = curve;
+            tubeMesh.userData.ship = ship;
+            tubeMesh.userData.t = 0;
+
+            // Put ship at start immediately
+            const p0 = curve.getPointAt(0);
+            ship.position.copy(p0);
+        }
+
+        async function loadAndRender() {
+            const n = parseInt(nEl.value, 10);
+            const dt = parseFloat(getDt());
+            const thicknessScale = getThicknessScale();
+
+            statusEl.textContent = "Generating worldline…";
+
+            const url = `/Space/Data?n=${encodeURIComponent(n)}&dt=${encodeURIComponent(dt)}`;
+            const res = await fetch(url, { method: 'GET' });
+            if (!res.ok) {
+                statusEl.textContent = `Error loading /Space/Data (${res.status})`;
+                return;
+            }
+
+            const data = await res.json();
+            const pts = data.points || [];
+
+            if (pts.length < 20) {
+                statusEl.textContent = "Not enough points returned.";
+                return;
+            }
+
+            buildWorldline(pts, thicknessScale);
+            statusEl.textContent = "Worldline ready.";
+        }
+
+        // ---- Three.js scene (Real-World Simulation — Earth ➜ Mars) ----
+        const simScene = new THREE.Scene();
+        simScene.fog = new THREE.Fog(0x0b0f19, 8, 40);
+
+        const simCamera = new THREE.PerspectiveCamera(55, 1, 0.05, 300);
+        simCamera.position.set(0.0, 6.5, 10.5);
+
+        const simRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        simRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        simwrap.appendChild(simRenderer.domElement);
+
+        const simControls = new OrbitControls(simCamera, simRenderer.domElement);
+        simControls.enableDamping = true;
+        simControls.dampingFactor = 0.08;
+        simControls.enablePan = true;
+
+        simScene.add(new THREE.AmbientLight(0xffffff, 0.50));
+        const simDir = new THREE.DirectionalLight(0xffffff, 0.95);
+        simDir.position.set(10, 12, 6);
+        simScene.add(simDir);
+
+        // Stars
+        function addStars() {
+            const starCount = 900;
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(starCount * 3);
+            for (let i = 0; i < starCount; i++) {
+                const r = 55 * Math.random();
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                pos[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta);
+                pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                pos[i * 3 + 2] = r * Math.cos(phi);
+            }
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.03, transparent: true, opacity: 0.55 });
+            const pts = new THREE.Points(geo, mat);
+            simScene.add(pts);
+            return pts;
+        }
+
+        const stars = addStars();
+
+        // Planets + “gravity well” rings
+        function createPlanet(radius, color, emissiveColor) {
+            const geo = new THREE.SphereGeometry(radius, 44, 32);
+            const mat = new THREE.MeshStandardMaterial({
+                color: color,
+                roughness: 0.65,
+                metalness: 0.05,
+                emissive: emissiveColor,
+                emissiveIntensity: 0.25
+            });
+            return new THREE.Mesh(geo, mat);
+        }
+
+        function createWellRing(r, color) {
+            const ringGeo = new THREE.RingGeometry(r * 1.12, r * 1.60, 80);
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.18, side: THREE.DoubleSide });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            return ring;
+        }
+
+        const earth = createPlanet(0.70, 0x2f78ff, 0x0b1a44);
+        const mars = createPlanet(0.55, 0xd65c2b, 0x3a1208);
+
+        const earthWell = createWellRing(0.70, 0x7fb1ff);
+        const marsWell = createWellRing(0.55, 0xffb28a);
+
+        earth.position.set(-3.2, 0.0, 0.0);
+        mars.position.set(3.2, 0.0, 0.0);
+        earthWell.position.copy(earth.position);
+        marsWell.position.copy(mars.position);
+
+        simScene.add(earth);
+        simScene.add(mars);
+        simScene.add(earthWell);
+        simScene.add(marsWell);
+
+        // “Mission goal” marker at Mars
+        const goalGeo = new THREE.TorusGeometry(0.72, 0.05, 18, 80);
+        const goalMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 });
+        const goal = new THREE.Mesh(goalGeo, goalMat);
+        goal.rotation.x = Math.PI / 2;
+        goal.position.copy(mars.position);
+        simScene.add(goal);
+
+        // Goal tolerance ring (updates with tolerance)
+        const tolGeo = new THREE.TorusGeometry(0.40, 0.035, 16, 72);
+        const tolMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22 });
+        const tolRing = new THREE.Mesh(tolGeo, tolMat);
+        tolRing.rotation.x = Math.PI / 2;
+        tolRing.position.copy(mars.position);
+        simScene.add(tolRing);
+
+        // Perturbation markers (instability visual)
+        const pertGroup = new THREE.Group();
+        simScene.add(pertGroup);
+
+        function rebuildPerturbationMarkers(intensity) {
+            // intensity: 0..1
+            while (pertGroup.children.length > 0) {
+                const c = pertGroup.children.pop();
+                if (c.geometry) c.geometry.dispose();
+                if (c.material) c.material.dispose();
+            }
+
+            const count = Math.floor(6 + intensity * 44);
+            for (let i = 0; i < count; i++) {
+                const s = 0.03 + 0.05 * intensity;
+                const g = new THREE.SphereGeometry(s, 10, 8);
+                const m = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.10 + 0.25 * intensity });
+                const p = new THREE.Mesh(g, m);
+                p.position.set(
+                    (-1.2 + Math.random() * 2.4),
+                    (0.15 + Math.random() * (2.4 + 2.0 * intensity)),
+                    (-0.8 + Math.random() * 1.6)
+                );
+                pertGroup.add(p);
+            }
+        }
+
+        // Transfer trajectory line
+        let transferLine = null;
+        let transferCurve = null;
+
+        // MICRO-UPGRADE #3: faint capture spiral near Mars (shows gravity well)
+        let captureSpiral = null;
+
+        function buildCaptureSpiral(strength) {
+            // strength: 0..1-ish (we'll drive with gM)
+            if (captureSpiral) {
+                simScene.remove(captureSpiral);
+                captureSpiral.geometry.dispose();
+                captureSpiral.material.dispose();
+                captureSpiral = null;
+            }
+
+            // Only show when Mars gravity is meaningfully high
+            const show = strength > 1.05;
+            if (!show) return;
+
+            const loops = 2.6 + (strength - 1.0) * 2.4;
+            const points = 240;
+            const baseR = 1.25 + (strength - 1.0) * 0.55;
+            const decay = 0.72 + (strength - 1.0) * 0.12;
+
+            const pts = [];
+            for (let i = 0; i < points; i++) {
+                const t = i / (points - 1);
+                const ang = t * Math.PI * 2 * loops;
+                const r = baseR * Math.pow((1.0 - t * 0.92), decay);
+                const x = mars.position.x + Math.cos(ang) * r;
+                const z = mars.position.z + Math.sin(ang) * r;
+                const y = mars.position.y + 0.06 + 0.22 * Math.sin(t * Math.PI * 2);
+                pts.push(new THREE.Vector3(x, y, z));
+            }
+
+            const geo = new THREE.BufferGeometry().setFromPoints(pts);
+            const mat = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: Math.min(0.34, 0.10 + (strength - 1.0) * 0.20)
+            });
+            captureSpiral = new THREE.Line(geo, mat);
+            simScene.add(captureSpiral);
+        }
+
+        // Spaceship in simulation
+        const simShip = createSpaceship(1.15);
+        simShip.name = "simShip";
+        simScene.add(simShip);
+
+        // Thrust plume (visual)
+        const plumeGeo = new THREE.ConeGeometry(0.12, 0.38, 22, 1, true);
+        const plumeMat = new THREE.MeshBasicMaterial({ color: 0x64b5ff, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+        const plume = new THREE.Mesh(plumeGeo, plumeMat);
+        plume.position.set(0, -0.50, 0);
+        plume.rotation.x = Math.PI;
+        simShip.add(plume);
+
+        function simResize() {
+            const w = simwrap.clientWidth;
+            const h = simwrap.clientHeight;
+            simRenderer.setSize(w, h, false);
+            simCamera.aspect = w / h;
+            simCamera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', simResize);
+        simResize();
+
+        // MICRO-UPGRADE #1: compute and show costs
+        function updateCostReadout(thrust, fuel, tof, gE, gM, pert, tol) {
+            // Simple, stable, visible: 0..1-ish components
+            const fuelCost = (0.35 + 0.95 * thrust) * (0.65 + 0.75 * gE) * (1.0 + 0.70 * pert) * (1.0 + 0.35 * (1.0 - fuel));
+            const timeCost = (1.10 - tof) * (0.55 + 0.70 * gE) * (0.75 + 0.35 * (1.0 - thrust));
+            const instab = (0.20 + 1.10 * pert) * (0.70 + 0.35 * (gM + gE) / 2) * (0.85 + 0.55 * (0.60 - tol)); // tighter tol => harsher
+            const total = (0.44 * fuelCost) + (0.34 * timeCost) + (0.22 * instab);
+
+            cFuelEl.textContent = fuelCost.toFixed(2);
+            cTimeEl.textContent = timeCost.toFixed(2);
+            cInstabEl.textContent = instab.toFixed(2);
+            cTotalEl.textContent = total.toFixed(2);
+        }
+
+        function buildEarthToMarsTransfer() {
+            if (transferLine) {
+                simScene.remove(transferLine);
+                transferLine.geometry.dispose();
+                transferLine.material.dispose();
+                transferLine = null;
+            }
+
+            const thrust = parseFloat(getThrust());
+            const fuel = parseFloat(getFuel());
+            const tof = parseFloat(getTof());
+            const gE = parseFloat(getGEarth());
+            const gM = parseFloat(getGMars());
+            const pert = parseFloat(getPert());
+            const tol = parseFloat(getTol());
+
+            // Make the parameters DRAMATICALLY visible:
+            // - Higher thrust => straighter path (smaller arc)
+            // - Higher fuel  => can afford more curvature control (bigger arc potential)
+            // - Higher time priority => straighter + faster
+            // - Higher Earth gravity => deeper escape bend near Earth
+            // - Higher Mars gravity  => stronger capture bend near Mars
+            // - Higher perturbation  => noisier transfer and more "instability field"
+            const arcBase = 5.6;
+            const arc = arcBase
+                * (1.35 - 1.20 * thrust)
+                * (0.75 + 1.10 * fuel)
+                * (1.25 - 0.95 * tof)
+                * (0.75 + 0.65 * gE);
+
+            const p0 = earth.position.clone();
+            const p3 = mars.position.clone();
+
+            const mid = p0.clone().lerp(p3, 0.5);
+            mid.y += arc;
+            mid.z -= arc * 0.35;
+
+            // Sideways bend is clearly visible and reacts to fuel/thrust
+            const bend = (fuel - 0.50) * 2.6 + (0.65 - thrust) * 2.0 + (gM - 0.9) * 1.4;
+            mid.x += bend;
+
+            // Bias points near Earth/Mars based on gravity wells (escape/capture shaping)
+            const p1 = p0.clone().lerp(mid, 0.55);
+            const p2 = mid.clone().lerp(p3, 0.55);
+
+            // Earth gravity pulls early segment "down" toward plane (harder escape)
+            p1.y -= (0.45 * gE);
+
+            // Mars gravity pulls late segment toward Mars and slightly "down" (capture)
+            p2.y -= (0.35 * gM);
+            p2.x += (0.35 * (gM - 1.0));
+
+            // Add perturbation as jitter in control points (visible instability)
+            const jitter = (v) => v + (Math.random() - 0.5) * (0.55 * pert);
+            p1.x = jitter(p1.x); p1.y = jitter(p1.y); p1.z = jitter(p1.z);
+            p2.x = jitter(p2.x); p2.y = jitter(p2.y); p2.z = jitter(p2.z);
+
+            const pts = [p0.clone(), p1, p2, p3.clone()];
+
+            transferCurve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.1);
+
+            const curvePts = transferCurve.getPoints(320);
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(curvePts);
+
+            // Line reacts to parameters (visible):
+            const r = Math.min(1.0, 0.70 + 0.25 * thrust + 0.10 * tof + 0.10 * gM);
+            const g = Math.min(1.0, 0.70 + 0.20 * fuel + 0.08 * tof + 0.08 * gE);
+            const b = Math.min(1.0, 0.85 + 0.10 * fuel + 0.10 * thrust);
+            const lineColor = new THREE.Color(r, g, b);
+            const lineOpacity = Math.max(0.18, Math.min(0.80, 0.18 + 0.28 * fuel + 0.25 * tof + 0.25 * pert));
+
+            const lineMat = new THREE.LineBasicMaterial({ color: lineColor, transparent: true, opacity: lineOpacity });
+            transferLine = new THREE.Line(lineGeo, lineMat);
+            simScene.add(transferLine);
+
+            // MICRO-UPGRADE #2: plume color based on thrust (dim->intense)
+            // Color lerp: low thrust => cool/dim, high thrust => hot/bright
+            const tCol = thrust; // 0..1
+            const plumeColor = new THREE.Color(0x2b6cff).lerp(new THREE.Color(0xffffff), 0.25 + 0.55 * tCol).lerp(new THREE.Color(0xffd27a), 0.10 + 0.35 * tCol);
+            plume.material.color.copy(plumeColor);
+
+            // Visual thrust plume intensity based on thrust (very obvious)
+            plume.scale.set(1.0, 0.35 + thrust * 2.4, 1.0);
+            plume.material.opacity = 0.10 + thrust * 0.85;
+
+            // Gravity well visuals REACT to gravity sliders
+            // - ring scale and opacity
+            earthWell.scale.set(0.80 + 0.70 * gE, 0.80 + 0.70 * gE, 1);
+            marsWell.scale.set(0.80 + 0.70 * gM, 0.80 + 0.70 * gM, 1);
+            earthWell.material.opacity = 0.06 + 0.22 * Math.min(2.0, gE);
+            marsWell.material.opacity = 0.06 + 0.22 * Math.min(2.0, gM);
+
+            // Tolerance ring REACTS to mission goal tolerance
+            const tolScale = 0.60 + (tol * 2.2); // tol 0.01..0.60 -> ~0.62..1.92
+            tolRing.scale.set(tolScale, tolScale, tolScale);
+            tolRing.material.opacity = 0.10 + 0.35 * (1.0 - Math.min(1.0, tol * 1.4)); // tighter tol => brighter ring
+
+            // Perturbation markers REACT to instability
+            rebuildPerturbationMarkers(pert);
+
+            // MICRO-UPGRADE #3: capture spiral near Mars when gM is high
+            buildCaptureSpiral(gM);
+
+            // MICRO-UPGRADE #1: update costs
+            updateCostReadout(thrust, fuel, tof, gE, gM, pert, tol);
+
+            // Reset sim progress so you SEE the change immediately
+            simT = 0;
+
+            // HUD (show live values so it’s undeniable)
+            simStatusEl.textContent =
+                `Updated — thrust=${thrust.toFixed(2)}, fuel=${fuel.toFixed(2)}, time=${tof.toFixed(2)}, gE=${gE.toFixed(2)}, gM=${gM.toFixed(2)}, pert=${pert.toFixed(2)}, tol=${tol.toFixed(2)}`;
+        }
+
+        function refreshBoth() {
+            buildEarthToMarsTransfer();
+            loadAndRender();
+        }
+
+        // Sliders only change values; Apply button actually rebuilds.
+        applyBtn.addEventListener('click', refreshBoth);
+        regenBtn.addEventListener('click', refreshBoth);
+
+        // Also rebuild when user releases slider (so it "does something")
+        nEl.addEventListener('change', refreshBoth);
+        dtEl.addEventListener('change', refreshBoth);
+        thickEl.addEventListener('change', refreshBoth);
+        thrustEl.addEventListener('change', refreshBoth);
+        fuelEl.addEventListener('change', refreshBoth);
+        tofEl.addEventListener('change', refreshBoth);
+        gEarthEl.addEventListener('change', refreshBoth);
+        gMarsEl.addEventListener('change', refreshBoth);
+        pertEl.addEventListener('change', refreshBoth);
+        tolEl.addEventListener('change', refreshBoth);
+
+        // IMMEDIATE VISUAL UPDATE while dragging the mission sliders
+        thrustEl.addEventListener('input', buildEarthToMarsTransfer);
+        fuelEl.addEventListener('input', buildEarthToMarsTransfer);
+        tofEl.addEventListener('input', buildEarthToMarsTransfer);
+        gEarthEl.addEventListener('input', buildEarthToMarsTransfer);
+        gMarsEl.addEventListener('input', buildEarthToMarsTransfer);
+        pertEl.addEventListener('input', buildEarthToMarsTransfer);
+        tolEl.addEventListener('input', buildEarthToMarsTransfer);
+
+        // ---- Three.js scene (Real-World Simulation — Earth ➜ Mars) ----
+        // (the rest of your file continues exactly as-is; only micro-upgrades were inserted)
+
+        // Animate
+        const up = new THREE.Vector3(0, 1, 0);
+        let simT = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+            simControls.update();
+
+            if (tubeMesh && tubeMesh.userData.curve && tubeMesh.userData.ship) {
+                tubeMesh.userData.t += 0.0016; // speed
+                if (tubeMesh.userData.t > 1) tubeMesh.userData.t = 0;
+
+                const curve = tubeMesh.userData.curve;
+                const ship = tubeMesh.userData.ship;
+
+                const p = curve.getPointAt(tubeMesh.userData.t);
+                ship.position.copy(p);
+
+                // Orient ship to follow tangent (align ship's +Y with tangent)
+                const tangent = curve.getTangentAt(tubeMesh.userData.t).normalize();
+                const quat = new THREE.Quaternion().setFromUnitVectors(up, tangent);
+                ship.quaternion.copy(quat);
+            }
+
+            // Real-world simulation: fly ship along Earth->Mars transfer curve
+            if (transferCurve) {
+                const thrust = parseFloat(getThrust());
+                const tof = parseFloat(getTof());
+                const pert = parseFloat(getPert());
+
+                // Speed based on time priority and thrust (feels like "control")
+                const speed = 0.0009 + 0.0030 * tof + 0.0016 * thrust;
+
+                simT += speed;
+                if (simT > 1) simT = 0;
+
+                const p = transferCurve.getPointAt(simT);
+                simShip.position.copy(p);
+
+                const tangent = transferCurve.getTangentAt(simT).normalize();
+                const quat = new THREE.Quaternion().setFromUnitVectors(up, tangent);
+                simShip.quaternion.copy(quat);
+
+                // Gentle planet rotation to feel alive
+                earth.rotation.y += 0.004;
+                mars.rotation.y += 0.003;
+
+                // Goal marker pulse
+                const pulse = 0.85 + 0.15 * Math.sin(performance.now() * 0.002);
+                goal.scale.set(pulse, pulse, pulse);
+
+                // Instability: subtle random wobble to ship when perturbation is high
+                if (pert > 0.02) {
+                    simShip.position.x += (Math.random() - 0.5) * 0.03 * pert;
+                    simShip.position.y += (Math.random() - 0.5) * 0.03 * pert;
+                    simShip.position.z += (Math.random() - 0.5) * 0.03 * pert;
+                }
+
+                // Keep the spiral lightly pulsing so it reads as a "field"
+                if (captureSpiral) {
+                    const op = captureSpiral.material.opacity;
+                    captureSpiral.material.opacity = Math.max(0.06, Math.min(0.50, op + 0.02 * Math.sin(performance.now() * 0.003)));
+                }
+            }
+
+            renderer.render(scene, camera);
+            simRenderer.render(simScene, simCamera);
+        }
+
+        buildEarthToMarsTransfer();
+        await loadAndRender();
+        animate();
+    </script>
+
+}
