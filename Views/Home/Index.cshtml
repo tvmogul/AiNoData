@@ -3,42 +3,6 @@
     var scriptNonce = Html.ScriptNonce();
 }
 
-<style>
-    .hero-section {
-        background: linear-gradient(135deg, #0d6efd, #6610f2);
-        color: white;
-        padding: 3rem 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
-        text-align: center;
-    }
-
-        .hero-section h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-    .demo-card {
-        border-radius: 1rem;
-        padding: 2rem;
-        background-color: #f8f9fa;
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
-        transition: transform 0.2s ease-in-out;
-    }
-
-        .demo-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .demo-card h5 {
-            font-weight: 600;
-        }
-
-    .btn-demo {
-        margin-top: 0.25rem; /* FIX: consistent button spacing */
-    }
-</style>
-
 <div style="margin-top: 30px !important;">
     <div style="position: relative; max-width: 800px; margin: 0 auto;">
         <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
@@ -214,35 +178,7 @@
         <strong>Zero-Training AI™</strong> is a versatile foundation for any domain where constraints, objectives, and real-time response are critical.
         Below is a detailed overview of current applications my company is devloping and some of which are currently available.
     </p>
-    <div class="application-section">
-        <h3>SmartSkins™ PCB-Integratedb AI™ Metamaterials </h3>
-        <p>
-            SmartSkins™, I devloped a PCB-integrated metamaterial in which intelligence is not implemented 
-            as software running on a separate processor but is instead encoded directly into the physical structure 
-            of the material itself. 
-        </p>
-        <img src="/img/metamaterial.png" alt="Disaster relief drones coordinating with trucks and emergency teams" style="width:560px !important;height:auto !important;">
-        <dev style="font-size: .7em !important;">
-            We fabricated a multilayer PCB architecture combining anisotropic metamaterial cells, 
-            embedded sensor-actuator networks, spintronic or phase-responsive junction elements, 
-            and programmable coupling pathways so that each local region continuously senses heat, 
-            stress, electromagnetic load, coherence error, and field instability. Rather than relying 
-            on training data, learned weights, or external inference engines, the board operate as a 
-            distributed physical optimizer, driving itself toward the lowest-cost admissible state 
-            under a fixed decision law written into the lattice geometry, component couplings, and constraint terms. 
-            Each cell updates locally to preserve structural integrity, coherence, and target operating conditions. 
-            In effect, the PCB do not merely host an AI controller; the board itself becomes the controller. 
-            My new AI called Zero-Training AI™ was <strong>physically instantiated</strong> as an adaptive metamaterial 
-            computing surface. Potential applications include self-protecting aerospace skins, adaptive shielding for 
-            satellites and defense electronics, smart thermal-management boards for high-power systems, and—if extended 
-            into advanced field-control architectures—theoretical anti-gravity, inertial-management, 
-            and faster-than-light propulsion surfaces in which the metamaterial continuously reconfigures itself to 
-            preserve field coherence, structural stability, and mission performance without requiring conventional 
-            software training.
-        </dev>
-    
-    
-    </div>
+
     <div class="application-section">
         <h3>Disaster Relief & Humanitarian Logistics (ReliefScope®)</h3>
         <p>
@@ -252,6 +188,7 @@
         </p>
         <img src="/img/drone_firetruck.jpeg" alt="Disaster relief drones coordinating with trucks and emergency teams" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Home & Community Energy Management</h3>
         <p>
@@ -261,6 +198,7 @@
         </p>
         <img src="/img/smart-grid-home-diagram.jpg" alt="Smart home solar battery system diagram with energy flow" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Assistive Robotics & Prosthetics Control</h3>
         <p>
@@ -270,19 +208,19 @@
         </p>
         <img src="/img/exosleton.jpg" alt="Exoskeleton robotic suit assisting paraplegic walking" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Special Companion Robots & Emotional Support</h3>
         <p>
             We are developing a "behavior controller" that governs context-aware, affectionate behavior 
             (touch timing, tone, gaze, foreplay, etc.) in humanoid robots.
             Enforces strict consent, safety, and consistency constraints — reliable and explainable.<br />
-            Click anywhere on image to learn more
+            @* Click anywhere on image to learn more *@
         </p>
         <div id="welcomeTrigger" style="position:relative; width:560px; height:315px; cursor:pointer; overflow:hidden; margin:0 auto;">
             <img id="heroImage" src="/videos/cover.png" alt="Hero Image"
                  style="position:absolute; top:0; left:0; width:560px; height:315px; z-index:2; opacity:1; transition:opacity 0.6s ease;">
-    
-            <iframe
+            @* <iframe
                 id="heroVideo"
                 width="560"
                 height="315"
@@ -292,15 +230,9 @@
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen
                 style="position:absolute; top:0; left:0; width:560px; height:315px; z-index:1; opacity:0; transition:opacity 0.6s ease;">
-            </iframe>
+            </iframe> *@
         </div>
     </div>
-
-@*     <div class="zzzhero-image-wrapper">
-        <div class="logo-block">
-            <div id="clickToBeginOverlay" style="padding-top: 50px !important;">Click anywhere on screen to begin</div>
-        </div>
-    </div> *@
 
     <div class="application-section">
         <h3>Personalized Education & AI Literacy Tools</h3>
@@ -310,6 +242,7 @@
         </p>
         <img src="/img/ai-driven.webp" alt="Children learning AI and coding on laptops" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Hospital & Public Health Resource Allocation</h3>
         <p>
@@ -318,6 +251,7 @@
         </p>
         <img src="/img/hospital.png" alt="Hospital bed management dashboard with occupancy and wait times" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Environmental Conservation & Wildlife Protection</h3>
         <p>
@@ -325,6 +259,7 @@
         </p>
         <img src="/img/drone-white-rhino-africa.webp" alt="Drone patrolling over rhino in wildlife reserve" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Autonomous Vehicle Governance & Safety Layers</h3>
         <p>
@@ -332,6 +267,7 @@
         </p>
         <img src="/img/ai_car.png" alt="Autonomous vehicle architecture diagram with safety layers" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Smart Grid & Renewable Energy Balancing (GridZero)</h3>
         <p>
@@ -339,6 +275,7 @@
         </p>
         <img src="/img/smart-grid-balance.png" alt="Diagram of renewable energy grid with real-time deterministic balancing" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Large-Scale Field Service & Preventive Maintenance Routing</h3>
         <p>
@@ -346,6 +283,7 @@
         </p>
         <img src="/img/field-service-routing.jpg" alt="Technicians on map with optimized multi-week routing paths" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Critical Infrastructure Safety Governor (FailSafe Layer)</h3>
         <p>
@@ -353,6 +291,7 @@
         </p>
         <img src="/img/safety-governor-layer.png" alt="Safety overlay architecture enforcing constraints on autonomous system" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Crisis Hospital Resource & Triage Resolver</h3>
         <p>
@@ -360,6 +299,7 @@
         </p>
         <img src="/img/crisis-triage-hospital.png" alt="Hospital command center dashboard resolving resource allocation in crisis" style="width:560px !important;height:auto !important;">
     </div>
+
     <div class="application-section">
         <h3>Flight Controller for Drones</h3>
         <p>
@@ -370,6 +310,7 @@
         </p>
         <img src="/img/og-image.png" alt="Exoskeleton robotic suit assisting paraplegic walking" style="width:560px !important;height:auto !important;">
     </div>
+
     <p>
         These applications are not exhaustive — the framework is domain-agnostic and can be adapted rapidly to new problems where structure is known and determinism is essential.
         Ongoing development focuses on open-source expansion, more live demos, and community contributions.
@@ -397,64 +338,18 @@
     <script nonce="@scriptNonce">
 
         // window.addEventListener('load', function () {
-        //     const video = document.getElementById('heroVideo');
-        //     const image = document.getElementById('heroImage');
-        //     const overlay = document.getElementById('clickToBeginOverlay');
         //     const trigger = document.getElementById('welcomeTrigger');
+        //     const image = document.getElementById('heroImage');
+        //     const iframe = document.getElementById('heroVideo');
 
-        //     if (!video || !image || !trigger) return;
+        //     if (!trigger || !image || !iframe) return;
 
-        //     // Start with image visible and video hidden
-        //     image.style.opacity = '1';
-        //     video.style.opacity = '0';
-
-        //     video.load();
-
-        //     function startWelcomeVideo() {
-        //         trigger.removeEventListener('click', startWelcomeVideo);
-
-        //         video.play()
-        //             .then(() => {
-        //                 video.style.transition = 'opacity 1s ease-in-out';
-        //                 image.style.transition = 'opacity 1s ease-in-out';
-
-        //                 if (overlay) {
-        //                     overlay.style.transition = 'opacity 0.5s ease-in-out';
-        //                     overlay.style.opacity = '0';
-        //                     overlay.style.pointerEvents = 'none';
-        //                 }
-
-        //                 video.style.opacity = '1';
-        //                 image.style.opacity = '0';
-        //             })
-        //             .catch(err => {
-        //                 console.log('Video play failed:', err);
-        //                 video.style.opacity = '0';
-        //                 image.style.opacity = '1';
-
-        //                 if (overlay) {
-        //                     overlay.style.opacity = '1';
-        //                     overlay.style.pointerEvents = 'auto';
-        //                 }
-        //             });
-        //     }
-
-        //     trigger.addEventListener('click', startWelcomeVideo, { once: true });
+        //     trigger.addEventListener('click', function () {
+        //         iframe.src = "https://www.youtube.com/embed/7_3RRghur1k?autoplay=1&rel=0";
+        //         iframe.style.opacity = '1';
+        //         image.style.opacity = '0';
+        //     }, { once: true });
         // });
-
-        window.addEventListener('load', function () {
-            const trigger = document.getElementById('welcomeTrigger');
-            const image = document.getElementById('heroImage');
-            const iframe = document.getElementById('heroVideo');
-
-            if (!trigger || !image || !iframe) return;
-
-            trigger.addEventListener('click', function () {
-                iframe.src = "https://www.youtube.com/embed/7_3RRghur1k?autoplay=1&rel=0";
-                iframe.style.opacity = '1';
-                image.style.opacity = '0';
-            }, { once: true });
-        });
 
         (function() {
 
@@ -464,6 +359,41 @@
 
 }
 
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+    .demo-card {
+        border-radius: 1rem;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .demo-card h5 {
+            font-weight: 600;
+        }
+
+    .btn-demo {
+        margin-top: 0.25rem; /* FIX: consistent button spacing */
+    }
+</style>
 
 <style>
     .demo-card {
