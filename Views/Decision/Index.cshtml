@@ -1,0 +1,2331 @@
+@{
+    ViewData["Title"] = "Decision Editor";
+    var scriptNonce = Html.ScriptNonce();
+}
+
+<style>
+    .decision-space {
+        --ds-bg: #08121d;
+        --ds-panel: #0d1b2a;
+        --ds-panel-alt: #122437;
+        --ds-panel-soft: #172d43;
+        --ds-border: #203c52;
+        --ds-text: #e8f0f7;
+        --ds-muted: #87a0b5;
+        --ds-accent: #17a9df;
+        --ds-accent-bright: #29c5f6;
+        --ds-success: #2ecf8d;
+        --ds-warning: #f5be55;
+        --ds-danger: #ef6877;
+        --ds-purple: #948cff;
+        --ds-shadow: 0 20px 48px rgba(0, 0, 0, .26);
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(1760px, calc(100vw - 48px));
+        max-width: none;
+        margin: 0 0 26px 0;
+        color: var(--ds-text);
+        background: radial-gradient(circle at 15% 0%, rgba(23, 169, 223, .12), transparent 32%), linear-gradient(180deg, #091420 0%, #07111c 100%);
+        border: 1px solid var(--ds-border);
+        border-radius: 13px;
+        overflow: hidden;
+        box-shadow: var(--ds-shadow);
+        font-size: 13px;
+    }
+
+    [data-bs-theme="light"] .decision-space {
+        --ds-bg: #f4f7fb;
+        --ds-panel: #ffffff;
+        --ds-panel-alt: #f5f8fc;
+        --ds-panel-soft: #eaf2fb;
+        --ds-border: #d4e0eb;
+        --ds-text: #152c42;
+        --ds-muted: #657c90;
+        --ds-accent: #0589cc;
+        --ds-accent-bright: #009bd7;
+        --ds-success: #14915f;
+        --ds-warning: #b57b08;
+        --ds-danger: #ca3e4b;
+        --ds-purple: #6557d6;
+        --ds-shadow: 0 18px 42px rgba(15, 33, 52, .10);
+        background: radial-gradient(circle at 15% 0%, rgba(5, 137, 204, .09), transparent 35%), #f4f7fb;
+    }
+
+    .ds-topbar {
+        display: grid;
+        grid-template-columns: 260px minmax(330px, 540px) 230px;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--ds-border);
+        background: rgba(8, 18, 29, .42);
+    }
+
+    [data-bs-theme="light"] .ds-topbar {
+        background: #ffffff;
+    }
+
+    .ds-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ds-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 35px;
+        width: 35px;
+        border-radius: 8px;
+        border: 1px solid rgba(41, 197, 246, .42);
+        background: rgba(23, 169, 223, .12);
+        color: var(--ds-accent-bright);
+        font-weight: 800;
+        font-size: 16px;
+        letter-spacing: -1px;
+    }
+
+    .ds-brand-name {
+        font-size: 18px;
+        font-weight: 750;
+        letter-spacing: .01em;
+        line-height: 1.05;
+    }
+
+        .ds-brand-name span {
+            color: var(--ds-accent-bright);
+        }
+
+    .ds-brand-subtitle {
+        color: var(--ds-muted);
+        font-size: 9px;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        margin-top: 2px;
+    }
+
+    .ds-model-picker {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+    }
+
+        .ds-model-picker label {
+            color: var(--ds-muted);
+            white-space: nowrap;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+
+        .ds-model-picker select {
+            width: 100%;
+        }
+
+    .ds-top-status {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .ds-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        background: rgba(46, 207, 141, .10);
+        border: 1px solid rgba(46, 207, 141, .25);
+        color: var(--ds-success);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .ds-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .ds-version {
+        color: var(--ds-muted);
+        font-size: 11px;
+    }
+
+    .ds-tabs {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--ds-border);
+        background: var(--ds-panel);
+        overflow-x: auto;
+    }
+
+    .ds-tab {
+        position: relative;
+        background: transparent;
+        border: 0;
+        color: var(--ds-muted);
+        padding: 11px 15px 10px 15px;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .ds-tab:hover {
+            color: var(--ds-text);
+        }
+
+        .ds-tab.active {
+            color: var(--ds-accent-bright);
+        }
+
+            .ds-tab.active::after {
+                content: "";
+                position: absolute;
+                bottom: -1px;
+                left: 9px;
+                right: 9px;
+                height: 2px;
+                border-radius: 4px 4px 0 0;
+                background: var(--ds-accent-bright);
+            }
+
+    .ds-panel {
+        display: none;
+    }
+
+        .ds-panel.active {
+            display: block;
+        }
+
+    .ds-dimensions-layout {
+        display: grid;
+        grid-template-columns: 235px minmax(690px, 1fr) 315px;
+        min-height: 650px;
+    }
+
+    .ds-left,
+    .ds-center,
+    .ds-right {
+        padding: 11px;
+        min-width: 0;
+    }
+
+    .ds-left,
+    .ds-center {
+        border-right: 1px solid var(--ds-border);
+    }
+
+    .ds-left {
+        background: rgba(8, 18, 29, .24);
+    }
+
+    [data-bs-theme="light"] .ds-left {
+        background: #f8fbfe;
+    }
+
+    .ds-section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 9px;
+        color: var(--ds-muted);
+        text-transform: uppercase;
+        letter-spacing: .09em;
+        font-size: 10px;
+        font-weight: 750;
+    }
+
+        .ds-section-title strong {
+            color: var(--ds-text);
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 13px;
+        }
+
+    .ds-mini-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 23px;
+        width: 23px;
+        border-radius: 6px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+        color: var(--ds-accent-bright);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+        .ds-mini-button:hover {
+            border-color: var(--ds-accent);
+        }
+
+    .ds-dimension-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 9px;
+    }
+
+    .ds-dimension-item {
+        border: 1px solid transparent;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--ds-text);
+        padding: 7px 7px;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 9px 1fr auto;
+        gap: 7px;
+        align-items: center;
+        text-align: left;
+        width: 100%;
+    }
+
+        .ds-dimension-item:hover {
+            background: var(--ds-panel-alt);
+        }
+
+        .ds-dimension-item.active {
+            border-color: rgba(23, 169, 223, .38);
+            background: rgba(23, 169, 223, .13);
+        }
+
+    .ds-dimension-icon {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--ds-accent-bright);
+    }
+
+    .ds-dimension-item.validated .ds-dimension-icon {
+        background: var(--ds-success);
+    }
+
+    .ds-dimension-item.modified .ds-dimension-icon {
+        background: var(--ds-warning);
+    }
+
+    .ds-dimension-name {
+        font-size: 12px;
+        font-weight: 620;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ds-dimension-source {
+        display: block;
+        color: var(--ds-muted);
+        font-size: 10px;
+        margin-top: 1px;
+        font-weight: 400;
+    }
+
+    .ds-toggle {
+        height: 16px;
+        width: 29px;
+        border-radius: 16px;
+        background: #31485b;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+        .ds-toggle.enabled {
+            background: var(--ds-accent);
+        }
+
+        .ds-toggle::before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            top: 2px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform .15s ease;
+        }
+
+        .ds-toggle.enabled::before {
+            transform: translateX(13px);
+        }
+
+    .ds-add-button,
+    .ds-primary-button,
+    .ds-secondary-button,
+    .ds-danger-button {
+        border-radius: 6px;
+        padding: 7px 11px;
+        font-weight: 650;
+        border: 1px solid var(--ds-border);
+        cursor: pointer;
+        background: var(--ds-panel-alt);
+        color: var(--ds-text);
+        font-size: 12px;
+    }
+
+    .ds-add-button {
+        display: block;
+        width: 100%;
+        border-color: rgba(23, 169, 223, .45);
+        background: rgba(23, 169, 223, .10);
+        color: var(--ds-accent-bright);
+        padding: 8px;
+    }
+
+        .ds-add-button:hover,
+        .ds-primary-button:hover {
+            filter: brightness(1.1);
+        }
+
+    .ds-primary-button {
+        color: #ffffff;
+        border-color: var(--ds-accent);
+        background: linear-gradient(180deg, #179fdb, #0879bc);
+    }
+
+    .ds-danger-button {
+        color: var(--ds-danger);
+        background: rgba(239, 104, 119, .08);
+        border-color: rgba(239, 104, 119, .34);
+    }
+
+    .ds-side-card {
+        margin-top: 11px;
+        padding: 9px;
+        border-radius: 7px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+    }
+
+    .ds-side-card-title {
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .ds-small-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        color: var(--ds-muted);
+        font-size: 11px;
+    }
+
+        .ds-small-stat strong {
+            color: var(--ds-text);
+            font-size: 11px;
+        }
+
+    .ds-form-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 170px);
+        justify-content: start;
+        align-items: start;
+        gap: 9px 10px;
+        margin-bottom: 10px;
+    }
+
+        .ds-form-grid.two {
+            grid-template-columns: repeat(2, minmax(170px, 225px));
+        }
+
+    .ds-field.full {
+        grid-column: span 4;
+    }
+
+    .ds-field.two-column,
+    .ds-field.ds-span-2 {
+        grid-column: span 2;
+    }
+
+    .ds-field label {
+        display: block;
+        color: var(--ds-muted);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .065em;
+        margin-bottom: 4px;
+    }
+
+    .ds-input,
+    .ds-select,
+    .ds-textarea {
+        color: var(--ds-text);
+        background: var(--ds-panel-alt);
+        border: 1px solid var(--ds-border);
+        border-radius: 6px;
+        padding: 6px 7px;
+        width: 100%;
+        outline: none;
+        font-size: 12px;
+        height: 32px;
+    }
+
+    .ds-textarea {
+        resize: vertical;
+        min-height: 50px;
+        height: 50px;
+    }
+
+        .ds-input:focus,
+        .ds-select:focus,
+        .ds-textarea:focus {
+            border-color: var(--ds-accent);
+            box-shadow: 0 0 0 2px rgba(23, 169, 223, .13);
+        }
+
+    .ds-range-wrap {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 32px;
+    }
+
+    .ds-range {
+        flex: 1;
+        accent-color: var(--ds-accent-bright);
+    }
+
+    .ds-range-value {
+        color: var(--ds-accent-bright);
+        font-size: 12px;
+        font-weight: 700;
+        min-width: 38px;
+        text-align: right;
+    }
+
+    .ds-inline-values {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .ds-check-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 32px;
+        color: var(--ds-text);
+    }
+
+        .ds-check-row input {
+            height: 15px;
+            width: 15px;
+            accent-color: var(--ds-accent-bright);
+        }
+
+    .ds-curve-card {
+        width: 710px;
+        max-width: 100%;
+        border-radius: 8px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+        padding: 9px;
+        margin: 8px 0 10px 0;
+    }
+
+    .ds-curve-header {
+        display: flex;
+        justify-content: space-between;
+        color: var(--ds-muted);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        margin-bottom: 7px;
+    }
+
+    #decisionCurveCanvas,
+    #surfaceCanvas {
+        display: block;
+        width: 100%;
+        height: 105px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, .11);
+    }
+
+    [data-bs-theme="light"] #decisionCurveCanvas,
+    [data-bs-theme="light"] #surfaceCanvas {
+        background: #f4f8fc;
+    }
+
+    .ds-button-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 7px;
+        width: 710px;
+        max-width: 100%;
+        margin-top: 10px;
+    }
+
+    .ds-summary-card {
+        border: 1px solid var(--ds-border);
+        border-radius: 8px;
+        background: var(--ds-panel-alt);
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .ds-summary-title {
+        color: var(--ds-muted);
+        font-size: 10px;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        margin-bottom: 8px;
+    }
+
+    .ds-contribution {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 11px;
+        color: var(--ds-muted);
+        margin-bottom: 7px;
+    }
+
+        .ds-contribution strong {
+            color: var(--ds-accent-bright);
+            font-size: 17px;
+            font-weight: 750;
+        }
+
+    .ds-formula {
+        color: var(--ds-text);
+        background: rgba(0, 0, 0, .14);
+        border: 1px solid var(--ds-border);
+        padding: 8px;
+        border-radius: 6px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 11px;
+        line-height: 1.42;
+        overflow-wrap: anywhere;
+    }
+
+    [data-bs-theme="light"] .ds-formula {
+        background: #f4f8fc;
+    }
+
+    .ds-result-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        color: var(--ds-muted);
+        font-size: 12px;
+    }
+
+        .ds-result-row strong {
+            color: var(--ds-text);
+        }
+
+        .ds-result-row .positive {
+            color: var(--ds-success);
+        }
+
+        .ds-result-row .warning {
+            color: var(--ds-warning);
+        }
+
+        .ds-result-row .danger {
+            color: var(--ds-danger);
+        }
+
+    .ds-decision-result {
+        margin-top: 8px;
+        border-radius: 6px;
+        border: 1px solid rgba(46, 207, 141, .34);
+        background: rgba(46, 207, 141, .10);
+        padding: 8px;
+        color: var(--ds-success);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .ds-explanation {
+        margin-top: 8px;
+        color: var(--ds-muted);
+        line-height: 1.38;
+        font-size: 11px;
+    }
+
+    .ds-capability-card {
+        border-radius: 8px;
+        padding: 9px;
+        background: rgba(23, 169, 223, .08);
+        border: 1px solid rgba(23, 169, 223, .25);
+        margin-bottom: 10px;
+    }
+
+        .ds-capability-card strong {
+            display: block;
+            color: var(--ds-accent-bright);
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .ds-capability-card span {
+            color: var(--ds-muted);
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+    .ds-audit-row {
+        display: grid;
+        grid-template-columns: 65px 1fr;
+        gap: 7px;
+        border-left: 2px solid var(--ds-accent);
+        padding: 2px 0 6px 8px;
+        margin-bottom: 6px;
+        font-size: 11px;
+    }
+
+        .ds-audit-row time {
+            color: var(--ds-muted);
+        }
+
+        .ds-audit-row span {
+            color: var(--ds-text);
+        }
+
+    .ds-workspace {
+        padding: 12px;
+    }
+
+    .ds-workspace-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 11px;
+    }
+
+    .ds-wide-card {
+        border-radius: 8px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel);
+        padding: 12px;
+    }
+
+        .ds-wide-card.full {
+            grid-column: 1 / -1;
+        }
+
+    .ds-wide-title {
+        color: var(--ds-text);
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .ds-wide-subtitle {
+        color: var(--ds-muted);
+        line-height: 1.38;
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+
+    .ds-relationship-row,
+    .ds-action-card,
+    .ds-constraint-row {
+        border-radius: 6px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+        padding: 9px;
+        margin-bottom: 6px;
+    }
+
+        .ds-relationship-row strong,
+        .ds-action-card strong,
+        .ds-constraint-row strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .ds-relationship-row span,
+        .ds-action-card span,
+        .ds-constraint-row span {
+            color: var(--ds-muted);
+            font-size: 11px;
+        }
+
+    .ds-action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+    }
+
+    .ds-action-card.selected {
+        border-color: rgba(46, 207, 141, .42);
+        background: rgba(46, 207, 141, .08);
+    }
+
+    .ds-scenario-controls {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .ds-scenario-value {
+        border-radius: 7px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+        padding: 8px;
+    }
+
+        .ds-scenario-value label {
+            display: flex;
+            justify-content: space-between;
+            color: var(--ds-muted);
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+            .ds-scenario-value label strong {
+                color: var(--ds-text);
+            }
+
+    .ds-deploy-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+    }
+
+    .ds-deploy-stat {
+        border-radius: 7px;
+        border: 1px solid var(--ds-border);
+        background: var(--ds-panel-alt);
+        padding: 10px;
+    }
+
+        .ds-deploy-stat span {
+            display: block;
+            color: var(--ds-muted);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .ds-deploy-stat strong {
+            font-size: 18px;
+        }
+
+    .ds-toast {
+        position: fixed;
+        right: 22px;
+        bottom: 20px;
+        min-width: 290px;
+        max-width: 420px;
+        border-radius: 8px;
+        border: 1px solid rgba(23, 169, 223, .42);
+        background: #10283c;
+        color: #ffffff;
+        padding: 10px 12px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, .34);
+        transform: translateY(18px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .16s ease, transform .16s ease;
+        z-index: 5000;
+    }
+
+        .ds-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ds-toast strong {
+            color: var(--ds-accent-bright);
+        }
+
+    @@media (max-width: 1410px) {
+        .decision-space {
+            width: calc(100vw - 34px);
+        }
+
+        .ds-dimensions-layout {
+            grid-template-columns: 220px minmax(535px, 1fr) 288px;
+        }
+
+        .ds-form-grid {
+            grid-template-columns: repeat(3, 160px);
+        }
+
+        .ds-field.full {
+            grid-column: span 3;
+        }
+
+        .ds-curve-card,
+        .ds-button-row {
+            width: 500px;
+        }
+    }
+
+    @@media (max-width: 1090px) {
+        .ds-topbar {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .ds-model-picker {
+            order: 3;
+            flex: 1 1 100%;
+        }
+
+        .ds-dimensions-layout {
+            grid-template-columns: 220px minmax(480px, 1fr);
+        }
+
+        .ds-right {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--ds-border);
+        }
+
+        .ds-center {
+            border-right: 0;
+        }
+    }
+
+    @@media (max-width: 760px) {
+        .decision-space {
+            width: calc(100vw - 18px);
+            border-radius: 8px;
+        }
+
+        .ds-dimensions-layout,
+        .ds-workspace-grid,
+        .ds-action-grid,
+        .ds-scenario-controls,
+        .ds-deploy-grid {
+            display: block;
+        }
+
+        .ds-left,
+        .ds-center {
+            border-right: 0;
+            border-bottom: 1px solid var(--ds-border);
+        }
+
+        .ds-form-grid,
+        .ds-form-grid.two {
+            grid-template-columns: repeat(2, minmax(130px, 1fr));
+        }
+
+        .ds-field,
+        .ds-field.two-column,
+        .ds-field.ds-span-2 {
+            grid-column: span 1;
+        }
+
+        .ds-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .ds-action-card,
+        .ds-scenario-value,
+        .ds-deploy-stat {
+            margin-bottom: 9px;
+        }
+    }
+</style>
+
+<style>
+    html,
+    body {
+        background-color: #f1f3f5 !important;
+        min-height: 100%;
+    }
+</style>
+
+<div style="padding-top: 50px !important;">
+    <div style="position: relative; max-width: 800px; margin: 0 auto;">
+        <canvas id="netcanvas" width="800" height="70" style="display: block; width: 100%; height: 70px; border: none transparent;"></canvas>
+        <div style="text-align: center;" class="table-block">
+            <h2 class="ztitle" style="margin-top: -50px; white-space: nowrap;">
+                Ai Decision Editor
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div style="
+    max-width: 820px;
+    margin: 32px auto;
+    padding: 26px 30px;
+    border: 1px solid rgba(46, 172, 255, 0.45);
+    border-radius: 18px;
+    background: linear-gradient(135deg, #071321 0%, #0b2238 100%);
+    box-shadow: 0 10px 34px rgba(0, 120, 210, 0.22);
+    color: #ffffff;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    ">
+@*     <div style="
+        display: inline-block;
+        margin-bottom: 14px;
+        padding: 6px 16px;
+        border-radius: 20px;
+        background: rgba(27, 164, 255, 0.16);
+        border: 1px solid rgba(27, 164, 255, 0.45);
+        color: #40c4ff;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        ">
+        Production Technology
+    </div> *@
+
+    <div style="
+        font-size: 27px;
+        line-height: 1.25;
+        font-weight: 800;
+        margin-bottom: 12px;
+        color: #ffffff;
+        ">
+        Source Code Is Not Publicly Distributed
+    </div>
+
+    <div style="
+        font-size: 17px;
+        line-height: 1.55;
+        color: #d2e9f7;
+        max-width: 680px;
+        margin: 0 auto;
+        ">
+        Production version of this editor is used to develop advanced
+        A.I. software<br />
+        for military grant applications and specialized security applications
+    </div>
+</div>
+
+<div id="decisionEditorRoot" class="decision-space">
+    <div class="ds-topbar">
+        <div class="ds-brand">
+            <div class="ds-logo">AI</div>
+            <div>
+                <div class="ds-brand-name">Decision <span>Editor</span></div>
+                <div class="ds-brand-subtitle" style="white-space: nowrap;">
+                    Configurable Decision Intelligence Platform
+                </div>
+            </div>
+        </div>
+
+        <div class="ds-model-picker">
+            <label for="applicationModel">Application Model</label>
+            <select id="applicationModel" class="ds-select">
+                <option value="drone">Military Drone Runtime Assurance</option>
+                <option value="stock">Stock Trading Decision Engine</option>
+                <option value="media">Television Media Buying Optimizer</option>
+                <option value="logistics">Logistics Allocation Engine</option>
+                <option value="blank">New Blank Decision Model</option>
+            </select>
+        </div>
+
+        <div class="ds-top-status">
+            <span class="ds-version" id="modelVersion">Model v1.0</span>
+            <span class="ds-status-badge" id="modelStatusBadge">
+                <span class="ds-status-dot"></span>
+                <span id="modelStatusText">Validated</span>
+            </span>
+        </div>
+    </div>
+
+    <nav class="ds-tabs" aria-label="Decision model sections">
+        <button type="button" class="ds-tab active" data-tab="dimensions">Dimensions</button>
+        <button type="button" class="ds-tab" data-tab="relationships">Relationships</button>
+        <button type="button" class="ds-tab" data-tab="constraints">Constraints</button>
+        <button type="button" class="ds-tab" data-tab="surface">Decision Surface</button>
+        <button type="button" class="ds-tab" data-tab="scenarios">Scenarios &amp; Actions</button>
+        <button type="button" class="ds-tab" data-tab="deploy">Validate &amp; Deploy</button>
+    </nav>
+
+    <section id="panel-dimensions" class="ds-panel active">
+        <div class="ds-dimensions-layout">
+            <aside class="ds-left">
+                <div class="ds-section-title">
+                    Dimensions
+                    <button type="button" class="ds-mini-button" id="quickAddDimension" title="Add dimension">+</button>
+                </div>
+
+                <div id="dimensionList" class="ds-dimension-list"></div>
+
+                <button type="button" class="ds-add-button" id="addDimensionButton">
+                    + Add Dimension
+                </button>
+
+                <div class="ds-side-card">
+                    <div class="ds-side-card-title">Model Summary</div>
+                    <div class="ds-small-stat">
+                        <span>Active Dimensions</span>
+                        <strong id="activeDimensionCount">0</strong>
+                    </div>
+                    <div class="ds-small-stat">
+                        <span>Hard Constraints</span>
+                        <strong id="hardConstraintCount">0</strong>
+                    </div>
+                    <div class="ds-small-stat">
+                        <span>Input Sources</span>
+                        <strong id="inputSourceCount">0</strong>
+                    </div>
+                    <div class="ds-small-stat">
+                        <span>Actions Evaluated</span>
+                        <strong id="actionCount">0</strong>
+                    </div>
+                </div>
+
+                <div class="ds-side-card">
+                    <div class="ds-side-card-title">Input Sources Supported</div>
+                    <div class="ds-small-stat"><span>Sensor / Telemetry</span><strong>✓</strong></div>
+                    <div class="ds-small-stat"><span>Database Field</span><strong>✓</strong></div>
+                    <div class="ds-small-stat"><span>API / Data Feed</span><strong>✓</strong></div>
+                    <div class="ds-small-stat"><span>Market Feed</span><strong>✓</strong></div>
+                    <div class="ds-small-stat"><span>Manual / Calculated</span><strong>✓</strong></div>
+                </div>
+            </aside>
+
+            <main class="ds-center">
+                <div class="ds-section-title">
+                    <strong id="editorTitle">Dimension Properties</strong>
+                    <span id="selectedDimensionStatus">Validated</span>
+                </div>
+
+                <div class="ds-form-grid">
+                    <div class="ds-field ds-span-2">
+                        <label for="dimensionName">Dimension Name</label>
+                        <input id="dimensionName" class="ds-input" type="text" data-field="name" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="inputSourceType">Input Source Type</label>
+                        <select id="inputSourceType" class="ds-select" data-field="inputType">
+                            <option value="Sensor / Telemetry">Sensor / Telemetry</option>
+                            <option value="Database Field">Database Field</option>
+                            <option value="API / External Feed">API / External Feed</option>
+                            <option value="Market Feed">Market Feed</option>
+                            <option value="User Entered Value">User Entered Value</option>
+                            <option value="Calculated Dimension">Calculated Dimension</option>
+                            <option value="Rule / Threshold">Rule / Threshold</option>
+                        </select>
+                    </div>
+
+                    <div class="ds-field ds-span-2">
+                        <label for="dataSource">Data Source / Input</label>
+                        <input id="dataSource" class="ds-input" type="text" data-field="source" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="dimensionRole">Dimension Role</label>
+                        <select id="dimensionRole" class="ds-select" data-field="role">
+                            <option value="Opportunity">Opportunity</option>
+                            <option value="Risk">Risk</option>
+                            <option value="Resource">Resource</option>
+                            <option value="Constraint">Constraint</option>
+                            <option value="Confidence">Confidence</option>
+                            <option value="Outcome">Outcome</option>
+                            <option value="Context">Context</option>
+                        </select>
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="dataType">Data Type</label>
+                        <select id="dataType" class="ds-select" data-field="dataType">
+                            <option value="Decimal 0-1">Decimal 0-1</option>
+                            <option value="Percentage">Percentage</option>
+                            <option value="Integer">Integer</option>
+                            <option value="Currency">Currency</option>
+                            <option value="True / False">True / False</option>
+                            <option value="Category">Category</option>
+                        </select>
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="dimensionUnits">Units</label>
+                        <input id="dimensionUnits" class="ds-input" type="text" data-field="units" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="dimensionObjective">Objective</label>
+                        <select id="dimensionObjective" class="ds-select" data-field="objective">
+                            <option value="Minimize">Minimize</option>
+                            <option value="Maximize">Maximize</option>
+                            <option value="Maintain Target">Maintain Target</option>
+                            <option value="Stay Within Range">Stay Within Range</option>
+                            <option value="Prohibit Above Limit">Prohibit Above Limit</option>
+                        </select>
+                    </div>
+
+                    <div class="ds-field two-column">
+                        <label for="importanceWeight">Importance Weight</label>
+                        <div class="ds-range-wrap">
+                            <input id="importanceWeight" class="ds-range" type="range" min="0" max="100" data-field="weight" />
+                            <span id="importanceWeightValue" class="ds-range-value">0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="ds-field ds-span-2">
+                        <label>Safe Range</label>
+                        <div class="ds-inline-values">
+                            <input id="safeMinimum" class="ds-input" type="number" step="0.01" min="0" max="1" data-field="safeMin" />
+                            <input id="safeMaximum" class="ds-input" type="number" step="0.01" min="0" max="1" data-field="safeMax" />
+                        </div>
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="warningThreshold">Warning Threshold</label>
+                        <input id="warningThreshold" class="ds-input" type="number" step="0.01" min="0" max="1" data-field="warning" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="criticalThreshold">Critical Threshold</label>
+                        <input id="criticalThreshold" class="ds-input" type="number" step="0.01" min="0" max="1" data-field="critical" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="behaviorCurve">Behavior Curve</label>
+                        <select id="behaviorCurve" class="ds-select" data-field="curve">
+                            <option value="Linear">Linear</option>
+                            <option value="Nonlinear">Nonlinear</option>
+                            <option value="Threshold">Threshold</option>
+                            <option value="Accelerating Risk">Accelerating Risk</option>
+                            <option value="Logistic">Logistic</option>
+                        </select>
+                    </div>
+
+                    <div class="ds-field">
+                        <label for="uncertaintyTolerance">Uncertainty Tolerance</label>
+                        <input id="uncertaintyTolerance" class="ds-input" type="number" step="0.01" min="0" max="1" data-field="uncertainty" />
+                    </div>
+
+                    <div class="ds-field">
+                        <label>&nbsp;</label>
+                        <div class="ds-check-row">
+                            <input id="hardConstraint" type="checkbox" data-field="hardConstraint" />
+                            <label for="hardConstraint" style="margin: 0; color: var(--ds-text); text-transform: none; letter-spacing: 0;">Hard Constraint</label>
+                        </div>
+                    </div>
+
+                    <div class="ds-field full">
+                        <label for="relationshipRule">Relationship to Other Dimensions</label>
+                        <input id="relationshipRule" class="ds-input" type="text" data-field="relationship" />
+                    </div>
+
+                    <div class="ds-field full">
+                        <label for="explanationText">Decision Explanation Text</label>
+                        <textarea id="explanationText" class="ds-textarea" data-field="explanation"></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-curve-card">
+                    <div class="ds-curve-header">
+                        <span>Live Decision Surface Contribution</span>
+                        <span id="curveDimensionName">Selected Dimension</span>
+                    </div>
+                    <canvas id="decisionCurveCanvas" width="760" height="148"></canvas>
+                </div>
+
+                <div class="ds-button-row">
+                    <button type="button" class="ds-danger-button" id="removeDimensionButton">Remove</button>
+                    <button type="button" class="ds-secondary-button" id="saveDimensionButton">Save Dimension</button>
+                    <button type="button" class="ds-primary-button" id="validateModelButton">Validate Model</button>
+                </div>
+            </main>
+
+            <aside class="ds-right">
+                <div class="ds-capability-card">
+                    <strong>Model Updated Without Recompilation or Retraining</strong>
+                    <span>New validated inputs become active decision dimensions in the current decision model.</span>
+                </div>
+
+                <div class="ds-summary-card">
+                    <div class="ds-summary-title">Live Decision Effect</div>
+
+                    <div class="ds-contribution">
+                        <span id="selectedDimensionEffectLabel">Dimension Contribution</span>
+                        <strong id="dimensionContribution">+0.000</strong>
+                    </div>
+
+                    <div class="ds-formula" id="liveEquation">
+                        S(a) = Σ wi × Pi(xi)
+                    </div>
+                </div>
+
+                <div class="ds-summary-card">
+                    <div class="ds-summary-title">Current Scenario</div>
+
+                    <div class="ds-result-row">
+                        <span>Top Active Risk</span>
+                        <strong id="topRiskName">None</strong>
+                    </div>
+                    <div class="ds-result-row">
+                        <span>Decision Score</span>
+                        <strong id="decisionScore">0.000</strong>
+                    </div>
+                    <div class="ds-result-row">
+                        <span>Constraint Status</span>
+                        <strong id="constraintStatus" class="positive">Clear</strong>
+                    </div>
+                    <div class="ds-result-row">
+                        <span>Model Health</span>
+                        <strong id="modelHealth" class="positive">Stable</strong>
+                    </div>
+
+                    <div class="ds-decision-result" id="recommendedAction">
+                        Recommended Decision: Continue
+                    </div>
+
+                    <div class="ds-explanation" id="decisionExplanation">
+                        Configure dimensions to generate an explainable decision result.
+                    </div>
+                </div>
+
+                <div class="ds-summary-card">
+                    <div class="ds-summary-title">Audit / History</div>
+                    <div id="auditHistory"></div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <section id="panel-relationships" class="ds-panel">
+        <div class="ds-workspace">
+            <div class="ds-workspace-grid">
+                <div class="ds-wide-card">
+                    <div class="ds-wide-title">Dimension Relationships</div>
+                    <div class="ds-wide-subtitle">
+                        Define how changing one input increases, reduces, overrides or changes the meaning of another dimension.
+                    </div>
+                    <div id="relationshipList"></div>
+                    <button type="button" class="ds-add-button" id="addRelationshipButton">+ Add Relationship</button>
+                </div>
+
+                <div class="ds-wide-card">
+                    <div class="ds-wide-title">Relationship Effect</div>
+                    <div class="ds-wide-subtitle">
+                        Relationships let the decision surface react differently as circumstances change.
+                    </div>
+                    <div class="ds-formula" id="relationshipFormula">
+                        Interaction term will appear here.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panel-constraints" class="ds-panel">
+        <div class="ds-workspace">
+            <div class="ds-workspace-grid">
+                <div class="ds-wide-card">
+                    <div class="ds-wide-title">Hard Constraints</div>
+                    <div class="ds-wide-subtitle">
+                        Hard constraints identify decisions that the engine must reject regardless of opportunity score.
+                    </div>
+                    <div id="constraintList"></div>
+                </div>
+
+                <div class="ds-wide-card">
+                    <div class="ds-wide-title">Constraint Policy</div>
+                    <div class="ds-form-grid two">
+                        <div class="ds-field">
+                            <label for="constraintMode">Violation Response</label>
+                            <select id="constraintMode" class="ds-select">
+                                <option>Reject Action</option>
+                                <option>Require Human Approval</option>
+                                <option>Select Safest Alternative</option>
+                                <option>Stop / Hold Position</option>
+                            </select>
+                        </div>
+                        <div class="ds-field">
+                            <label for="rollbackPolicy">Rollback Policy</label>
+                            <select id="rollbackPolicy" class="ds-select">
+                                <option>Automatic Version Rollback</option>
+                                <option>Require Approval</option>
+                                <option>Log Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="ds-primary-button" id="savePolicyButton">Save Constraint Policy</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panel-surface" class="ds-panel">
+        <div class="ds-workspace">
+            <div class="ds-workspace-grid">
+                <div class="ds-wide-card full">
+                    <div class="ds-wide-title">Generated Decision Surface</div>
+                    <div class="ds-wide-subtitle">
+                        The active mathematical model updates automatically as dimensions, rules and relationships are changed.
+                    </div>
+                    <canvas id="surfaceCanvas" width="1280" height="148"></canvas>
+                    <div class="ds-formula" id="fullEquation" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panel-scenarios" class="ds-panel">
+        <div class="ds-workspace">
+            <div class="ds-workspace-grid">
+                <div class="ds-wide-card full">
+                    <div class="ds-wide-title">Scenario Preview</div>
+                    <div class="ds-wide-subtitle">
+                        Change incoming values and immediately see how the active model changes its recommended action.
+                    </div>
+                    <div id="scenarioControls" class="ds-scenario-controls"></div>
+                </div>
+
+                <div class="ds-wide-card full">
+                    <div class="ds-wide-title">Candidate Actions</div>
+                    <div id="actionCards" class="ds-action-grid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panel-deploy" class="ds-panel">
+        <div class="ds-workspace">
+            <div class="ds-workspace-grid">
+                <div class="ds-wide-card full">
+                    <div class="ds-wide-title">Validate &amp; Deploy Model</div>
+                    <div class="ds-wide-subtitle">
+                        Publish a validated decision model without recompiling the core decision engine or retraining an AI model.
+                    </div>
+
+                    <div class="ds-deploy-grid">
+                        <div class="ds-deploy-stat">
+                            <span>Dimensions Configured</span>
+                            <strong id="deployDimensionCount">0</strong>
+                        </div>
+                        <div class="ds-deploy-stat">
+                            <span>Validation State</span>
+                            <strong id="deployValidationState">Validated</strong>
+                        </div>
+                        <div class="ds-deploy-stat">
+                            <span>Core Recompile Required</span>
+                            <strong style="color: var(--ds-success);">No</strong>
+                        </div>
+                    </div>
+
+                    <div class="ds-button-row" style="margin-top: 24px;">
+                        <button type="button" class="ds-secondary-button" id="rollbackVersionButton">Rollback Version</button>
+                        <button type="button" class="ds-secondary-button" id="runScenarioButton">Run Scenario Test</button>
+                        <button type="button" class="ds-primary-button" id="deployConfigurationButton">Deploy Configuration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="decisionToast" class="ds-toast" aria-live="polite"></div>
+
+@section Scripts {
+
+    <script nonce="@scriptNonce">
+
+        (function () {
+
+            "use strict";
+
+            const templates = {
+                drone: {
+                    title: "Drone Runtime Assurance",
+                    actions: ["Continue Mission", "Reroute", "Loiter", "Return to Base"],
+                    dimensions: [
+                        createDimension("Battery Reserve", "Sensor / Telemetry", "Vehicle Power Monitor", "Resource", "Percentage", "% Remaining", "Maximize", 92, 0.64, 0.30, 1.00, 0.28, 0.18, "Nonlinear", 0.05, true, "Low reserve increases Return to Base priority.", "Battery reserve must support safe continuation and recovery actions."),
+                        createDimension("Wind Instability", "Sensor / Telemetry", "Inertial / Wind Estimator", "Risk", "Decimal 0-1", "Instability", "Minimize", 74, 0.26, 0.00, 0.40, 0.45, 0.70, "Accelerating Risk", 0.10, false, "Increasing wind raises stabilization priority.", "Wind instability contributes to route and control risk."),
+                        createDimension("Collision Risk", "Sensor / Telemetry", "Obstacle Detection System", "Constraint", "Decimal 0-1", "Probability", "Prohibit Above Limit", 100, 0.11, 0.00, 0.20, 0.24, 0.34, "Threshold", 0.03, true, "Collision risk overrides mission progress.", "Actions exceeding validated collision risk must be rejected."),
+                        createDimension("Mission Progress", "Calculated Dimension", "Mission Completion Model", "Opportunity", "Percentage", "% Complete", "Maximize", 52, 0.42, 0.00, 1.00, 0.00, 0.00, "Linear", 0.04, false, "Progress is rewarded only when safety remains valid.", "Safe forward mission progress improves the selected action."),
+                        createDimension("GPS Jamming Confidence", "Sensor / Telemetry", "Navigation Interference Detector", "Confidence", "Decimal 0-1", "Confidence", "Minimize", 81, 0.62, 0.00, 0.36, 0.45, 0.75, "Nonlinear", 0.12, true, "Above warning level, increase fallback navigation priority.", "High GPS jamming reduces navigation reliability and promotes validated fallback actions."),
+                        createDimension("Communication Link", "Sensor / Telemetry", "Command Link Monitor", "Confidence", "Decimal 0-1", "Link Loss", "Minimize", 66, 0.18, 0.00, 0.36, 0.42, 0.70, "Threshold", 0.08, false, "Link degradation increases autonomous recovery priority.", "Communication degradation changes permitted mission actions.")
+                    ]
+                },
+                stock: {
+                    title: "Stock Trading Decision Engine",
+                    actions: ["Buy Position", "Hold", "Reduce Position", "Sell Position"],
+                    dimensions: [
+                        createDimension("Expected Return", "Market Feed", "Fundamental / Forecast Feed", "Opportunity", "Percentage", "% Return", "Maximize", 88, 0.71, 0.30, 1.00, 0.00, 0.00, "Nonlinear", 0.14, false, "Return is discounted as volatility increases.", "Expected return contributes positively when risk remains acceptable."),
+                        createDimension("Volatility Risk", "Market Feed", "Options Volatility Feed", "Risk", "Decimal 0-1", "Risk Index", "Minimize", 85, 0.67, 0.00, 0.40, 0.52, 0.78, "Accelerating Risk", 0.11, true, "High volatility reduces acceptable position size.", "High volatility increases downside exposure and may prohibit buying."),
+                        createDimension("Earnings Strength", "Database Field", "Financial Statements", "Opportunity", "Decimal 0-1", "Strength", "Maximize", 64, 0.58, 0.30, 1.00, 0.00, 0.00, "Linear", 0.10, false, "Strong earnings increase opportunity value.", "Earnings strength supports an investment action."),
+                        createDimension("Price Momentum", "Market Feed", "Price / Volume Feed", "Context", "Decimal 0-1", "Momentum", "Maximize", 54, 0.49, 0.30, 1.00, 0.00, 0.00, "Linear", 0.19, false, "Momentum must be balanced against risk.", "Momentum contributes to action timing."),
+                        createDimension("Maximum Exposure", "Rule / Threshold", "Portfolio Rules", "Constraint", "Percentage", "% Portfolio", "Prohibit Above Limit", 100, 0.22, 0.00, 0.25, 0.25, 0.30, "Threshold", 0.00, true, "Exposure constraint overrides buy opportunity.", "The selected action may not exceed portfolio exposure limits.")
+                    ]
+                },
+                media: {
+                    title: "Television Media Buying Optimizer",
+                    actions: ["Buy Time Slot", "Negotiate Lower Rate", "Test Placement", "Reject Placement"],
+                    dimensions: [
+                        createDimension("Expected Response Rate", "Database Field", "Historical Orders", "Opportunity", "Percentage", "% Response", "Maximize", 90, 0.62, 0.25, 1.00, 0.00, 0.00, "Nonlinear", 0.14, false, "High response rate increases allowable media spend.", "Expected response rate increases projected placement value."),
+                        createDimension("Media Cost", "Database Field", "Station Rate Card", "Resource", "Currency", "Cost Index", "Minimize", 78, 0.49, 0.00, 0.55, 0.60, 0.82, "Linear", 0.05, false, "Higher media cost lowers expected profit.", "Media cost reduces placement profitability."),
+                        createDimension("Product Margin", "Database Field", "Product Accounting", "Opportunity", "Currency", "Margin Index", "Maximize", 84, 0.72, 0.35, 1.00, 0.00, 0.00, "Linear", 0.02, false, "Margin increases allowable cost per order.", "Product margin supports profitable media purchasing."),
+                        createDimension("Refund Rate", "Database Field", "Order Returns", "Risk", "Percentage", "% Refund", "Minimize", 76, 0.31, 0.00, 0.32, 0.40, 0.64, "Accelerating Risk", 0.07, true, "High refund rate reduces net response value.", "Refund risk may prohibit apparently profitable time purchases."),
+                        createDimension("Maximum Allowable CPO", "Rule / Threshold", "Campaign Rule", "Constraint", "Currency", "CPO Index", "Prohibit Above Limit", 100, 0.38, 0.00, 0.48, 0.48, 0.60, "Threshold", 0.00, true, "Cost-per-order constraint overrides gross sales.", "The placement must not exceed maximum allowable cost per order.")
+                    ]
+                },
+                logistics: {
+                    title: "Logistics Allocation Engine",
+                    actions: ["Assign Route", "Select Alternate Route", "Hold Shipment", "Escalate Mission"],
+                    dimensions: [
+                        createDimension("Delivery Priority", "Database Field", "Mission Queue", "Opportunity", "Decimal 0-1", "Priority", "Maximize", 82, 0.80, 0.20, 1.00, 0.00, 0.00, "Linear", 0.05, false, "Critical priority increases delivery value.", "High-priority shipments should be completed safely."),
+                        createDimension("Route Threat Level", "API / External Feed", "Threat Intelligence Feed", "Risk", "Decimal 0-1", "Threat", "Minimize", 96, 0.56, 0.00, 0.35, 0.44, 0.72, "Accelerating Risk", 0.16, true, "Threat exposure changes acceptable routing.", "Threat level may force alternate allocation."),
+                        createDimension("Fuel Reserve", "Sensor / Telemetry", "Fleet Telemetry", "Resource", "Percentage", "% Reserve", "Maximize", 77, 0.60, 0.32, 1.00, 0.28, 0.18, "Nonlinear", 0.05, true, "Low fuel reserve promotes shorter safe routes.", "Fuel reserve must permit safe completion or recovery."),
+                        createDimension("Asset Availability", "Database Field", "Inventory / Fleet Database", "Resource", "Decimal 0-1", "Availability", "Maximize", 61, 0.48, 0.25, 1.00, 0.00, 0.00, "Linear", 0.09, false, "Availability affects allocation options.", "Available assets determine permitted assignments.")
+                    ]
+                },
+                blank: {
+                    title: "New Blank Decision Model",
+                    actions: ["Action A", "Action B", "Hold", "Reject"],
+                    dimensions: [
+                        createDimension("New Decision Dimension", "User Entered Value", "Input Source", "Context", "Decimal 0-1", "Value", "Minimize", 50, 0.20, 0.00, 1.00, 0.60, 0.80, "Linear", 0.10, false, "Define relationship to other dimensions.", "Define how this dimension affects the selected decision.")
+                    ]
+                }
+            };
+
+            let state = {
+                templateKey: "drone",
+                dimensions: [],
+                actions: [],
+                selectedId: null,
+                validated: true,
+                version: 1,
+                audit: []
+            };
+
+            function createDimension(name, inputType, source, role, dataType, units, objective, weight, currentValue, safeMin, safeMax, warning, critical, curve, uncertainty, hardConstraint, relationship, explanation) {
+                return {
+                    id: "dimension-" + Math.random().toString(36).substring(2, 10),
+                    name: name,
+                    inputType: inputType,
+                    source: source,
+                    role: role,
+                    dataType: dataType,
+                    units: units,
+                    objective: objective,
+                    weight: weight,
+                    currentValue: currentValue,
+                    safeMin: safeMin,
+                    safeMax: safeMax,
+                    warning: warning,
+                    critical: critical,
+                    curve: curve,
+                    uncertainty: uncertainty,
+                    hardConstraint: hardConstraint,
+                    relationship: relationship,
+                    explanation: explanation,
+                    enabled: true,
+                    validated: true
+                };
+            }
+
+            function cloneObject(value) {
+                return JSON.parse(JSON.stringify(value));
+            }
+
+            function loadTemplate(templateKey) {
+                const template = cloneObject(templates[templateKey]);
+
+                state.templateKey = templateKey;
+                state.dimensions = template.dimensions;
+                state.actions = template.actions;
+                state.selectedId = state.dimensions.length ? state.dimensions[0].id : null;
+                state.validated = true;
+                state.version = 1;
+                state.audit = [];
+
+                document.getElementById("modelVersion").textContent = "Model v1.0";
+                addAudit("Loaded application model: " + template.title + ".");
+                renderAll();
+            }
+
+            function getSelectedDimension() {
+                return state.dimensions.find(function (dimension) {
+                    return dimension.id === state.selectedId;
+                }) || null;
+            }
+
+            function getEnabledDimensions() {
+                return state.dimensions.filter(function (dimension) {
+                    return dimension.enabled;
+                });
+            }
+
+            function calculateRisk(dimension) {
+                const value = Number(dimension.currentValue) || 0;
+                let risk = value;
+
+                switch (dimension.objective) {
+                    case "Maximize":
+                        risk = 1 - value;
+                        break;
+                    case "Maintain Target":
+                        risk = Math.abs(value - ((Number(dimension.safeMin) + Number(dimension.safeMax)) / 2));
+                        break;
+                    case "Stay Within Range":
+                        if (value < Number(dimension.safeMin)) {
+                            risk = Number(dimension.safeMin) - value;
+                        } else if (value > Number(dimension.safeMax)) {
+                            risk = value - Number(dimension.safeMax);
+                        } else {
+                            risk = 0;
+                        }
+                        break;
+                    case "Prohibit Above Limit":
+                    case "Minimize":
+                    default:
+                        risk = value;
+                        break;
+                }
+
+                if (dimension.curve === "Nonlinear") {
+                    risk = Math.pow(risk, 1.45);
+                }
+
+                if (dimension.curve === "Accelerating Risk") {
+                    risk = Math.pow(risk, 2) * 1.45;
+                }
+
+                if (dimension.curve === "Threshold") {
+                    risk = value >= Number(dimension.warning) ? Math.min(1, risk * 1.45) : risk * 0.45;
+                }
+
+                if (dimension.curve === "Logistic") {
+                    risk = 1 / (1 + Math.exp(-10 * (risk - 0.5)));
+                }
+
+                return Math.max(0, Math.min(1, risk));
+            }
+
+            function calculateContribution(dimension) {
+                return (Number(dimension.weight) / 100) * calculateRisk(dimension);
+            }
+
+            function isConstraintViolated(dimension) {
+                if (!dimension.enabled || !dimension.hardConstraint) {
+                    return false;
+                }
+
+                const value = Number(dimension.currentValue) || 0;
+
+                if (dimension.objective === "Maximize") {
+                    return value < Number(dimension.warning);
+                }
+
+                return value >= Number(dimension.critical);
+            }
+
+            function evaluateDecision() {
+                const enabledDimensions = getEnabledDimensions();
+                const rankedDimensions = enabledDimensions.map(function (dimension) {
+                    return {
+                        dimension: dimension,
+                        contribution: calculateContribution(dimension),
+                        violated: isConstraintViolated(dimension)
+                    };
+                }).sort(function (left, right) {
+                    return right.contribution - left.contribution;
+                });
+
+                const totalScore = rankedDimensions.reduce(function (sum, result) {
+                    return sum + result.contribution;
+                }, 0);
+
+                const violation = rankedDimensions.find(function (result) {
+                    return result.violated;
+                });
+
+                const topResult = rankedDimensions.length ? rankedDimensions[0] : null;
+                let recommendedAction = state.actions.length ? state.actions[0] : "Continue";
+                let status = "Clear";
+
+                if (violation) {
+                    recommendedAction = state.actions[state.actions.length - 1] || "Reject";
+                    status = "Constraint Violated";
+                } else if (totalScore > 1.30) {
+                    recommendedAction = state.actions[2] || state.actions[0] || "Hold";
+                    status = "High Risk";
+                } else if (totalScore > 0.80) {
+                    recommendedAction = state.actions[1] || state.actions[0] || "Review";
+                    status = "Caution";
+                }
+
+                return {
+                    rankedDimensions: rankedDimensions,
+                    totalScore: totalScore,
+                    violation: violation,
+                    topResult: topResult,
+                    recommendedAction: recommendedAction,
+                    status: status
+                };
+            }
+
+            function renderAll() {
+                renderDimensionList();
+                renderSelectedDimension();
+                renderSummary();
+                renderRelationships();
+                renderConstraints();
+                renderDecisionSurface();
+                renderScenarioControls();
+                renderActions();
+                renderDeploy();
+                renderAudit();
+                updateValidationDisplay();
+            }
+
+            function renderDimensionList() {
+                const list = document.getElementById("dimensionList");
+                list.innerHTML = "";
+
+                state.dimensions.forEach(function (dimension) {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "ds-dimension-item " +
+                        (dimension.id === state.selectedId ? "active " : "") +
+                        (dimension.validated ? "validated" : "modified");
+                    button.dataset.id = dimension.id;
+
+                    button.innerHTML =
+                        '<span class="ds-dimension-icon"></span>' +
+                        '<span class="ds-dimension-name">' + escapeHtml(dimension.name) +
+                        '<span class="ds-dimension-source">' + escapeHtml(dimension.inputType) + '</span></span>' +
+                        '<span class="ds-toggle ' + (dimension.enabled ? "enabled" : "") + '"></span>';
+
+                    button.addEventListener("click", function (event) {
+                        const toggle = event.target.closest(".ds-toggle");
+
+                        if (toggle) {
+                            dimension.enabled = !dimension.enabled;
+                            markModified(dimension.name + " " + (dimension.enabled ? "enabled." : "disabled."));
+                        } else {
+                            state.selectedId = dimension.id;
+                        }
+
+                        renderAll();
+                    });
+
+                    list.appendChild(button);
+                });
+
+                const enabledDimensions = getEnabledDimensions();
+
+                document.getElementById("activeDimensionCount").textContent = enabledDimensions.length;
+                document.getElementById("hardConstraintCount").textContent = enabledDimensions.filter(function (dimension) {
+                    return dimension.hardConstraint;
+                }).length;
+
+                document.getElementById("inputSourceCount").textContent = new Set(enabledDimensions.map(function (dimension) {
+                    return dimension.inputType;
+                })).size;
+
+                document.getElementById("actionCount").textContent = state.actions.length;
+            }
+
+            function renderSelectedDimension() {
+                const dimension = getSelectedDimension();
+
+                if (!dimension) {
+                    return;
+                }
+
+                document.getElementById("dimensionName").value = dimension.name;
+                document.getElementById("inputSourceType").value = dimension.inputType;
+                document.getElementById("dataSource").value = dimension.source;
+                document.getElementById("dimensionRole").value = dimension.role;
+                document.getElementById("dataType").value = dimension.dataType;
+                document.getElementById("dimensionUnits").value = dimension.units;
+                document.getElementById("dimensionObjective").value = dimension.objective;
+                document.getElementById("importanceWeight").value = dimension.weight;
+                document.getElementById("importanceWeightValue").textContent = (Number(dimension.weight) / 100).toFixed(2);
+                document.getElementById("safeMinimum").value = dimension.safeMin;
+                document.getElementById("safeMaximum").value = dimension.safeMax;
+                document.getElementById("warningThreshold").value = dimension.warning;
+                document.getElementById("criticalThreshold").value = dimension.critical;
+                document.getElementById("behaviorCurve").value = dimension.curve;
+                document.getElementById("uncertaintyTolerance").value = dimension.uncertainty;
+                document.getElementById("hardConstraint").checked = dimension.hardConstraint;
+                document.getElementById("relationshipRule").value = dimension.relationship;
+                document.getElementById("explanationText").value = dimension.explanation;
+                document.getElementById("curveDimensionName").textContent = dimension.name;
+                document.getElementById("selectedDimensionStatus").textContent = dimension.validated ? "Validated" : "Modified — Validation Required";
+
+                drawDimensionCurve(dimension);
+            }
+
+            function renderSummary() {
+                const result = evaluateDecision();
+                const dimension = getSelectedDimension();
+                const selectedContribution = dimension ? calculateContribution(dimension) : 0;
+                const equationTerms = getEnabledDimensions().map(function (item) {
+                    return (Number(item.weight) / 100).toFixed(2) + "·P(" + abbreviate(item.name) + ")";
+                });
+
+                document.getElementById("selectedDimensionEffectLabel").textContent = dimension ? dimension.name + " Contribution" : "Dimension Contribution";
+                document.getElementById("dimensionContribution").textContent = "+" + selectedContribution.toFixed(3);
+                document.getElementById("liveEquation").innerHTML =
+                    "S(a) = " + equationTerms.join(" + ") +
+                    "<br />Current Score = " + result.totalScore.toFixed(3);
+
+                document.getElementById("topRiskName").textContent = result.topResult ? result.topResult.dimension.name : "None";
+                document.getElementById("decisionScore").textContent = result.totalScore.toFixed(3);
+
+                const constraintStatus = document.getElementById("constraintStatus");
+                constraintStatus.textContent = result.status;
+                constraintStatus.className = result.violation ? "danger" : (result.status === "Caution" || result.status === "High Risk" ? "warning" : "positive");
+
+                const health = document.getElementById("modelHealth");
+                health.textContent = state.validated ? "Stable / Validated" : "Validation Required";
+                health.className = state.validated ? "positive" : "warning";
+
+                document.getElementById("recommendedAction").textContent = "Recommended Decision: " + result.recommendedAction;
+
+                if (result.violation) {
+                    document.getElementById("decisionExplanation").textContent =
+                        result.violation.dimension.explanation + " Hard constraint triggered; selected action changed to " + result.recommendedAction + ".";
+                } else if (result.topResult) {
+                    document.getElementById("decisionExplanation").textContent =
+                        result.topResult.dimension.explanation + " Current recommendation: " + result.recommendedAction + ".";
+                }
+            }
+
+            function renderRelationships() {
+                const list = document.getElementById("relationshipList");
+                const relationships = getEnabledDimensions().filter(function (dimension) {
+                    return dimension.relationship && dimension.relationship.trim().length > 0;
+                });
+
+                list.innerHTML = "";
+
+                relationships.forEach(function (dimension) {
+                    const row = document.createElement("div");
+                    row.className = "ds-relationship-row";
+                    row.innerHTML =
+                        "<strong>" + escapeHtml(dimension.name) + "</strong>" +
+                        "<span>" + escapeHtml(dimension.relationship) + "</span>";
+                    list.appendChild(row);
+                });
+
+                const selected = getSelectedDimension();
+                document.getElementById("relationshipFormula").textContent =
+                    selected
+                        ? "I(" + abbreviate(selected.name) + ", related dimensions) = λ × interaction effect"
+                        : "Select a dimension to view its interaction term.";
+            }
+
+            function renderConstraints() {
+                const list = document.getElementById("constraintList");
+                const constraints = getEnabledDimensions().filter(function (dimension) {
+                    return dimension.hardConstraint;
+                });
+
+                list.innerHTML = "";
+
+                if (!constraints.length) {
+                    list.innerHTML = '<div class="ds-constraint-row"><span>No hard constraints have been configured.</span></div>';
+                    return;
+                }
+
+                constraints.forEach(function (dimension) {
+                    const row = document.createElement("div");
+                    const violation = isConstraintViolated(dimension);
+                    row.className = "ds-constraint-row";
+                    row.innerHTML =
+                        "<strong>" + escapeHtml(dimension.name) + (violation ? " — VIOLATED" : "") + "</strong>" +
+                        "<span>" + escapeHtml(dimension.objective) + " | Critical Threshold: " + formatNumber(dimension.critical) + "</span>";
+                    list.appendChild(row);
+                });
+            }
+
+            function renderDecisionSurface() {
+                const result = evaluateDecision();
+                const equation = getEnabledDimensions().map(function (dimension) {
+                    return (Number(dimension.weight) / 100).toFixed(2) + "P" + abbreviate(dimension.name);
+                }).join(" + ");
+
+                document.getElementById("fullEquation").innerHTML =
+                    "S(a) = " + equation +
+                    " + Σ Interaction Terms + Σ Hard Constraints" +
+                    "<br />Selected action minimizes acceptable S(a) while preserving validated constraints." +
+                    "<br />Current scenario score: " + result.totalScore.toFixed(3);
+
+                drawSurfaceCanvas();
+            }
+
+            function renderScenarioControls() {
+                const container = document.getElementById("scenarioControls");
+                container.innerHTML = "";
+
+                getEnabledDimensions().slice(0, 6).forEach(function (dimension) {
+                    const block = document.createElement("div");
+                    block.className = "ds-scenario-value";
+
+                    const label = document.createElement("label");
+                    label.innerHTML =
+                        "<span>" + escapeHtml(dimension.name) + "</span>" +
+                        "<strong>" + formatNumber(dimension.currentValue) + "</strong>";
+
+                    const range = document.createElement("input");
+                    range.type = "range";
+                    range.min = "0";
+                    range.max = "1";
+                    range.step = "0.01";
+                    range.value = dimension.currentValue;
+                    range.className = "ds-range";
+
+                    range.addEventListener("input", function () {
+                        dimension.currentValue = Number(range.value);
+                        label.querySelector("strong").textContent = formatNumber(dimension.currentValue);
+                        renderSummary();
+                        drawDimensionCurve(getSelectedDimension());
+                        drawSurfaceCanvas();
+                        renderActions();
+                        renderConstraints();
+                    });
+
+                    block.appendChild(label);
+                    block.appendChild(range);
+                    container.appendChild(block);
+                });
+            }
+
+            function renderActions() {
+                const container = document.getElementById("actionCards");
+                const result = evaluateDecision();
+
+                container.innerHTML = "";
+
+                state.actions.forEach(function (action) {
+                    const card = document.createElement("div");
+                    card.className = "ds-action-card " + (action === result.recommendedAction ? "selected" : "");
+                    card.innerHTML =
+                        "<strong>" + escapeHtml(action) + "</strong>" +
+                        "<span>" + (action === result.recommendedAction ? "Selected by active decision surface" : "Candidate action evaluated") + "</span>";
+                    container.appendChild(card);
+                });
+            }
+
+            function renderDeploy() {
+                document.getElementById("deployDimensionCount").textContent = getEnabledDimensions().length;
+                document.getElementById("deployValidationState").textContent = state.validated ? "Validated" : "Required";
+            }
+
+            function renderAudit() {
+                const container = document.getElementById("auditHistory");
+                container.innerHTML = "";
+
+                state.audit.slice(0, 5).forEach(function (entry) {
+                    const row = document.createElement("div");
+                    row.className = "ds-audit-row";
+                    row.innerHTML =
+                        "<time>" + escapeHtml(entry.time) + "</time>" +
+                        "<span>" + escapeHtml(entry.text) + "</span>";
+                    container.appendChild(row);
+                });
+            }
+
+            function markModified(message) {
+                state.validated = false;
+                const dimension = getSelectedDimension();
+
+                if (dimension) {
+                    dimension.validated = false;
+                }
+
+                addAudit(message);
+            }
+
+            function validateModel() {
+                state.validated = true;
+
+                state.dimensions.forEach(function (dimension) {
+                    dimension.validated = true;
+                });
+
+                addAudit("Model validation passed. Configuration ready for deployment.");
+                showToast("<strong>Validation Passed</strong><br />Decision model is ready for deployment.");
+                renderAll();
+            }
+
+            function addDimension() {
+                const newDimension = createDimension(
+                    "New Decision Dimension",
+                    "API / External Feed",
+                    "New Input Source",
+                    "Context",
+                    "Decimal 0-1",
+                    "Value",
+                    "Minimize",
+                    50,
+                    0.20,
+                    0.00,
+                    0.60,
+                    0.60,
+                    0.80,
+                    "Linear",
+                    0.10,
+                    false,
+                    "Define how this input relates to existing dimensions.",
+                    "New validated input alters the active decision model."
+                );
+
+                newDimension.validated = false;
+                state.dimensions.push(newDimension);
+                state.selectedId = newDimension.id;
+
+                markModified("New decision dimension added. Validation required.");
+                renderAll();
+            }
+
+            function removeDimension() {
+                const dimension = getSelectedDimension();
+
+                if (!dimension || state.dimensions.length === 1) {
+                    showToast("<strong>Unable to Remove</strong><br />A model must contain at least one decision dimension.");
+                    return;
+                }
+
+                state.dimensions = state.dimensions.filter(function (item) {
+                    return item.id !== dimension.id;
+                });
+
+                state.selectedId = state.dimensions[0].id;
+                markModified("Removed dimension: " + dimension.name + ".");
+                renderAll();
+            }
+
+            function saveSelectedDimension() {
+                const dimension = getSelectedDimension();
+
+                if (!dimension) {
+                    return;
+                }
+
+                addAudit("Saved dimension configuration: " + dimension.name + ".");
+                showToast("<strong>Dimension Saved</strong><br />" + escapeHtml(dimension.name) + " has been saved to the model.");
+                renderAll();
+            }
+
+            function deployConfiguration() {
+                if (!state.validated) {
+                    showToast("<strong>Deployment Blocked</strong><br />Validate the modified model before deployment.");
+                    return;
+                }
+
+                state.version += 1;
+                document.getElementById("modelVersion").textContent = "Model v1." + state.version;
+                addAudit("Configuration deployed. Core engine recompile required: No.");
+                showToast("<strong>Configuration Deployed</strong><br />New inputs are active without core-engine recompilation or AI retraining.");
+                renderAll();
+            }
+
+            function addAudit(text) {
+                const current = new Date();
+                state.audit.unshift({
+                    time: current.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                    text: text
+                });
+            }
+
+            function updateValidationDisplay() {
+                const statusText = document.getElementById("modelStatusText");
+                const badge = document.getElementById("modelStatusBadge");
+
+                if (state.validated) {
+                    statusText.textContent = "Validated";
+                    badge.style.color = "var(--ds-success)";
+                    badge.style.borderColor = "rgba(46, 207, 141, .25)";
+                    badge.style.background = "rgba(46, 207, 141, .10)";
+                } else {
+                    statusText.textContent = "Modified";
+                    badge.style.color = "var(--ds-warning)";
+                    badge.style.borderColor = "rgba(245, 190, 85, .28)";
+                    badge.style.background = "rgba(245, 190, 85, .10)";
+                }
+            }
+
+            function drawDimensionCurve(dimension) {
+                const canvas = document.getElementById("decisionCurveCanvas");
+                const context = canvas.getContext("2d");
+
+                if (!dimension || !context) {
+                    return;
+                }
+
+                prepareCanvas(canvas, context);
+
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                const padding = 18;
+
+                drawGrid(context, width, height, padding);
+
+                context.beginPath();
+
+                for (let index = 0; index <= 100; index++) {
+                    const xValue = index / 100;
+                    const tempDimension = Object.assign({}, dimension, { currentValue: xValue });
+                    const yValue = calculateContribution(tempDimension);
+                    const x = padding + (width - padding * 2) * xValue;
+                    const y = height - padding - (height - padding * 2) * Math.min(1, yValue * 1.32);
+
+                    if (index === 0) {
+                        context.moveTo(x, y);
+                    } else {
+                        context.lineTo(x, y);
+                    }
+                }
+
+                context.strokeStyle = getCssVariable("--ds-accent-bright");
+                context.lineWidth = 2.4;
+                context.stroke();
+
+                const currentX = padding + (width - padding * 2) * Number(dimension.currentValue);
+                const currentY = height - padding - (height - padding * 2) * Math.min(1, calculateContribution(dimension) * 1.32);
+
+                context.beginPath();
+                context.arc(currentX, currentY, 5, 0, Math.PI * 2);
+                context.fillStyle = getCssVariable("--ds-accent-bright");
+                context.fill();
+            }
+
+            function drawSurfaceCanvas() {
+                const canvas = document.getElementById("surfaceCanvas");
+                const context = canvas.getContext("2d");
+
+                if (!context) {
+                    return;
+                }
+
+                prepareCanvas(canvas, context);
+
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                const padding = 18;
+                const dimensions = getEnabledDimensions();
+
+                drawGrid(context, width, height, padding);
+
+                context.beginPath();
+
+                for (let index = 0; index <= 100; index++) {
+                    const xValue = index / 100;
+                    let score = 0;
+
+                    dimensions.forEach(function (dimension, dimensionIndex) {
+                        const shiftedValue = Math.min(1, Math.max(0, xValue + (dimensionIndex * 0.045)));
+                        const tempDimension = Object.assign({}, dimension, { currentValue: shiftedValue });
+                        score += calculateContribution(tempDimension);
+                    });
+
+                    const normalizedScore = Math.min(1, score / Math.max(1, dimensions.length * 0.52));
+                    const x = padding + (width - padding * 2) * xValue;
+                    const y = height - padding - normalizedScore * (height - padding * 2);
+
+                    if (index === 0) {
+                        context.moveTo(x, y);
+                    } else {
+                        context.lineTo(x, y);
+                    }
+                }
+
+                context.strokeStyle = getCssVariable("--ds-accent-bright");
+                context.lineWidth = 2.5;
+                context.stroke();
+            }
+
+            function drawGrid(context, width, height, padding) {
+                context.strokeStyle = getCssVariable("--ds-border");
+                context.lineWidth = 1;
+
+                for (let index = 0; index <= 4; index++) {
+                    const y = padding + ((height - padding * 2) / 4) * index;
+                    context.beginPath();
+                    context.moveTo(padding, y);
+                    context.lineTo(width - padding, y);
+                    context.stroke();
+                }
+
+                for (let index = 0; index <= 5; index++) {
+                    const x = padding + ((width - padding * 2) / 5) * index;
+                    context.beginPath();
+                    context.moveTo(x, padding);
+                    context.lineTo(x, height - padding);
+                    context.stroke();
+                }
+            }
+
+            function prepareCanvas(canvas, context) {
+                const ratio = window.devicePixelRatio || 1;
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+
+                canvas.width = width * ratio;
+                canvas.height = height * ratio;
+
+                context.setTransform(ratio, 0, 0, ratio, 0, 0);
+                context.clearRect(0, 0, width, height);
+            }
+
+            function getCssVariable(name) {
+                return getComputedStyle(document.getElementById("decisionEditorRoot")).getPropertyValue(name).trim();
+            }
+
+            function abbreviate(name) {
+                return name.split(" ").map(function (word) {
+                    return word.charAt(0).toUpperCase();
+                }).join("");
+            }
+
+            function formatNumber(value) {
+                return Number(value).toFixed(2);
+            }
+
+            function escapeHtml(value) {
+                return String(value || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#039;");
+            }
+
+            function showToast(html) {
+                const toast = document.getElementById("decisionToast");
+                toast.innerHTML = html;
+                toast.classList.add("show");
+
+                window.clearTimeout(showToast.timeoutId);
+                showToast.timeoutId = window.setTimeout(function () {
+                    toast.classList.remove("show");
+                }, 3400);
+            }
+
+            document.querySelectorAll(".ds-tab").forEach(function (tab) {
+                tab.addEventListener("click", function () {
+                    document.querySelectorAll(".ds-tab").forEach(function (item) {
+                        item.classList.remove("active");
+                    });
+
+                    document.querySelectorAll(".ds-panel").forEach(function (panel) {
+                        panel.classList.remove("active");
+                    });
+
+                    tab.classList.add("active");
+
+                    const selectedPanel = document.getElementById("panel-" + tab.dataset.tab);
+                    selectedPanel.classList.add("active");
+
+                    if (tab.dataset.tab === "surface") {
+                        drawSurfaceCanvas();
+                    }
+                });
+            });
+
+            document.querySelectorAll("[data-field]").forEach(function (control) {
+                const eventName = control.type === "range" ? "input" : "change";
+
+                control.addEventListener(eventName, function () {
+                    const dimension = getSelectedDimension();
+
+                    if (!dimension) {
+                        return;
+                    }
+
+                    const field = control.dataset.field;
+                    let value = control.type === "checkbox" ? control.checked : control.value;
+
+                    if (["weight", "safeMin", "safeMax", "warning", "critical", "uncertainty"].includes(field)) {
+                        value = Number(value);
+                    }
+
+                    dimension[field] = value;
+                    dimension.validated = false;
+                    state.validated = false;
+
+                    if (field === "weight") {
+                        document.getElementById("importanceWeightValue").textContent = (Number(value) / 100).toFixed(2);
+                    }
+
+                    renderAll();
+                });
+
+                if (control.tagName === "INPUT" && control.type === "text" || control.tagName === "TEXTAREA") {
+                    control.addEventListener("input", function () {
+                        const dimension = getSelectedDimension();
+
+                        if (!dimension) {
+                            return;
+                        }
+
+                        dimension[control.dataset.field] = control.value;
+                        dimension.validated = false;
+                        state.validated = false;
+                        renderDimensionList();
+                        renderSummary();
+                        renderRelationships();
+                        updateValidationDisplay();
+                    });
+                }
+            });
+
+            document.getElementById("applicationModel").addEventListener("change", function () {
+                loadTemplate(this.value);
+            });
+
+            document.getElementById("quickAddDimension").addEventListener("click", addDimension);
+            document.getElementById("addDimensionButton").addEventListener("click", addDimension);
+            document.getElementById("removeDimensionButton").addEventListener("click", removeDimension);
+            document.getElementById("saveDimensionButton").addEventListener("click", saveSelectedDimension);
+            document.getElementById("validateModelButton").addEventListener("click", validateModel);
+
+            document.getElementById("addRelationshipButton").addEventListener("click", function () {
+                showToast("<strong>Relationship Builder</strong><br />Select a dimension and define its relationship rule in the Dimensions panel.");
+            });
+
+            document.getElementById("savePolicyButton").addEventListener("click", function () {
+                markModified("Constraint policy updated. Validation required.");
+                showToast("<strong>Policy Saved</strong><br />Validate the model before deployment.");
+                renderAll();
+            });
+
+            document.getElementById("rollbackVersionButton").addEventListener("click", function () {
+                loadTemplate(state.templateKey);
+                showToast("<strong>Rollback Complete</strong><br />Restored the validated template configuration.");
+            });
+
+            document.getElementById("runScenarioButton").addEventListener("click", function () {
+                const result = evaluateDecision();
+                addAudit("Scenario test completed. Recommended decision: " + result.recommendedAction + ".");
+                showToast("<strong>Scenario Test Complete</strong><br />Recommended Decision: " + escapeHtml(result.recommendedAction));
+                renderAll();
+            });
+
+            document.getElementById("deployConfigurationButton").addEventListener("click", deployConfiguration);
+
+            window.addEventListener("resize", function () {
+                const dimension = getSelectedDimension();
+                drawDimensionCurve(dimension);
+
+                if (document.getElementById("panel-surface").classList.contains("active")) {
+                    drawSurfaceCanvas();
+                }
+            });
+
+            loadTemplate("drone");
+
+        })();
+    </script>
+}
