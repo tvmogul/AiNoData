@@ -1,6 +1,8 @@
 # AiNoData™
 My name is **Bill SerGio** and I am the inventor of **Decision Space™**, a new mathematical construct for decision-making. This work introduces a mathematical framework defining a **Decision Space™** where candidate actions or states are evaluated, scored, and selected using deterministic cost, energy, and risk functions, without learned weights, probabilities, or historical data.
 
+![AiNoData](https://www.linkedin.com/pulse/zero-training-ai-without-data-training-bill-sergio-6ouce/https://www.linkedin.com/pulse/zero-training-ai-without-data-training-bill-sergio-6ouce/)
+
 ![AiNoData](https://ainodata.com/img/og-image.png)
 
 # Zero-Training AI™ — Interactive Demos
