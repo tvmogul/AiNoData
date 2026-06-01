@@ -31,6 +31,51 @@
 
             <form asp-action="Index" asp-controller="Budget" method="post" id="budgetForm">
 
+                <div class="form-group"
+                     style="background: #0057b8; color: #ffffff; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px;">
+                    <div class="help-text"
+                         style="color: #ffffff; font-weight: 700; font-size: 1.05rem; line-height: 1.4;">
+                        Selling Price and Upsell are the 2 main factors that determine if you can sell over 
+                        $100 million to over $1 billion dollars in one year.<br />
+                        Change the Sales Price to $499.00, the price I sold a computer for and see the difference.
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        <strong>Retail price</strong> for a one-month supply of the diet (e.g., 59.95)
+                    </div>
+                    <div class="input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input id="monthlyPrice"
+                               name="MonthlyPrice"
+                               type="number"
+                               class="text-input"
+                               step="0.01"
+                               min="0"
+                               value="@Model.MonthlyPrice"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+                    <div class="help-text">
+                        <strong>One-Year Supply Upsell Price</strong>Upsell price for a full one-year
+                        supply of the diet (e.g., 499.00)
+                    </div>
+                    <div class="input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input id="yearlyPrice"
+                               name="YearlyPrice"
+                               type="number"
+                               class="text-input"
+                               step="0.01"
+                               min="0"
+                               value="@Model.YearlyPrice"
+                               style="text-align: right; width: 140px;" />
+                    </div>
+                </div>
+
                 <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
                     <div class="help-text">
                         Initial cash available to test and then to re-buy TV stations
@@ -96,41 +141,6 @@
 
                 <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
                     <div class="help-text">
-                        Retail price for a one-month supply of the diet (e.g., 59.95)
-                    </div>
-                    <div class="input-with-prefix">
-                        <span class="prefix">$</span>
-                        <input id="monthlyPrice"
-                               name="MonthlyPrice"
-                               type="number"
-                               class="text-input"
-                               step="0.01"
-                               min="0"
-                               value="@Model.MonthlyPrice"
-                               style="text-align: right; width: 140px;" />
-                    </div>
-                </div>
-
-                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
-                    <div class="help-text">
-                        One-Year Supply Upsell Price. Upsell price for a full one-year
-                        supply of the diet (e.g., 499.00)
-                    </div>
-                    <div class="input-with-prefix">
-                        <span class="prefix">$</span>
-                        <input id="yearlyPrice"
-                               name="YearlyPrice"
-                               type="number"
-                               class="text-input"
-                               step="0.01"
-                               min="0"
-                               value="@Model.YearlyPrice"
-                               style="text-align: right; width: 140px;" />
-                    </div>
-                </div>
-
-                <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
-                    <div class="help-text">
                         Percentage of buys that are cancelled before they air (e.g., 6%)
                     </div>
                     <div class="input-with-prefix">
@@ -172,7 +182,7 @@
                            value="10.0"
                            style="text-align: right; width: 140px;" />
                 </div>
-              
+
             </form>
 
         </div>
@@ -237,7 +247,7 @@
                                 window.__budgetChartData = {
                                     months: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyTimeline.Select(m => $"M{m.PeriodIndex}"))),
                                     budgets: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyTimeline.Select(m => m.EndingBudget)))
-                                                    };
+                                                                                    };
                 </script>
 
                 @* <p class="explainer">
@@ -349,7 +359,7 @@
                 You might ask why half hours are so much cheaper than a 30 second spot? The reason is that when you
                 buy a half hour, you are supplying the content for that half hour, so the TV station doesn't have to
                 pay for content and you are saving them in many cases well over $100,000 for a station to license
-                a popular syndicated show. And so, the owner of that station is happy to accept your $20 for that 
+                a popular syndicated show. And so, the owner of that station is happy to accept your $20 for that
                 half hour and let you supply the content.
             </p>
         </div>
@@ -371,250 +381,250 @@
 
     <script nonce="@scriptNonce">
         function submitBudgetForm() {
-            const cancelInput = document.getElementById('cancelRate');
-            if (cancelInput) {
-                let val = parseFloat(cancelInput.value);
-                if (!isNaN(val)) {
-                    cancelInput.value = (val / 100.0).toString();
-                }
-            }
-            document.getElementById('budgetForm').submit();
+        const cancelInput = document.getElementById('cancelRate');
+        if (cancelInput) {
+        let val = parseFloat(cancelInput.value);
+        if (!isNaN(val)) {
+        cancelInput.value = (val / 100.0).toString();
+        }
+        }
+        document.getElementById('budgetForm').submit();
         }
     </script>
 
     <script nonce="@scriptNonce">
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!window.__budgetChartData) return;
+        document.addEventListener('DOMContentLoaded', function () {
+        if (!window.__budgetChartData) return;
 
-            const canvas = document.getElementById("budgetGrowthChart");
-            if (!canvas) return;
+        const canvas = document.getElementById("budgetGrowthChart");
+        if (!canvas) return;
 
-            const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
 
-            new Chart(ctx, 
-                {
-                    type: "line",
-                    data: {
-                        labels: window.__budgetChartData.months,
-                        datasets: [{
-                            data: window.__budgetChartData.budgets,
-                            borderWidth: 3,
-                            tension: 0.35,
-                            pointRadius: 3,
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: c => "$" + Number(c.raw).toLocaleString()
-                                }
-                            }
-                    },
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: v => "$" + Number(v).toLocaleString()
-                            }
-                        }
-                    }
-                }
-            });
+        new Chart(ctx,
+        {
+        type: "line",
+        data: {
+        labels: window.__budgetChartData.months,
+        datasets: [{
+        data: window.__budgetChartData.budgets,
+        borderWidth: 3,
+        tension: 0.35,
+        pointRadius: 3,
+        fill: false
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: { display: false },
+        tooltip: {
+        callbacks: {
+        label: c => "$" + Number(c.raw).toLocaleString()
+        }
+        }
+        },
+        scales: {
+        y: {
+        ticks: {
+        callback: v => "$" + Number(v).toLocaleString()
+        }
+        }
+        }
+        }
+        });
         });
     </script>
 
     <script nonce="@scriptNonce">
-        (function() {
-            function clamp01(v) {
-                v = Number(v);
-                if (isNaN(v)) return 0;
-                if (v < 0) return 0;
-                if (v > 1) return 1;
-                return v;
-            }
-
-            function safeNum(v, fallback) {
-                v = Number(v);
-                return isNaN(v) ? fallback : v;
-            }
-
-            // Simple deterministic mapping from your existing controls -> ROI-like coefficients
-            // This is a VISUALIZATION slice, not your backend solver.
-            function getROISet(showType, monthlyPrice, yearlyPrice) {
-                // Pull Ratio anchor by showType
-                let pr;
-                switch ((showType || "C").toUpperCase()) {
-                case "A": pr = 1.5; break;   // Unsuccessful
-                case "B": pr = 8.0; break;   // Modest
-                case "C": pr = 30.0; break;  // Successful
-                case "D": pr = 80.0; break;  // Blockbuster
-                default: pr = 30.0; break;
-            }
-
-            // Upsell amplification (normalized) from price ratio; keeps things stable
-            const mp = Math.max(0.01, safeNum(monthlyPrice, 59.95));
-            const yp = Math.max(0.01, safeNum(yearlyPrice, 499.00));
-            const upsell = Math.max(0.5, Math.min(3.0, yp / (mp * 6.0))); // 0.5..3.0
-
-            // Three "stations" with slightly different ROI curves
-            const r1 = pr * (0.85 + 0.10 * upsell);
-            const r2 = pr * (1.00 + 0.15 * upsell);
-            const r3 = pr * (1.15 + 0.20 * upsell);
-
-            return [r1, r2, r3];
+        (function () {
+        function clamp01(v) {
+        v = Number(v);
+        if (isNaN(v)) return 0;
+        if (v < 0) return 0;
+        if (v > 1) return 1;
+        return v;
         }
 
-            function computeF(q1, q2, roi, alpha, lambda) {
-                // Slice: q1,q2 in [0,1]; q3 = max(0, 1 - q1 - q2) (clamp like we discussed)
-                const q3 = Math.max(0, 1 - q1 - q2);
+        function safeNum(v, fallback) {
+        v = Number(v);
+        return isNaN(v) ? fallback : v;
+        }
 
-                // p = 0 slice (so kinetic term is 0)
-                const reward = (roi[0] * q1) + (roi[1] * q2) + (roi[2] * q3);
+        // Simple deterministic mapping from your existing controls -> ROI-like coefficients
+        // This is a VISUALIZATION slice, not your backend solver.
+        function getROISet(showType, monthlyPrice, yearlyPrice) {
+        // Pull Ratio anchor by showType
+        let pr;
+        switch ((showType || "C").toUpperCase()) {
+        case "A": pr = 1.5; break;   // Unsuccessful
+        case "B": pr = 8.0; break;   // Modest
+        case "C": pr = 30.0; break;  // Successful
+        case "D": pr = 80.0; break;  // Blockbuster
+        default: pr = 30.0; break;
+        }
 
-                // Constraint term is active when q1 + q2 + q3 != 1 (i.e., when q1+q2 > 1 => q3=0 => sum>1)
-                const sumq = q1 + q2 + q3;
-                const constraint = (sumq - 1);
+        // Upsell amplification (normalized) from price ratio; keeps things stable
+        const mp = Math.max(0.01, safeNum(monthlyPrice, 59.95));
+        const yp = Math.max(0.01, safeNum(yearlyPrice, 499.00));
+        const upsell = Math.max(0.5, Math.min(3.0, yp / (mp * 6.0))); // 0.5..3.0
 
-                // F(q,p) = 0.5 Σ p^2 - α Σ(ROI_i q_i) + λ (Σq - 1)^2
-                return (-alpha * reward) + (lambda * constraint * constraint);
-            }
+        // Three "stations" with slightly different ROI curves
+        const r1 = pr * (0.85 + 0.10 * upsell);
+        const r2 = pr * (1.00 + 0.15 * upsell);
+        const r3 = pr * (1.15 + 0.20 * upsell);
 
-            function buildSurfaceData() {
-                const showType = (document.getElementById("showType") || {}).value || "C";
-                const monthlyPrice = (document.getElementById("monthlyPrice") || {}).value;
-                const yearlyPrice = (document.getElementById("yearlyPrice") || {}).value;
-                const alpha = safeNum((document.getElementById("alpha") || {}).value, 1.0);
-                const lambda = safeNum((document.getElementById("lambda") || {}).value, 10.0);
+        return [r1, r2, r3];
+        }
 
-                const roi = getROISet(showType, monthlyPrice, yearlyPrice);
+        function computeF(q1, q2, roi, alpha, lambda) {
+        // Slice: q1,q2 in [0,1]; q3 = max(0, 1 - q1 - q2) (clamp like we discussed)
+        const q3 = Math.max(0, 1 - q1 - q2);
 
-                const steps = 55; // grid resolution
-                const xs = [];
-                const ys = [];
-                const zs = [];
+        // p = 0 slice (so kinetic term is 0)
+        const reward = (roi[0] * q1) + (roi[1] * q2) + (roi[2] * q3);
 
-                let best = { f: Number.POSITIVE_INFINITY, x: 0, y: 0 };
+        // Constraint term is active when q1 + q2 + q3 != 1 (i.e., when q1+q2 > 1 => q3=0 => sum>1)
+        const sumq = q1 + q2 + q3;
+        const constraint = (sumq - 1);
 
-                for (let i = 0; i < steps; i++) {
-                const q1 = i / (steps - 1);
-                xs.push(q1);
-            }
+        // F(q,p) = 0.5 Σ p^2 - α Σ(ROI_i q_i) + λ (Σq - 1)^2
+        return (-alpha * reward) + (lambda * constraint * constraint);
+        }
 
-            for (let j = 0; j < steps; j++) {
-                const q2 = j / (steps - 1);
-                ys.push(q2);
-            }
+        function buildSurfaceData() {
+        const showType = (document.getElementById("showType") || {}).value || "C";
+        const monthlyPrice = (document.getElementById("monthlyPrice") || {}).value;
+        const yearlyPrice = (document.getElementById("yearlyPrice") || {}).value;
+        const alpha = safeNum((document.getElementById("alpha") || {}).value, 1.0);
+        const lambda = safeNum((document.getElementById("lambda") || {}).value, 10.0);
 
-            for (let j = 0; j < steps; j++) {
-            const row = [];
-            const q2 = ys[j];
+        const roi = getROISet(showType, monthlyPrice, yearlyPrice);
 
-            for (let i = 0; i < steps; i++) {
-            const q1 = xs[i];
+        const steps = 55; // grid resolution
+        const xs = [];
+        const ys = [];
+        const zs = [];
 
-            const f = computeF(q1, q2, roi, alpha, lambda);
+        let best = { f: Number.POSITIVE_INFINITY, x: 0, y: 0 };
 
-            // For the triangle region q1+q2<=1, the surface is "constraint satisfied"
-            // For q1+q2>1, constraint term rises -> ridge.
-            row.push(f);
+        for (let i = 0; i < steps; i++) {
+        const q1 = i / (steps - 1);
+        xs.push(q1);
+        }
 
-            if (f < best.f) {
-            best.f = f;
-            best.x = q1;
-            best.y = q2;
-            }
-            }
-            zs.push(row);
-            }
+        for (let j = 0; j < steps; j++) {
+        const q2 = j / (steps - 1);
+        ys.push(q2);
+        }
 
-            return { xs, ys, zs, best, roi, alpha, lambda, showType };
-            }
+        for (let j = 0; j < steps; j++) {
+        const row = [];
+        const q2 = ys[j];
 
-            function drawSurface() {
-                const el = document.getElementById("z3dSurface");
-                if (!el || typeof Plotly === "undefined") return;
+        for (let i = 0; i < steps; i++) {
+        const q1 = xs[i];
 
-                const data = buildSurfaceData();
+        const f = computeF(q1, q2, roi, alpha, lambda);
 
-                const bestZ = computeF(data.best.x, data.best.y, data.roi, data.alpha, data.lambda);
+        // For the triangle region q1+q2<=1, the surface is "constraint satisfied"
+        // For q1+q2>1, constraint term rises -> ridge.
+        row.push(f);
 
-                const surfaceTrace = {
-                    type: "surface",
-                    x: data.xs,
-                    y: data.ys,
-                    z: data.zs,
-                    showscale: false,
-                    hovertemplate: "q1=%{x:.2f}<br>q2=%{y:.2f}<br>F=%{z:.3f}<extra></extra>"
-                };
+        if (f < best.f) {
+        best.f = f;
+        best.x = q1;
+        best.y = q2;
+        }
+        }
+        zs.push(row);
+        }
 
-                const bestPointTrace = {
-                    type: "scatter3d",
-                    mode: "markers+text",
-                    x: [data.best.x],
-                    y: [data.best.y],
-                    z: [bestZ],
-                    text: ["min"],
-                    textposition: "top center",
-                    marker: { size: 6 },
-                    hovertemplate: "MIN<br>q1=%{x:.3f}<br>q2=%{y:.3f}<br>F=%{z:.3f}<extra></extra>"
-                };
+        return { xs, ys, zs, best, roi, alpha, lambda, showType };
+        }
 
-                const layout = {
-                    margin: { l: 0, r: 0, t: 10, b: 0 },
-                    paper_bgcolor: "rgba(0,0,0,0)",
-                    plot_bgcolor: "rgba(0,0,0,0)",
-                    scene: {
-                        xaxis: { title: "q1", range: [0, 1] },
-                        yaxis: { title: "q2", range: [0, 1] },
-                        zaxis: { title: "F(q,p)" },
-                        camera: { eye: { x: 1.6, y: 1.6, z: 0.9 } }
-                    },
-                    annotations: []
-                };
+        function drawSurface() {
+        const el = document.getElementById("z3dSurface");
+        if (!el || typeof Plotly === "undefined") return;
 
-                const config = {
-                    displayModeBar: false,
-                    responsive: true
-                };
+        const data = buildSurfaceData();
 
-                Plotly.react(el, [surfaceTrace, bestPointTrace], layout, config);
-            }
+        const bestZ = computeF(data.best.x, data.best.y, data.roi, data.alpha, data.lambda);
 
-            function wireSurfaceControls() {
-                const ids = [
-                    "showType",
-                    "monthlyPrice",
-                    "yearlyPrice",
-                    "alpha",
-                    "lambda"
-                ];
+        const surfaceTrace = {
+        type: "surface",
+        x: data.xs,
+        y: data.ys,
+        z: data.zs,
+        showscale: false,
+        hovertemplate: "q1=%{x:.2f}<br>q2=%{y:.2f}<br>F=%{z:.3f}<extra></extra>"
+        };
 
-                ids.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (!el) return;
-                    el.addEventListener("input", function() {
-                        drawSurface();
-                    });
-                    el.addEventListener("change", function() {
-                        drawSurface();
-                    });
-                });
-            }
+        const bestPointTrace = {
+        type: "scatter3d",
+        mode: "markers+text",
+        x: [data.best.x],
+        y: [data.best.y],
+        z: [bestZ],
+        text: ["min"],
+        textposition: "top center",
+        marker: { size: 6 },
+        hovertemplate: "MIN<br>q1=%{x:.3f}<br>q2=%{y:.3f}<br>F=%{z:.3f}<extra></extra>"
+        };
 
-            document.addEventListener("DOMContentLoaded", function() {
-            drawSurface();
-            wireSurfaceControls();
-            window.addEventListener("resize", function() {
-                const el = document.getElementById("z3dSurface");
-                if (el && typeof Plotly !== "undefined") {
-                    Plotly.Plots.resize(el);
-                }
-            });
-            });
+        const layout = {
+        margin: { l: 0, r: 0, t: 10, b: 0 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        scene: {
+        xaxis: { title: "q1", range: [0, 1] },
+        yaxis: { title: "q2", range: [0, 1] },
+        zaxis: { title: "F(q,p)" },
+        camera: { eye: { x: 1.6, y: 1.6, z: 0.9 } }
+        },
+        annotations: []
+        };
+
+        const config = {
+        displayModeBar: false,
+        responsive: true
+        };
+
+        Plotly.react(el, [surfaceTrace, bestPointTrace], layout, config);
+        }
+
+        function wireSurfaceControls() {
+        const ids = [
+        "showType",
+        "monthlyPrice",
+        "yearlyPrice",
+        "alpha",
+        "lambda"
+        ];
+
+        ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", function () {
+        drawSurface();
+        });
+        el.addEventListener("change", function () {
+        drawSurface();
+        });
+        });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+        drawSurface();
+        wireSurfaceControls();
+        window.addEventListener("resize", function () {
+        const el = document.getElementById("z3dSurface");
+        if (el && typeof Plotly !== "undefined") {
+        Plotly.Plots.resize(el);
+        }
+        });
+        });
         })();
     </script>
 
@@ -673,7 +683,6 @@
     height: 260px;
     }
 </style>
-
 
 
 
